@@ -1,5 +1,10 @@
-import { getLocalStorage } from '@/lib/local-storage'
+import {
+  getLocalStorage,
+  removeLoaclStorage,
+  setLocalStorage,
+} from '@/lib/local-storage'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { postRefreshToken } from './auth-apis'
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -18,7 +23,7 @@ const requester = async <Payload>(option: AxiosRequestConfig) => {
       ? {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            RefreshToken: refreshToken,
+            RefreshToken: `Bearer ${refreshToken}`,
           },
           ...option,
         }
@@ -33,4 +38,34 @@ const requester = async <Payload>(option: AxiosRequestConfig) => {
   }
 }
 
+axiosInstance.interceptors.request.use(
+  function (config) {
+    return config
+  },
+  function (error) {
+    return Promise.reject(error)
+  },
+)
+
+axiosInstance.interceptors.response.use(
+  function (response) {
+    return response
+  },
+  async function (error) {
+    if (error.response.status === 401) {
+      const refreshToken = getLocalStorage('refreshToken')
+      if (refreshToken) {
+        try {
+          const newAccessToken = await postRefreshToken(refreshToken)
+          removeLoaclStorage('accessToken')
+          setLocalStorage('accessToken', newAccessToken)
+        } catch (error) {
+          removeLoaclStorage('accessToken')
+          removeLoaclStorage('refreshToken')
+          alert('로그인이 필요합니다.')
+        }
+      }
+    }
+  },
+)
 export default requester
