@@ -1,6 +1,8 @@
 'use client'
 
+import { postLogin } from '@/api/auth-apis'
 import AuthInput from '@/components/common/auth-input'
+import { setLocalStorage } from '@/lib/local-storage'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -18,7 +20,15 @@ const Login = () => {
       alert('비밀번호를 입력하세요.')
     }
   }
-
+  const handleLoginSubmit = async () => {
+    try {
+      const res = await postLogin(username, password)
+      setLocalStorage('accessToken', res.data.accessToken)
+      setLocalStorage('refreshToken', res.data.refreshToken)
+    } catch (error) {
+      alert('아이디와 비밀번호를 확인해주세요')
+    }
+  }
   return (
     <div className="grow shrink px-2 space-y-2">
       <div className="grid grid-cols-[4fr_1fr] gap-x-4 ">
@@ -38,7 +48,7 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          onClick={handleLogin}
+          onClick={handleLoginSubmit}
           className="px-2 text-sm md:text-md bg-green-100 text-white rounded-md hover:bg-green-150"
         >
           로그인
