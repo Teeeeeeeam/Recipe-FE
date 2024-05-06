@@ -5,34 +5,35 @@ import AuthInput from '@/components/common/auth-input'
 import { setLocalStorage } from '@/lib/local-storage'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = () => {
-    if (!username && !password) {
-      alert('아이디와 비밀번호를 입력하세요.')
-    } else if (!username) {
-      alert('아이디를 입력하세요.')
-    } else if (!password) {
-      alert('비밀번호를 입력하세요.')
-    }
-  }
+  const router = useRouter()
+
   const handleLoginSubmit = async () => {
-    try {
-      const res = await postLogin(username, password)
-      setLocalStorage('accessToken', res.data.accessToken)
-      setLocalStorage('refreshToken', res.data.refreshToken)
-    } catch (error) {
-      alert('아이디와 비밀번호를 확인해주세요')
+    if (!username || !password) {
+      alert('아이디와 비밀번호를 입력하세요.')
+    } else {
+      try {
+        const res = await postLogin(username, password)
+        setLocalStorage('accessToken', res.accessToken)
+        setLocalStorage('refreshToken', res.refreshToken)
+
+        router.push('/')
+      } catch (error) {
+        alert('아이디와 비밀번호를 확인해주세요')
+      }
     }
   }
+
   return (
     <div className="grow shrink px-2 space-y-2">
       <div className="grid grid-cols-[4fr_1fr] gap-x-4 ">
-        <div className="space-y-2">
+        <form className="space-y-2">
           <AuthInput
             type="text"
             placeholder="아이디"
@@ -45,7 +46,7 @@ const Login = () => {
             state={password}
             setState={setPassword}
           />
-        </div>
+        </form>
         <button
           type="submit"
           onClick={handleLoginSubmit}
@@ -64,26 +65,33 @@ const Login = () => {
         </Link>
       </div>
       <div className="flex justify-center gap-x-4">
-        <Image
-          src="/naver-icon.svg"
-          alt="naver-icon"
-          width={50}
-          height={50}
-          className="cursor-pointer transition-transform hover:scale-110"
-        />
-        <Image
-          src="/kakao-icon.svg"
-          alt="naver-icon"
-          width={50}
-          height={50}
-          className="cursor-pointer transition-transform hover:scale-110"
-        />
+        <Link href="http://54.180.165.128:8080/oauth2/authorization/naver">
+          <Image
+            src="/naver-icon.svg"
+            alt="naver-icon"
+            width={50}
+            height={50}
+            className="cursor-pointer transition-transform hover:scale-110"
+            priority
+          />
+        </Link>
+        <Link href="http://54.180.165.128:8080/oauth2/authorization/kakao">
+          <Image
+            src="/kakao-icon.svg"
+            alt="naver-icon"
+            width={50}
+            height={50}
+            className="cursor-pointer transition-transform hover:scale-110"
+            priority
+          />
+        </Link>
         <Image
           src="/google-icon.svg"
           alt="naver-icon"
           width={50}
           height={50}
           className="cursor-pointer transition-transform hover:scale-110"
+          priority
         />
       </div>
     </div>
