@@ -3,7 +3,6 @@ export const getLocalStorage = (key: string) => {
   if (!data) {
     return null
   }
-
   try {
     const parsedData = JSON.parse(data)
     return parsedData
