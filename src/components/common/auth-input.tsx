@@ -15,6 +15,7 @@ const AuthInput = ({ type, placeholder, state, setState }: InputProps) => {
       value={state}
       onChange={(e) => setState(e.target.value)}
       className="w-full py-3 pl-2 rounded-md"
+      autoComplete="current-password"
     />
   )
 }

@@ -49,7 +49,7 @@ export const getAccessToken = async () => {
     removeLoaclStorage('accessToken')
     removeLoaclStorage('refreshToken')
     // 다른 요청 있을 때 수정 해야됨
-    window.location.replace('/user/login')
+    window.location.href = '/user/login'
   }
 }
 
@@ -65,6 +65,7 @@ axiosInstance.interceptors.response.use(
       response: { status },
     } = error
     if (config.url === REFRESH_URL || status !== 401 || config.sent) {
+      console.log(error)
       return Promise.reject(error)
     }
     config.sent = true
