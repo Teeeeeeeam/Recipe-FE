@@ -3,6 +3,7 @@ import {
   EmailValidation,
   Join,
   Login,
+  NicknameValidation,
   RefreshToken,
   Response,
 } from '@/types/auth'
@@ -42,7 +43,7 @@ export const postJoin = async (
     url: `/api/join?code=${code}`,
     data: {
       username,
-      nickName: nickname,
+      nickname,
       password,
       passwordRe,
       loginId,
@@ -50,6 +51,24 @@ export const postJoin = async (
     },
   })
   return payload
+}
+
+export const postIdValidation = async (loginId: string) => {
+  const { payload } = await requester<Response>({
+    method: 'post',
+    url: `/api/join/register/validation`,
+    data: { loginId },
+  })
+  return payload
+}
+
+export const postNicknameValidation = async (nickname: string) => {
+  const { payload } = await requester<NicknameValidation>({
+    method: 'post',
+    url: `/api/join/nickname/validation`,
+    data: { nickname },
+  })
+  return payload.data
 }
 
 export const postEmailValidation = async (email: string) => {
