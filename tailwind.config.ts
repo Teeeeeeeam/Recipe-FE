@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  mode: 'jit',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,6 +17,9 @@ const config: Config = {
           50: '#214D3333',
           100: '#214D33',
           150: '#3E794E',
+        },
+        red: {
+          50: '#FF3F3F',
         },
       },
       backgroundImage: {

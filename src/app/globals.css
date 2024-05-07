@@ -9,6 +9,14 @@ input:focus {
   @apply outline-none border-[1.5px] border-green-100;
 }
 
+.lable-text {
+  @apply text-[12px];
+}
+
+.dot {
+  @apply rounded-full align-middle w-[3px] h-[3px] mr-[2px] bg-red-50;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

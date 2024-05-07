@@ -20,6 +20,10 @@ export interface Join extends Response {
   }
 }
 
+export interface NicknameValidation extends Response {
+  data: boolean
+}
+
 export interface RefreshToken extends Response {
   data: string
 }

@@ -5,16 +5,32 @@ interface InputProps {
   placeholder: string
   state: string
   setState: Dispatch<SetStateAction<string>>
+  validation?: string
+  id?: string
+  name?: string
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 }
 
-const AuthInput = ({ type, placeholder, state, setState }: InputProps) => {
+const AuthInput = ({
+  id,
+  name,
+  type,
+  placeholder,
+  validation,
+  state,
+  setState,
+  onBlur,
+}: InputProps) => {
   return (
     <input
       type={type}
+      name={name}
+      id={id}
       placeholder={placeholder}
       value={state}
       onChange={(e) => setState(e.target.value)}
-      className="w-full py-3 pl-2 rounded-md"
+      onBlur={onBlur}
+      className={`w-full py-2 pl-2 rounded-md ${validation && validation.length > 0 && 'border-red-50'}`}
       autoComplete="current-password"
     />
   )
