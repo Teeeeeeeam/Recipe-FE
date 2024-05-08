@@ -14,14 +14,14 @@ export default function InquiryLayout({
     <div className="grow shrink">
       <div className="grid grid-cols-2">
         <div className="flex gap-x-2">
-          <Link href="/user/idInquiry">
-            <RadioButton boolean={segment === 'idInquiry' ? true : false} />
+          <Link href="/user/id-inquiry">
+            <RadioButton boolean={segment === 'id-inquiry' ? true : false} />
           </Link>
           <p>아이디 찾기</p>
         </div>
         <div className="flex gap-x-2">
-          <Link href="/user/pwInquiry">
-            <RadioButton boolean={segment === 'pwInquiry' ? true : false} />
+          <Link href="/user/pw-inquiry">
+            <RadioButton boolean={segment === 'pw-inquiry' ? true : false} />
           </Link>
           <p>비밀번호 찾기</p>
         </div>
