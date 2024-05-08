@@ -19,24 +19,38 @@ export interface Join extends Response {
     email: string
   }
 }
-
-export interface NicknameValidation extends Response {
-  data: boolean
-}
-
 export interface RefreshToken extends Response {
   data: string
 }
 
-export interface EmailValidation extends Response {
+export interface JoinNicknameValidation extends Response {
+  data: boolean
+}
+
+export interface JoinEmailValidation extends Response {
   data: {
     duplicateEmail: boolean
     useEmail: boolean
   }
 }
 
-export interface EmailAuthentication extends Response {
+export interface JoinEmailAuthentication extends Response {
   data: {
     isVerifyCode: boolean
+  }
+}
+
+export interface SearchLoginId extends Response {
+  data: {
+    login_type: string
+    login_info: string
+  }[]
+}
+
+export interface SearchErrorMessage extends Response {
+  data: {
+    username: string
+    code: string
+    email: string
   }
 }
