@@ -1,12 +1,12 @@
 'use client'
 
 import {
-  postEmailAuthentication,
-  postEmailAuthenticationCheck,
-  postEmailValidation,
-  postIdValidation,
+  postJoinEmailAuthentication,
+  postJoinEmailAuthenticationCheck,
+  postJoinEmailValidation,
+  postJoinIdValidation,
   postJoin,
-  postNicknameValidation,
+  postJoinNicknameValidation,
 } from '@/api/auth-apis'
 import AuthButton from '@/components/common/auth-button'
 import AuthInput from '@/components/common/auth-input'
@@ -114,7 +114,7 @@ const Join = () => {
 
   const handleIdValidationClick = async () => {
     try {
-      const res = await postIdValidation(id)
+      const res = await postJoinIdValidation(id)
       if (res.success) {
         alert('사용 가능한 아이디 입니다.')
       }
@@ -125,7 +125,7 @@ const Join = () => {
 
   const handleNicknameValidationClick = async () => {
     try {
-      const res = await postNicknameValidation(nickname)
+      const res = await postJoinNicknameValidation(nickname)
       if (res) {
         alert('사용 가능한 닉네임 입니다.')
       } else if (!res) {
@@ -137,9 +137,9 @@ const Join = () => {
   }
 
   const handleEmailVerificationClick = async () => {
-    const validation = await postEmailValidation(email)
+    const validation = await postJoinEmailValidation(email)
     if (validation.duplicateEmail && validation.useEmail) {
-      await postEmailAuthentication(email)
+      await postJoinEmailAuthentication(email)
       alert('인증번호가 해당 이메일로 발송되었습니다.')
     } else if (!validation.duplicateEmail && validation.useEmail) {
       alert('이미 등록된 이메일 입니다.')
@@ -153,7 +153,7 @@ const Join = () => {
 
   const handleEmailAuthenticationCheckClick = async () => {
     try {
-      const isVerified = await postEmailAuthenticationCheck(
+      const isVerified = await postJoinEmailAuthenticationCheck(
         email,
         certificationNumber,
       )
