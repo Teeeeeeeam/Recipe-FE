@@ -39,7 +39,13 @@ const initialState: DataState = {
 const searchIDSlice = createSlice({
   name: 'data',
   initialState,
-  reducers: {},
+  reducers: {
+    resetDataState: (state) => {
+      state.data = null
+      state.loading = false
+      state.error = null
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchData.pending, (state) => {
@@ -69,5 +75,5 @@ const searchIDSlice = createSlice({
   },
 })
 
-export const searchIdActions = searchIDSlice.actions
-export const searchIdReducer = searchIDSlice.reducer
+export const { resetDataState } = searchIDSlice.actions
+export default searchIDSlice

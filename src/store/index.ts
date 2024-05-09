@@ -2,10 +2,12 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import { searchIdReducer } from './search-id-slice'
+import searchIDSlice from './search-id-slice'
+import searchPwSlice from './search-password-slice'
 
 const rootReducer = {
-  searchData: searchIdReducer,
+  searchIdData: searchIDSlice.reducer,
+  searchPwData: searchPwSlice.reducer,
 }
 
 const store = configureStore({

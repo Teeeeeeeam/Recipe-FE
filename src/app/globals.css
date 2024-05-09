@@ -9,7 +9,7 @@ input:focus {
   @apply outline-none border-[1.5px] border-green-100;
 }
 
-.lable-text {
+.label-text {
   @apply text-[12px];
 }
 

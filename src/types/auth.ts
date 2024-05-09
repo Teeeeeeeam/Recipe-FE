@@ -54,3 +54,11 @@ export interface SearchErrorMessage extends Response {
     email: string
   }
 }
+
+export interface SearchPassword extends Response {
+  data: {
+    token: string
+    '회원 정보': boolean
+    '이메일 인증': boolean
+  }
+}
