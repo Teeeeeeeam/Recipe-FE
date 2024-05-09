@@ -15,9 +15,7 @@ export default function RecipeDetailMain() {
     getData()
   }, [])
   async function getData() {
-    const result = await detailRecipeHandler(
-      `http://54.180.165.128:8080/api/recipe/${thisId}`,
-    )
+    const result = await detailRecipeHandler(`/api/recipe/${thisId}`)
     const resultCook = [
       createThree('people', 'people'),
       createThree('cookingTime', 'timer'),

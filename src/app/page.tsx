@@ -9,6 +9,7 @@ import { Recipe } from '@/types/recipe'
 export default function Home() {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
+  // 재료검색
   const [ingredient, setIngredient] = useState<string>('')
   // userRecipe Mocking
   const [userRecipe, setUserRecipe] = useState<Recipe[]>([])
@@ -17,9 +18,7 @@ export default function Home() {
     getData()
   }, [])
   async function getData() {
-    const result = await mainRecipeHandler(
-      'http://54.180.165.128:8080/api/main/recipe',
-    )
+    const result = await mainRecipeHandler(`/api/main/recipe`)
     setRecipes(result.data.recipe)
     // userRecipe Mocking
     setUserRecipe([
