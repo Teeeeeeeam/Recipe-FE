@@ -2,7 +2,10 @@
 
 import RadioButton from '@/components/common/radio-button'
 import Link from 'next/link'
-import { useSelectedLayoutSegment } from 'next/navigation'
+import {
+  useSelectedLayoutSegment,
+  useSelectedLayoutSegments,
+} from 'next/navigation'
 
 export default function InquiryLayout({
   children,
@@ -10,6 +13,10 @@ export default function InquiryLayout({
   children: React.ReactNode
 }) {
   const segment = useSelectedLayoutSegment()
+  const segments = useSelectedLayoutSegments()
+
+  if (segments[segments.length - 1] === 'result')
+    return <div className="grow shrink">{children}</div>
   return (
     <div className="grow shrink">
       <div className="grid grid-cols-2">
