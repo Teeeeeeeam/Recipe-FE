@@ -3,26 +3,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { mainRecipeHandler } from '@/api/recipe-apis'
-
-interface Recipe {
-  id: number
-  likeCount: number
-  cookingLevel: string
-  cookingTime: string
-  imageUrl: string
-  people: string
-  title: string
-}
-interface RecipesForProps {
-  recipes: Recipe[]
-}
+import RecipeFigure from '@/components/recipeFigure'
+import { Recipe } from '@/types/recipe'
 
 export default function Home() {
   //레시피 컨트롤러 GET
-  const [recipes, setRecipes] = useState<Recipe[] | []>([])
+  const [recipes, setRecipes] = useState<Recipe[]>([])
   const [ingredient, setIngredient] = useState<string>('')
   // userRecipe Mocking
-  const [userRecipe, setUserRecipe] = useState<Recipe[] | []>([])
+  const [userRecipe, setUserRecipe] = useState<Recipe[]>([])
 
   useEffect(() => {
     getData()
@@ -39,6 +28,7 @@ export default function Home() {
       result.data.recipe[2],
     ])
   }
+
   return (
     <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
       <div className="home-banner">
@@ -54,25 +44,25 @@ export default function Home() {
           <input
             type="text"
             placeholder="재료를 입력해 주세요"
-            onChange={(e) => setIngredient(e.target.value)}
+            // onChange={(e) => setIngredient(e.target.value)}
             className="w-1/2 py-3 border mx-auto mb-[24px] text-center rounded-lg"
           />
           <input
             type="submit"
             value="검색결과 보기"
-            onClick={(e) => e.preventDefault()}
+            // onClick={(e) => submitHandler(e)}
             className="w-11/12 py-2 border mx-auto my-0 text-gray-300 rounded-lg"
           ></input>
         </form>
         <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
-          <RecipeFigure recipes={recipes} />
+          <RecipeFigure recipes={recipes} group={true} />
         </div>
       </div>
       <div className="home-users-recipe">
         <h3 className="text-3xl">회원 요리 게시글</h3>
         <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
           <div className="col-span-5 grid grid-cols-3 gap-5">
-            <RecipeFigure recipes={userRecipe} />
+            <RecipeFigure recipes={userRecipe} group={false} />
           </div>
           <Link
             href=""
@@ -106,42 +96,6 @@ export function Banner() {
           </div>
         </div>
       </section>
-    </>
-  )
-}
-export function RecipeFigure({ recipes }: RecipesForProps) {
-  return (
-    <>
-      {recipes.map((item) => {
-        return (
-          <figure
-            key={item.id}
-            className="bg-[#222E50] rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
-          >
-            <Image
-              src={item.imageUrl}
-              alt={item.title}
-              width={500}
-              height={500}
-              className="h-56 lg:h-60 w-11/12 mx-auto rounded"
-            />
-            <figcaption className="w-11/12 mx-auto pt-3 text-gray-300">
-              <span className="block text-sm text-primary text-right">
-                좋아요: {item.likeCount}
-              </span>
-              <dl>
-                <dt className="font-semibold text-xl leading-6 my-2">
-                  {item.title}
-                </dt>
-                <dd className="paragraph-normal">{`${item.people}, ${item.cookingLevel}`}</dd>
-              </dl>
-              <Link className="mt-3 block" href="">
-                자세히 보기
-              </Link>
-            </figcaption>
-          </figure>
-        )
-      })}
     </>
   )
 }

@@ -7,3 +7,11 @@ export function mainRecipeHandler(apiPath: string) {
     .catch((error) => console.log(error))
   return result
 }
+
+export function detailRecipeHandler(apiPath: string) {
+  const result = axios
+    .get(apiPath)
+    .then((res) => res.data)
+    .catch((error) => console.log(error))
+  return result
+}
