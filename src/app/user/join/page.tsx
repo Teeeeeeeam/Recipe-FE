@@ -22,7 +22,7 @@ const Join = () => {
   const [nickname, setNickname] = useState('')
   const [email, setEamil] = useState('')
   const [certificationNumber, setCertificationNumber] = useState('')
-  const [validations, setValidations] = useState({
+  const [validations, setValidations] = useState<Record<string, string>>({
     id: '',
     password: '',
     verifyPassword: '',
@@ -168,7 +168,7 @@ const Join = () => {
   return (
     <form className="grow shrink space-y-1">
       <div>
-        <label className="lable-text">아이디</label>
+        <label className="label-text">아이디</label>
         <div className="grid grid-cols-[4fr_1fr] gap-x-2">
           <AuthInput
             type="text"
@@ -186,7 +186,7 @@ const Join = () => {
         </div>
       </div>
       <div>
-        <label className="lable-text">비밀번호</label>
+        <label className="label-text">비밀번호</label>
         <AuthInput
           type="password"
           id="password"
@@ -199,7 +199,7 @@ const Join = () => {
         />
       </div>
       <div>
-        <label className="lable-text">비밀번호 확인</label>
+        <label className="label-text">비밀번호 확인</label>
         <AuthInput
           type="password"
           id="verifyPassword"
@@ -212,7 +212,7 @@ const Join = () => {
         />
       </div>
       <div>
-        <label className="lable-text">이름</label>
+        <label className="label-text">이름</label>
         <AuthInput
           type="text"
           id="username"
@@ -225,7 +225,7 @@ const Join = () => {
         />
       </div>
       <div>
-        <label className="lable-text">닉네임</label>
+        <label className="label-text">닉네임</label>
         <div className="grid grid-cols-[4fr_1fr] gap-x-2">
           <AuthInput
             type="text"
@@ -243,7 +243,7 @@ const Join = () => {
         </div>
       </div>
       <div>
-        <label className="lable-text">이메일</label>
+        <label className="label-text">이메일</label>
         <div className="grid grid-cols-[4fr_1fr] gap-x-2">
           <AuthInput
             type="email"
@@ -261,7 +261,7 @@ const Join = () => {
         </div>
       </div>
       <div>
-        <label className="lable-text">인증번호 입력</label>
+        <label className="label-text">인증번호 입력</label>
         <div className="grid grid-cols-[4fr_1fr] gap-x-2">
           <AuthInput
             type="text"

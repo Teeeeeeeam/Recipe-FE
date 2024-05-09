@@ -5,10 +5,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'recipe1.ezmember.co.kr',
-        pathname: '/cache/**'
-      }
-    ]
-  }
-};
+        pathname: '/cache/**',
+      },
+    ],
+  },
+  reactStrictMode: false,
+}
 
-export default nextConfig;
+export default nextConfig
