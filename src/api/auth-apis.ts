@@ -7,6 +7,7 @@ import {
   RefreshToken,
   Response,
   SearchLoginId,
+  SearchPassword,
 } from '@/types/auth'
 import requester from './index'
 import { getLocalStorage } from '@/lib/local-storage'
@@ -128,6 +129,34 @@ export const postSearchLoginId = async (
     method: 'post',
     url: '/api/search/login-id',
     data: { username, email, code },
+  })
+  return payload
+}
+
+export const postSearchPassword = async (
+  username: string,
+  loginId: string,
+  email: string,
+  code: string,
+) => {
+  const { payload } = await requester<SearchPassword>({
+    method: 'post',
+    url: '/api/search/password',
+    data: { username, loginId, email, code },
+  })
+  return payload.data
+}
+
+export const updatePassword = async (
+  token: string,
+  loginId: string,
+  password: string,
+  passwordRe: string,
+) => {
+  const { payload } = await requester<Response>({
+    method: 'put',
+    url: `/api/password/update?id=${token}`,
+    data: { loginId, password, passwordRe },
   })
   return payload
 }
