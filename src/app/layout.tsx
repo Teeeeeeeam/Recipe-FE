@@ -21,8 +21,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         <ReduxProvider>
-          <div className="flex bg-green-50 pt-20 min-h-screen">
-            <div className="flex max-w-[1440px] mx-auto my-0">{children}</div>
+          <div className="flex bg-green-50 pt-[72px] min-h-screen">
+            <div className="grow shrink w-full max-w-[1440px] mx-auto my-0">
+              {children}
+            </div>
           </div>
         </ReduxProvider>
       </body>

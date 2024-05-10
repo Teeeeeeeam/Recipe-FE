@@ -21,6 +21,10 @@ const config: Config = {
         red: {
           50: '#FF3F3F',
         },
+        navy: {
+          50: '#444F69',
+          100: '#EDF2F7',
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
