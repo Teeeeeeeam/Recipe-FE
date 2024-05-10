@@ -174,7 +174,7 @@ const Join = () => {
             type="text"
             id="id"
             name="아이디"
-            placeholder="5~16자 , 대소문자, 숫자"
+            placeholder="5~16자 대소문자, 숫자"
             state={id}
             setState={setId}
             validation={validations.id}
