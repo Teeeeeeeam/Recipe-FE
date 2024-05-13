@@ -13,6 +13,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:path',
+        destination: 'https://recipe.o-r.kr/:path',
+      },
+    ]
+  },
 }
 
 export default nextConfig
