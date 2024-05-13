@@ -5,25 +5,28 @@ import AuthInput from '@/components/common/auth-input'
 import { setLocalStorage } from '@/lib/local-storage'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
-const Login = () => {
+const Login = ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string }
+}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const router = useRouter()
-  const params = useSearchParams()
 
   useEffect(() => {
-    const accessToken = params.get('access-token')
-    const refreshToken = params.get('refresh-token')
+    const accessToken = searchParams['access-token']
+    const refreshToken = searchParams['refresh-token']
     if (accessToken && refreshToken) {
       setLocalStorage('accessToken', accessToken)
       setLocalStorage('refreshToken', refreshToken)
       router.push('/')
     }
-  }, [params])
+  }, [searchParams])
 
   const handleLoginSubmit = async () => {
     if (!username || !password) {
