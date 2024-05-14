@@ -1,3 +1,4 @@
+// general ts
 export interface Recipe extends Record<string, string | number> {
   id: number
   likeCount: number
@@ -29,4 +30,12 @@ export interface ThreeCookInfo {
   title: string
   imgUrl: string
   data: string
+}
+
+// api ts
+export interface Options {
+  ingredients: string
+  page: number
+  size: number
+  sort: string
 }

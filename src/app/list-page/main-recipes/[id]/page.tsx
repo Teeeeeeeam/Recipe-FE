@@ -4,7 +4,7 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { DetailRecipe, ThreeCookInfo } from '@/types/recipe'
+import { DetailRecipe, ThreeCookInfo, Recipe } from '@/types/recipe'
 
 export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<DetailRecipe>()
@@ -12,25 +12,26 @@ export default function RecipeDetailMain() {
   const params = useParams()
   const thisId = params.id
   useEffect(() => {
+    async function getData() {
+      const result = await detailRecipeHandler(`/api/recipe/${thisId}`)
+      function createThree(str1: string, str2: string) {
+        return {
+          title: str1,
+          data: result.data.recipe[str1],
+          imgUrl: `/svg/${str2}.svg`,
+        }
+      }
+      const resultCook = [
+        createThree('people', 'people'),
+        createThree('cookingTime', 'timer'),
+        createThree('cookingLevel', 'stars'),
+      ]
+      setThisInfo(result.data)
+      setThisInfoCook(resultCook)
+    }
     getData()
   }, [])
-  async function getData() {
-    const result = await detailRecipeHandler(`/api/recipe/${thisId}`)
-    const resultCook = [
-      createThree('people', 'people'),
-      createThree('cookingTime', 'timer'),
-      createThree('cookingLevel', 'stars'),
-    ]
-    function createThree(str1: string, str2: string) {
-      return {
-        title: str1,
-        data: result.data.recipe[str1],
-        imgUrl: `/svg/${str2}.svg`,
-      }
-    }
-    setThisInfo(result.data)
-    setThisInfoCook(resultCook)
-  }
+
   return (
     thisInfo && (
       <article className="detail-wrap py-5">
