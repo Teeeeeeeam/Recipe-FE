@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
-interface InputProps {
+interface AuthInputProps {
   type: string
   placeholder: string
   state: string
@@ -20,7 +20,7 @@ const AuthInput = ({
   state,
   setState,
   onBlur,
-}: InputProps) => {
+}: AuthInputProps) => {
   return (
     <input
       type={type}

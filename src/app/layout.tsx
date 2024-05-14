@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body suppressHydrationWarning className={inter.className}>
         <Header />
         <ReduxProvider>
           <div className="flex bg-green-50 pt-[72px] min-h-screen">
