@@ -9,6 +9,10 @@ input:focus {
   @apply outline-none border-[1.5px] border-green-100;
 }
 
+li {
+  list-style: none;
+}
+
 .label-text {
   @apply text-[12px];
 }

@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export function Header() {
   return (
-    <header className="w-full fixed text-gray-600 body-font border-b z-50 bg-[#214D33]">
-      <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-5 items-center justify-between">
+    <header className="w-full fixed text-gray-600 body-font z-50 ">
+      <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between bg-[#214D33]">
         <Link
           href="/"
           className="flex title-font font-medium items-center text-gray-900"

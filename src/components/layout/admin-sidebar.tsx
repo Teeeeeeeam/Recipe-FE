@@ -2,6 +2,7 @@
 import { useSelectedLayoutSegment } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import AdminButton from '../common/admin-button'
+import Link from 'next/link'
 
 const AdminSidebar = () => {
   const [tab, setTab] = useState('')
@@ -18,7 +19,9 @@ const AdminSidebar = () => {
       <h2 className="mb-2">Menu</h2>
       <AdminButton>사용자 관리</AdminButton>
       <AdminButton>회원 게시글 관리</AdminButton>
-      <AdminButton>레시피 관리</AdminButton>
+      <Link href="/admin/recipe" className="w-full">
+        <AdminButton>레시피 관리</AdminButton>
+      </Link>
       <AdminButton>댓글 관리</AdminButton>
       <AdminButton>공지사항 관리</AdminButton>
       <AdminButton>사용자 관리</AdminButton>

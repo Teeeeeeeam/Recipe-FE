@@ -22,8 +22,9 @@ const config: Config = {
           50: '#FF3F3F',
         },
         navy: {
-          50: '#444F69',
-          100: '#EDF2F7',
+          50: '#232E50',
+          100: '#444F69',
+          150: '#EDF2F7',
         },
       },
       backgroundImage: {
