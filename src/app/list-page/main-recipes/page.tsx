@@ -1,8 +1,10 @@
 'use client'
 import { fetchAllAdminRecipe } from '@/api/recipe-apis'
 import RecipeFigure from '@/components/recipeFigure'
+import { RootState } from '@/store'
 import { Options, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 interface PaginationType {
   totalPage: number
@@ -15,17 +17,22 @@ export default function MainRecipes() {
   const [totalPage, setTotalPage] = useState<number>(0)
   const [thisPage, setThisPage] = useState<number>(0)
 
-  const thisOption: Options = {
-    ingredients: [].join(','),
-    page: thisPage,
-    size: 8,
-    sort: [''].join(''),
-  }
+  const state = useSelector((state: RootState) => state.searchMain)
 
   useEffect(() => {
     async function handler() {
       try {
         const url = '/api/recipeV1'
+        const thisOption: Options = {
+          page: thisPage,
+          size: 8,
+          sort: [''].join(''),
+        }
+        state.category === 'cookTitle'
+          ? (thisOption.title = state.value)
+          : state.category === 'cookIngredient'
+            ? (thisOption.ingredients = [state.value].join(''))
+            : ((thisOption.title = ''), (thisOption.ingredients = [].join('')))
         const result = await fetchAllAdminRecipe(url, thisOption)
         setRecipes(result.data.content)
         setTotalPage(result.data.totalPages)
@@ -47,7 +54,6 @@ export default function MainRecipes() {
       setThisPage(num - 1)
     }
   }
-  console.log(thisPage)
 
   return (
     <div className="">
@@ -68,21 +74,21 @@ export function Pagination({
   thisPage,
   handlerPage,
 }: PaginationType) {
-  const [inputNum, setInputNum] = useState<number>(0)
+  const [inputValue, setInputValue] = useState<number>(thisPage)
   return (
     <div className="flex justify-center">
-      <form onSubmit={(e) => handlerPage(e, 'jump', inputNum)}>
-        <button type="button" onClick={() => handlerPage('prev')}>
+      <form onSubmit={(e) => handlerPage(e, 'jump', inputValue)}>
+        <button type="button" onClick={(e) => handlerPage(e, 'prev')}>
           prev
         </button>
         <input
           type="text"
           name="pageNum"
-          onChange={(e: any) => setInputNum(Number(e.target.value))}
-          defaultValue={String(thisPage + 1)}
+          onChange={(e: any) => setInputValue(Number(e.target.value))}
+          placeholder={String(thisPage + 1)}
         />
         <span>of {totalPage}</span>
-        <button type="button" onClick={() => handlerPage('next')}>
+        <button type="button" onClick={(e) => handlerPage(e, 'next')}>
           next
         </button>
       </form>
