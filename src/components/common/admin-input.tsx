@@ -1,13 +1,19 @@
+import { Dispatch, SetStateAction } from 'react'
+
 interface AdminInputProps {
   placeholder: string
+  state: string
+  setState: Dispatch<SetStateAction<string>>
 }
 
-const AdminInput = ({ placeholder }: AdminInputProps) => {
+const AdminInput = ({ placeholder, state, setState }: AdminInputProps) => {
   return (
     <input
       type="text"
       placeholder={placeholder}
-      className="w-full py-2 pl-2  rounded-md"
+      value={state}
+      onChange={(e) => setState(e.target.value)}
+      className="w-full py-2 pl-2 border-none border-l"
     />
   )
 }

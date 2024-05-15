@@ -6,7 +6,7 @@ import { useSelectedLayoutSegment } from 'next/navigation'
 import { useState } from 'react'
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isTab, setIsTab] = useState(true)
+  const [isTab, setIsTab] = useState(false)
   const segment = useSelectedLayoutSegment()
 
   return (
@@ -39,7 +39,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             />
           )}
         </div>
-        <AdminSidebar />
+        <AdminSidebar segment={segment} />
       </div>
       <div className="pt-10 px-6 bg-green-50 h-full z-0">{children}</div>
     </div>
