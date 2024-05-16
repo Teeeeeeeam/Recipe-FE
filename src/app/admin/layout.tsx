@@ -11,7 +11,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div
-      className={`relative ${isTab && 'lg:grid lg:grid-cols-[250px_1fr]'} w-full h-full`}
+      className={`relative ${isTab && 'lg:grid lg:grid-cols-[250px_1fr]'} h-full`}
     >
       {isTab || (
         <Image
@@ -19,7 +19,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           alt="category-btn"
           width={36}
           height={36}
-          className={`fixed top-[72px] left-0 cursor-pointer z-20 transition-transform hover:scale-125 bg-white rounded-full shadow-md`}
+          className={`absolute top-0 left- cursor-pointer z-20 transition-transform hover:scale-125 bg-white rounded-full shadow-md`}
           onClick={() => setIsTab(!isTab)}
         />
       )}

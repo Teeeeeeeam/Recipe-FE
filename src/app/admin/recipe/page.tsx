@@ -6,8 +6,7 @@ import useInfiniteScroll from '@/components/use-infinite-scroll'
 import { RecipeDtoList } from '@/types/admin'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState, useEffect, useCallback, FormEvent } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const AdminRecipe = ({
   searchParams,
@@ -20,13 +19,8 @@ const AdminRecipe = ({
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('재료')
   const [isFilter, setIsFilter] = useState(false)
-  //query로 바꿔주고 이거를 받아오는 형식으로 진행
-  //params가 없으면 null null
-  //params
-  const { ingredients, title } = searchParams
-  const router = useRouter()
 
-  console.log(searchParams)
+  const { ingredients, title } = searchParams
 
   const loadMore = useCallback(async () => {
     if (!hasMore) return
@@ -54,10 +48,7 @@ const AdminRecipe = ({
       console.log(error)
     }
   }, [lastId, hasMore, searchParams])
-  //   useEffect(() => {
-  // setInput()
-  //   }, [title, ingredients])
-  // console.log(recipes)
+
   const lastElementRef = useInfiniteScroll(loadMore, hasMore)
   const handleSearchSubmit = () => {
     const query =
@@ -68,7 +59,15 @@ const AdminRecipe = ({
     setRecipes([])
     loadMore()
   }
-  // console.log(search)
+
+  useEffect(() => {
+    if (title && title.length > 0) {
+      setFilter('요리명')
+      setSearchInput(title)
+    } else if (ingredients && ingredients.length > 0) {
+      setSearchInput(ingredients)
+    }
+  }, [])
   return (
     <div>
       <form
@@ -128,20 +127,18 @@ const AdminRecipe = ({
             setState={setSearchInput}
           />
         </div>
-
         <button
           className="bg-green-100 h-full rounded-sm hover:bg-green-150"
           type="submit"
         >
           검색
         </button>
-
-        <button
-          type="button"
-          className="bg-green-100 h-full rounded-sm hover:bg-green-150"
+        <Link
+          href="/admin/recipe/write"
+          className="flex items-center justify-center h-full bg-green-100 hover:bg-green-150 rounded-sm"
         >
-          레시피 등록
-        </button>
+          <button type="button">레시피 등록</button>
+        </Link>
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
         <ul className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
@@ -163,7 +160,11 @@ const AdminRecipe = ({
               >
                 <li>체크</li>
                 <li>{el.id}</li>
-                <li>{el.title}</li>
+                <Link href={`/list-page/main-recipes/${el.id}`}>
+                  <li className="cursor-pointer hover:text-green-150">
+                    {el.title}
+                  </li>
+                </Link>
                 <li>요리명</li>
                 <li>{el.people}</li>
                 <li>{el.cookingTime}</li>
