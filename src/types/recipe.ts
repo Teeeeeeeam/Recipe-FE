@@ -34,7 +34,7 @@ export interface ThreeCookInfo {
 
 // api ts
 export interface Options {
-  [key: string]: string | number | undefined
+  [key: string]: string | string[] | number | undefined
   page: number
   size: number
   sort: string

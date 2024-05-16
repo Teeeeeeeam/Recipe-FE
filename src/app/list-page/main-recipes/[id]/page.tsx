@@ -77,15 +77,17 @@ export default function RecipeDetailMain() {
             </ul>
           </div>
         </section>
-        <section className="detail-step flex flex-wrap flex-col py-2 border-t border-[#000]">
-          <h4 className="text-2xl mb-3">조리순서</h4>
-          {thisInfo.cookStep.map((step, index) => {
-            return (
-              <p key={step.cook_step_id} className="mb-3">
-                {index + 1}.&nbsp;{step.cook_steps}
-              </p>
-            )
-          })}
+        <section className="detail-step w-full">
+          <div className="flex flex-wrap flex-col py-2 border-t border-[#000]">
+            <h4 className="text-2xl mb-3">조리순서</h4>
+            {thisInfo.cookStep.map((step, index) => {
+              return (
+                <p key={step.cook_step_id} className="mb-3">
+                  {index + 1}.&nbsp;{step.cook_steps}
+                </p>
+              )
+            })}
+          </div>
         </section>
       </article>
     )

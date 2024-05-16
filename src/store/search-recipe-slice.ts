@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface SearchType {
   category: string | undefined
-  value: string | undefined
+  value: string | string[] | undefined
 }
 
 const initialState: SearchType = {
