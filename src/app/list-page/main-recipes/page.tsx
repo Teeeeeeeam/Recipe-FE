@@ -32,7 +32,8 @@ export default function MainRecipes() {
           ? (thisOption.title = state.value)
           : state.category === 'cookIngredient'
             ? (thisOption.ingredients = [state.value].join(''))
-            : ((thisOption.title = ''), (thisOption.ingredients = [].join('')))
+            : ((thisOption.title = state.value),
+              (thisOption.ingredients = state.value))
         const result = await fetchAllAdminRecipe(url, thisOption)
         setRecipes(result.data.content)
         setTotalPage(result.data.totalPages)
@@ -54,7 +55,6 @@ export default function MainRecipes() {
       setThisPage(num - 1)
     }
   }
-
   return (
     <div className="">
       <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">

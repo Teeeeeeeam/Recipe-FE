@@ -15,6 +15,7 @@ export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   // 재료검색
   const [inputValue, setInputValue] = useState<string>('')
+  const [ingredients, setIngredients] = useState<string[]>([])
   const [inputCategory, setInputCategory] = useState<string>('All')
   // userRecipe Mocking
   const [userRecipe, setUserRecipe] = useState<Recipe[]>([])
@@ -38,9 +39,36 @@ export default function Home() {
 
   function submitHandler(e: any): void {
     e.preventDefault()
-    const newState = { category: inputCategory, value: inputValue }
-    dispatch(postSearchState(newState))
-    router.push('/list-page/main-recipes')
+    if (inputCategory !== 'cookIngredient') {
+      const newState = { category: inputCategory, value: inputValue }
+      dispatch(postSearchState(newState))
+      router.push('/list-page/main-recipes')
+    }
+    if (inputCategory === 'cookIngredient') {
+      if (inputValue && ingredients.length < 5) {
+        ingredients.includes(inputValue)
+          ? null
+          : setIngredients([...ingredients, inputValue])
+        setInputValue('')
+      }
+    }
+  }
+
+  function submitClick(e: any): void {
+    if (inputCategory === 'cookIngredient') {
+      const newState = { category: inputCategory, value: ingredients }
+      dispatch(postSearchState(newState))
+      router.push('/list-page/main-recipes')
+    } else {
+      submitHandler(e)
+    }
+  }
+
+  function deleteIngredient(item: string) {
+    const newIngredients = ingredients.filter(
+      (ingredient) => ingredient !== item,
+    )
+    setIngredients(newIngredients)
   }
 
   return (
@@ -77,17 +105,44 @@ export default function Home() {
               onChange={(e) => {
                 setInputValue(e.target.value)
               }}
+              value={inputValue}
               className="ml-1 h-14 w-full cursor-text rounded-md border py-4 pl-6 outline-none sm:border-0 sm:pr-40 sm:pl-12 focus:ring"
               placeholder="검색어를 입력해주세요"
             />
           </div>
           <button
-            type="submit"
+            type="button"
             className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-md bg-emerald-500 px-10 text-center align-middle text-base font-medium normal-case text-white outline-none sm:absolute sm:right-0 sm:mt-0 sm:mr-1 sm:w-32"
+            onClick={(e) => submitClick(e)}
           >
             Search
           </button>
         </form>
+        <div>
+          <ul className="flex items-center justify-center">
+            {ingredients?.map((ingredient) => {
+              return (
+                <li
+                  key={ingredient}
+                  className="flex flex-wrap mr-2 mt-3 text-gray-300"
+                >
+                  {ingredient}
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => deleteIngredient(ingredient)}
+                  >
+                    <Image
+                      src="/svg/close.svg"
+                      alt={`${ingredient} 삭제`}
+                      width={25}
+                      height={25}
+                    />
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
         <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
           <RecipeFigure recipes={recipes} group={true} />
         </div>
