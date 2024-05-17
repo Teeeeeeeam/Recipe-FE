@@ -6,6 +6,6 @@ WORKDIR /app/front
 
 COPY . .
 
-RUN yarn build
+# RUN yarn build
 
 CMD [ "yarn", "start" ]
