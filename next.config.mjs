@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: '/:path',
-        destination: 'https://recipe.o-r.kr/:path',
+        destination: 'https://www.recipe.o-r.kr/:path',
       },
     ]
   },
