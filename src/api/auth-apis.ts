@@ -8,11 +8,13 @@ import {
   Response,
   SearchLoginId,
   SearchPassword,
+  LoginInfo,
 } from '@/types/auth'
 import requester from './index'
-import { getLocalStorage } from '@/lib/local-storage'
+import { removeLocalStorage } from '@/lib/local-storage'
 
 export const postLogin = async (id: string, password: string) => {
+  removeLocalStorage('accessToken')
   const { payload } = await requester<Login>({
     method: 'post',
     url: `/api/login`,
@@ -21,12 +23,19 @@ export const postLogin = async (id: string, password: string) => {
   return payload.data
 }
 
+export const postLoginInfo = async () => {
+  const { payload } = await requester<LoginInfo>({
+    method: 'post',
+    url: '/api/userinfo',
+  })
+  return payload.data
+}
+
 export const postRefreshToken = async () => {
-  const refreshToken = getLocalStorage('refreshToken')
+  removeLocalStorage('accessToken')
   const { payload } = await requester<RefreshToken>({
     method: 'post',
     url: `/api/auth/refresh-token/validate`,
-    headers: { RefreshToken: `Bearer ${refreshToken}` },
   })
   return payload.data
 }

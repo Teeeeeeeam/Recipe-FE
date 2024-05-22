@@ -1,8 +1,10 @@
 'use client'
 
-import { postLogin } from '@/api/auth-apis'
+import { postLoginInfo, postLogin } from '@/api/auth-apis'
 import AuthInput from '@/components/common/auth-input'
 import { setLocalStorage } from '@/lib/local-storage'
+import { useAppDispatch } from '@/store'
+import { getLoginInfo } from '@/store/user-info-slice'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -16,14 +18,14 @@ const Login = ({
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   useEffect(() => {
     const accessToken = searchParams['access-token']
-    const refreshToken = searchParams['refresh-token']
-    if (accessToken && refreshToken) {
+    if (accessToken) {
       setLocalStorage('accessToken', accessToken)
-      setLocalStorage('refreshToken', refreshToken)
+
       router.push('/')
     }
   }, [searchParams])
@@ -35,8 +37,9 @@ const Login = ({
       try {
         const res = await postLogin(username, password)
         setLocalStorage('accessToken', res.accessToken)
-        setLocalStorage('refreshToken', res.refreshToken)
 
+        const userInfo = await postLoginInfo()
+        dispatch(getLoginInfo(userInfo))
         router.push('/')
       } catch (error) {
         alert('아이디와 비밀번호를 확인해주세요')
