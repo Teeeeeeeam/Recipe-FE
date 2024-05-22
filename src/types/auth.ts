@@ -15,6 +15,7 @@ export interface LoginInfo extends Response {
     loginId: string
     nickName: string
     loginType: string
+    roles: string
   }
 }
 export interface Join extends Response {

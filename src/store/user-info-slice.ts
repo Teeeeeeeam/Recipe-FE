@@ -5,6 +5,7 @@ interface LoginInfo {
   loginId: string | null
   loginType: string | null
   nickName: string | null
+  roles: string | null
 }
 
 const initialState: LoginInfo = {
@@ -12,6 +13,7 @@ const initialState: LoginInfo = {
   loginId: null,
   loginType: null,
   nickName: null,
+  roles: null,
 }
 
 const userInfoSlice = createSlice({
@@ -23,6 +25,7 @@ const userInfoSlice = createSlice({
       state.loginId = action.payload.loginId
       state.loginType = action.payload.loginType
       state.nickName = action.payload.nickName
+      state.roles = action.payload.roles
     },
   },
 })
