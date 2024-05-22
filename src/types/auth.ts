@@ -9,6 +9,14 @@ export interface Login extends Response {
   }
 }
 
+export interface LoginInfo extends Response {
+  data: {
+    id: string
+    loginId: string
+    nickName: string
+    loginType: string
+  }
+}
 export interface Join extends Response {
   data: {
     username: string
