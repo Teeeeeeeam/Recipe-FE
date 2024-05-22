@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-interface LoginInfo {
+export interface LoginInfo {
   id: string | null
   loginId: string | null
   loginType: string | null
@@ -17,7 +17,7 @@ const initialState: LoginInfo = {
 }
 
 const userInfoSlice = createSlice({
-  name: 'userInfoSlice',
+  name: 'userInfo',
   initialState,
   reducers: {
     getLoginInfo: (state, action: PayloadAction<LoginInfo>) => {
@@ -31,4 +31,4 @@ const userInfoSlice = createSlice({
 })
 
 export const { getLoginInfo } = userInfoSlice.actions
-export default userInfoSlice
+export default userInfoSlice.reducer
