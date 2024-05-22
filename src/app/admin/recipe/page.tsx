@@ -1,11 +1,12 @@
 'use client'
 
-import { getRecipe } from '@/api/admin-apis'
+import { deleteRecipe, getRecipe } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
-import useInfiniteScroll from '@/components/use-infinite-scroll'
+import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { RecipeDtoList } from '@/types/admin'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 
 const AdminRecipe = ({
@@ -21,8 +22,9 @@ const AdminRecipe = ({
   const [isFilter, setIsFilter] = useState(false)
 
   const { ingredients, title } = searchParams
+  const router = useRouter()
 
-  const loadMore = useCallback(async () => {
+  const getRecipes = useCallback(async () => {
     if (!hasMore) return
     try {
       if (
@@ -49,7 +51,7 @@ const AdminRecipe = ({
     }
   }, [lastId, hasMore, searchParams])
 
-  const lastElementRef = useInfiniteScroll(loadMore, hasMore)
+  const lastElementRef = useInfiniteScroll(getRecipes, hasMore)
   const handleSearchSubmit = () => {
     const query =
       filter === '재료' ? ['ingredients', searchInput] : ['title', searchInput]
@@ -57,7 +59,7 @@ const AdminRecipe = ({
     const newUrl = `/admin/recipe?${queryString}`
     window.location.href = newUrl
     setRecipes([])
-    loadMore()
+    getRecipes()
   }
 
   useEffect(() => {
@@ -68,6 +70,14 @@ const AdminRecipe = ({
       setSearchInput(ingredients)
     }
   }, [])
+
+  const handleDeleteRecipeClick = async (id: number) => {
+    if (confirm('해당 레시피를 삭제하시겠습니까?')) {
+      await deleteRecipe(id)
+      alert('삭제가 완료되었습니다.')
+      router.push('/admin/recipe')
+    }
+  }
   return (
     <div>
       <form
@@ -87,15 +97,16 @@ const AdminRecipe = ({
         </button>
         <div className="grid grid-cols-[2fr_7fr] items-center border">
           <div
-            className="relative flex justify-center gap-x-2 cursor-pointer bg-white h-full border-r"
+            className="relative flex justify-center items-center gap-x-2 cursor-pointer bg-white h-full border-r"
             onClick={() => setIsFilter(!isFilter)}
           >
             <button type="button">{filter}</button>
             <Image
               src="/svg/down-arrow.svg"
               alt="down-arrow"
-              width={16}
-              height={16}
+              width={0}
+              height={0}
+              className="w-4 h-4"
               priority
             />
             {isFilter && (
@@ -170,9 +181,13 @@ const AdminRecipe = ({
                 <li>{el.cookingTime}</li>
                 <li>등록일자</li>
                 <li className="space-x-1">
-                  <span>수정</span>
+                  <Link href={`/admin/recipe/modify/${el.id}`}>
+                    <button className="hover:text-green-150">수정</button>
+                  </Link>
                   <span>/</span>
-                  <span>삭제</span>
+                  <button onClick={() => handleDeleteRecipeClick(el.id)}>
+                    삭제
+                  </button>
                 </li>
               </ul>
             ))}
@@ -185,15 +200,3 @@ const AdminRecipe = ({
 }
 
 export default AdminRecipe
-
-{
-  /* <Link
-href={{
-  pathname: '/admin/recipe',
-  query:
-    filter === '재료'
-      ? { ingredients: searchInput }
-      : { title: searchInput },
-}}
-> */
-}
