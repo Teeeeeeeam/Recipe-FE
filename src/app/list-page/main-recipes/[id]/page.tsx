@@ -1,19 +1,24 @@
 'use client'
-import { detailRecipeHandler } from '@/api/recipe-apis'
-import { StaticImport } from 'next/dist/shared/lib/get-img-props'
+import { fetchGetMethod } from '@/api/recipe-apis'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { DetailRecipe, ThreeCookInfo, Recipe } from '@/types/recipe'
+import Link from 'next/link'
+import { useDispatch } from 'react-redux'
+import { postWriteState } from '@/store/write-userRecipe-slice'
 
 export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<DetailRecipe>()
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
   const params = useParams()
   const thisId = params.id
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const accessToken = localStorage.getItem('accessToken')
   useEffect(() => {
     async function getData() {
-      const result = await detailRecipeHandler(`/api/recipe/${thisId}`)
+      const result = await fetchGetMethod(`/api/recipe/${thisId}`)
       function createThree(str1: string, str2: string) {
         return {
           title: str1,
@@ -34,7 +39,7 @@ export default function RecipeDetailMain() {
 
   return (
     thisInfo && (
-      <article className="detail-wrap py-5">
+      <article className="detail-wrap py-5 relative">
         <h3 className="text-center text-4xl mb-5">{thisInfo.recipe.title}</h3>
         <section className="detail-info w-full">
           <div className="detail-top flex justify-center mb-5">
@@ -89,6 +94,30 @@ export default function RecipeDetailMain() {
             })}
           </div>
         </section>
+        <aside className="absolute py-5 top-0 right-0 w-1/12">
+          <ul className="flex flex-col items-center">
+            <li className="mb-2 py-2 w-full text-center bg-gray-400 rounded-lg">
+              <Link
+                href={
+                  accessToken ? '/list-page/user-recipes/write' : '/user/login'
+                }
+                onClick={() => {
+                  dispatch(postWriteState(thisInfo.recipe))
+                }}
+                className="block w-full"
+              >
+                요리글 작성
+              </Link>
+            </li>
+            <li className="flex mb-2 py-2 w-full bg-gray-400 items-center justify-center rounded-lg cursor-pointer">
+              <Image src="/svg/heart.svg" alt="좋아요" width={20} height={15} />
+              {thisInfo.recipe.likeCount}
+            </li>
+            <li className="cursor-pointer py-2 w-full text-center bg-gray-400 rounded-lg">
+              북마크
+            </li>
+          </ul>
+        </aside>
       </article>
     )
   )
