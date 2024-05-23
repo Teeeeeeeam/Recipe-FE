@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { mainRecipeHandler } from '@/api/recipe-apis'
+import { fetchGetMethod } from '@/api/recipe-apis'
 import RecipeFigure from '@/components/recipeFigure'
 import { Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
@@ -25,7 +25,7 @@ export default function Home() {
   const router = useRouter()
   useEffect(() => {
     async function getData() {
-      const result = await mainRecipeHandler(`/api/main/recipe`)
+      const result = await fetchGetMethod(`/api/main/recipe`)
       setRecipes(result.data.recipe)
       // userRecipe Mocking
       setUserRecipe([
