@@ -28,8 +28,8 @@ export function Header() {
     const token = getLocalStorage('accessToken')
     async function handler() {
       const result = await checkUser('/api/userinfo', token)
-      setUserInfo(result.data)
-      checkSession(result.data)
+      setUserInfo(result?.data)
+      checkSession(result?.data)
     }
     if (token) {
       handler()
@@ -76,8 +76,13 @@ export function Header() {
         {session && userInfo ? (
           <div className="min-w-[150px] flex items-center justify-between">
             <p className="text-gray-300">
-              <Link href="/my-page" className="w-full">
-                {userInfo.nickName}님
+              <Link
+                href={userInfo.roles === 'ROLE_ADMIN' ? '/admin' : '/my-page'}
+                className="w-full"
+              >
+                {userInfo.roles === 'ROLE_ADMIN'
+                  ? '관리자'
+                  : `${userInfo.nickName}님`}
               </Link>
             </p>
             <button

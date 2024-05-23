@@ -1,5 +1,5 @@
 'use client'
-import { fetchAllAdminRecipe } from '@/api/recipe-apis'
+import { fetchGetMethodParams } from '@/api/recipe-apis'
 import RecipeFigure from '@/components/recipeFigure'
 import { RootState } from '@/store'
 import { Options, Recipe } from '@/types/recipe'
@@ -20,7 +20,7 @@ export default function MainRecipes() {
   const state = useSelector((state: RootState) => state.searchMain)
 
   useEffect(() => {
-    async function handler() {
+    async function getData() {
       try {
         const url = '/api/recipeV1'
         const thisOption: Options = {
@@ -34,14 +34,14 @@ export default function MainRecipes() {
             ? (thisOption.ingredients = [state.value].join(''))
             : ((thisOption.title = state.value),
               (thisOption.ingredients = state.value))
-        const result = await fetchAllAdminRecipe(url, thisOption)
+        const result = await fetchGetMethodParams(url, thisOption)
         setRecipes(result.data.content)
         setTotalPage(result.data.totalPages)
       } catch (error) {
         console.log(error)
       }
     }
-    handler()
+    getData()
   }, [thisPage])
   function handlerPage(e: any, str: string, num: number): void {
     e.preventDefault()
