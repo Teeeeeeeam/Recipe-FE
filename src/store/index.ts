@@ -7,6 +7,7 @@ import searchPwSlice from './search-password-slice'
 import searchRecipeSlice from './search-recipe-slice'
 import writeUserRecipeSlice from './write-userRecipe-slice'
 import userInfoSlice from './user-info-slice'
+import modUserRecipeSlice from './mod-userRecipe-slice'
 
 const rootReducer = {
   searchIdData: searchIDSlice.reducer,
@@ -14,6 +15,7 @@ const rootReducer = {
   searchMain: searchRecipeSlice,
   writeRecipe: writeUserRecipeSlice,
   userInfo: userInfoSlice,
+  // modRecipe: modUserRecipeSlice,
 }
 
 const store = configureStore({
