@@ -19,6 +19,21 @@ export async function fetchGetMethodParams(apiPath: string, options: Options) {
   return result
 }
 
+// get (with params, header)
+interface Config {
+  headers: { [key: string]: string }
+}
+export async function fetchGetMethodParamsHeader(
+  apiPath: string,
+  config: Config,
+) {
+  const result = await axios
+    .get(`${process.env.NEXT_PUBLIC_API_URL}${apiPath}`, config)
+    .then((res) => res.data)
+    .catch((error) => console.log(error))
+  return result
+}
+
 export async function postUserWrite(
   apiPath: string,
   data: any,

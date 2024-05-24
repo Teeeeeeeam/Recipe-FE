@@ -154,7 +154,7 @@ export default function Home() {
             <RecipeFigure recipes={userRecipe} group={false} />
           </div>
           <Link
-            href=""
+            href="/list-page/user-recipes"
             className="col-span-1 col-end-auto bg-[#222E50] rounded-lg"
           >
             <p className="h-full flex justify-center items-center text-gray-300">
