@@ -40,10 +40,10 @@ export default function Write() {
   const imgRef = useRef<HTMLInputElement>(null)
   const state = useSelector((state: RootState) => state.writeRecipe)
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const accessToken = getLocalStorage('accessToken')
 
   function submitHandler(e: any) {
     e.preventDefault()
+    const accessToken = getLocalStorage('accessToken')
     const postData = {
       postTitle: thisTitle,
       postContent: thisCont,
@@ -55,7 +55,7 @@ export default function Write() {
       postPassword: thisPw,
     }
     const postFile = file
-    async function kkk() {
+    async function postRecipeData() {
       const result = await postUserWrite(
         '/api/user/posts',
         postData,
@@ -64,7 +64,9 @@ export default function Write() {
       )
       // console.log(result)
     }
-    kkk()
+    if (accessToken) {
+      postRecipeData()
+    }
   }
 
   function uploadImg() {
