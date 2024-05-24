@@ -1,6 +1,6 @@
 import {
   getLocalStorage,
-  removeLoaclStorage,
+  removeLocalStorage,
   setLocalStorage,
 } from '@/lib/local-storage'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
@@ -8,26 +8,23 @@ import { postRefreshToken } from './auth-apis'
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
 })
 
 const requester = async <Payload>(option: AxiosRequestConfig) => {
   const accessToken = getLocalStorage('accessToken')
-  const response: AxiosResponse<Payload> = await axiosInstance(
-    accessToken
-      ? {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          ...option,
-        }
-      : {
-          ...option,
-        },
-  )
+  const response: AxiosResponse<Payload> = await axiosInstance({
+    ...option,
+    headers: {
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...option.headers,
+    },
+  })
+
   return {
-    status: response.status as number,
+    status: response.status,
     headers: response.headers,
-    payload: response.data as Payload,
+    payload: response.data,
   }
 }
 
@@ -46,15 +43,13 @@ export const getAccessToken = async () => {
     setLocalStorage('accessToken', accessToken)
     return accessToken
   } catch (error) {
-    removeLoaclStorage('accessToken')
-    removeLoaclStorage('refreshToken')
+    removeLocalStorage('accessToken')
     // 다른 요청 있을 때 수정 해야됨
     window.location.href = '/user/login'
   }
 }
 
-//여러 요청 동시에 진행될 때 memoization 필요?
-const REFRESH_URL = '/api/auth/refresh-token/validate'
+// 여러 요청 동시에 진행될 때 memoization 필요?
 axiosInstance.interceptors.response.use(
   function (response) {
     return response
@@ -64,15 +59,19 @@ axiosInstance.interceptors.response.use(
       config,
       response: { status },
     } = error
-    if (config.url === REFRESH_URL || status !== 401 || config.sent) {
-      console.log(error)
-      return Promise.reject(error)
-    }
-    config.sent = true
-    const accessToken = await getAccessToken()
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
-      return axios(config)
+    if (status === 401 && !config._retry) {
+      config._retry = true
+      try {
+        const newAccessToken = await getAccessToken()
+        if (newAccessToken) {
+          config.headers.Authorization = `Bearer ${newAccessToken}`
+          return axiosInstance(config)
+        }
+      } catch (refreshError) {
+        removeLocalStorage('accessToken')
+        window.location.href = '/user/login'
+        return Promise.reject(refreshError)
+      }
     }
 
     return Promise.reject(error)
