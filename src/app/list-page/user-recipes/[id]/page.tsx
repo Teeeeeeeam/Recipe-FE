@@ -2,7 +2,7 @@
 
 import { fetchGetMethodParamsHeader } from '@/api/recipe-apis'
 import { getLocalStorage } from '@/lib/local-storage'
-import { recipeId } from '@/store/mod-userRecipe-slice'
+// import { recipeId } from '@/store/mod-userRecipe-slice'
 import { ThreeCookInfo } from '@/types/recipe'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -110,7 +110,7 @@ export default function RecipeDetailUser() {
             <li className="mb-2 py-2 w-full text-center bg-gray-400 rounded-lg">
               <Link
                 href="/list-page/user-recipes/modification"
-                onClick={() => dispatch(recipeId(thisInfo))}
+                // onClick={() => dispatch(recipeId(thisInfo))}
                 className="block w-full"
               >
                 게시물 수정
