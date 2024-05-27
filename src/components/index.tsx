@@ -28,6 +28,7 @@ export function Header() {
     const token = getLocalStorage('accessToken')
     async function handler() {
       const result = await checkUser('/api/userinfo', token)
+      dispatch(getLoginInfo(result.data))
       setUserInfo(result?.data)
       checkSession(result?.data)
     }
