@@ -11,7 +11,6 @@ export interface Recipe extends Record<string, string | number> {
 
 export interface RecipeForMain extends Record<string, Recipe[] | boolean> {
   recipes: Recipe[]
-  group: boolean
 }
 
 export interface DetailRecipe
