@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: sessionStorage,
-  whitelist: ['userInfo'],
+  whitelist: ['userInfo', 'searchMain', 'writeRecipe', 'modRecipe'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
