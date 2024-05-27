@@ -44,8 +44,13 @@ const Login = ({
 
         const userInfo = await postLoginInfo()
         dispatch(getLoginInfo(userInfo))
-        router.push('/')
-      } catch (error) {
+
+        if (userInfo.roles === 'ROLE_ADMIN') {
+          router.push('/admin')
+        } else {
+          router.push('/')
+        }
+      } catch {
         alert('아이디와 비밀번호를 확인해주세요')
       }
     }
@@ -120,7 +125,7 @@ const Login = ({
           alt="naver-icon"
           width={50}
           height={50}
-          className="cursor-pointer transition-transform hover:scale-110"
+          className="cursor-not-allowed transition-transform hover:scale-110"
           priority
         />
       </div>
