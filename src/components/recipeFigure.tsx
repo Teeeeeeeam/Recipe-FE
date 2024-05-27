@@ -1,6 +1,10 @@
+'use client'
 import Image from 'next/image'
 import Link from 'next/link'
 import { RecipeForMain } from '@/types/recipe'
+import { checkExpireToken } from '@/api/login-user-apis'
+import { useEffect } from 'react'
+import { setLocalStorage } from '@/lib/local-storage'
 
 export default function RecipeFigure({ recipes, group }: RecipeForMain) {
   return (
@@ -48,6 +52,18 @@ export default function RecipeFigure({ recipes, group }: RecipeForMain) {
   )
 }
 export function UserRecipeFigure({ recipes }: any) {
+  // token 유효기한 및 새로운 token 발급
+  useEffect(() => {
+    async function chkToken() {
+      const isToken = await checkExpireToken()
+      console.log(isToken.payload.data)
+      if (isToken.status === 200) {
+        setLocalStorage('accessToken', isToken.payload.data)
+      }
+    }
+    chkToken()
+  }, [])
+
   return (
     <>
       {recipes?.map((item: any) => {
