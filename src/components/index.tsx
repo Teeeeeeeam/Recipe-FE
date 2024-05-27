@@ -1,6 +1,11 @@
 'use client'
+import { postRefreshToken } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
-import { getLocalStorage, removeLocalStorage } from '@/lib/local-storage'
+import {
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '@/lib/local-storage'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
 
 import Link from 'next/link'
@@ -25,10 +30,18 @@ export function Header() {
 
   // localstorage에 token이 남아있다면 session을 변경(boolean), fetch데이터 저장
   useEffect(() => {
-    const token = getLocalStorage('accessToken')
+    const expiry = getLocalStorage('expiry')
+    const current = Date.now()
+
+    let token = getLocalStorage('accessToken')
     async function handler() {
+      if (current > expiry) {
+        const newAccessToken = await postRefreshToken()
+        setLocalStorage('accessToken', newAccessToken)
+        token = newAccessToken
+      }
       const result = await checkUser('/api/userinfo', token)
-      dispatch(getLoginInfo(result.data))
+      dispatch(getLoginInfo(result?.data))
       setUserInfo(result?.data)
       checkSession(result?.data)
     }

@@ -12,7 +12,7 @@ export const getLocalStorage = (key: string) => {
   }
 }
 
-export const setLocalStorage = (key: string, value: string) => {
+export const setLocalStorage = (key: string, value: string | number) => {
   localStorage.setItem(key, JSON.stringify(value))
 }
 

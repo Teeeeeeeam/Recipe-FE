@@ -59,7 +59,7 @@ axiosInstance.interceptors.response.use(
       config,
       response: { status },
     } = error
-    if (status === 401 && !config._retry) {
+    if ((status === 401 || status === 405) && !config._retry) {
       config._retry = true
       try {
         const newAccessToken = await getAccessToken()
