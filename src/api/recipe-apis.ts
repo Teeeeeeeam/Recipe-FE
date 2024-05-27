@@ -1,5 +1,7 @@
+import { UpdateData } from '@/app/list-page/user-recipes/modification/page'
 import { Options } from '@/types/recipe'
 import axios from 'axios'
+import { headers } from 'next/headers'
 
 // get
 export function fetchGetMethod(apiPath: string) {
@@ -44,6 +46,36 @@ export async function postUserWrite(
   formData.append('userAddPostDto', JSON.stringify(data))
   formData.append('file', image)
 
+  try {
+    const result = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}${apiPath}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+    return result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function postUserMod(
+  apiPath: string,
+  data: UpdateData,
+  img: File | null,
+  token: string,
+) {
+  const formData = new FormData()
+  if (img === null) {
+    formData.append('updatePostDto', JSON.stringify(data))
+  } else {
+    formData.append('updatePostDto', JSON.stringify(data))
+    formData.append('file', img)
+  }
   try {
     const result = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}${apiPath}`,

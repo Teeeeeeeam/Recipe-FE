@@ -10,7 +10,7 @@ import searchRecipeSlice from './search-recipe-slice'
 import writeUserRecipeSlice from './write-userRecipe-slice'
 import userInfoSlice from './user-info-slice'
 import persistStore from 'redux-persist/es/persistStore'
-// import modUserRecipeSlice from './mod-userRecipe-slice'
+import modUserRecipeSlice from './mod-userRecipe-slice'
 
 const rootReducer = combineReducers({
   searchIdData: searchIDSlice.reducer,
@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   searchMain: searchRecipeSlice,
   writeRecipe: writeUserRecipeSlice,
   userInfo: userInfoSlice,
-  // modRecipe: modUserRecipeSlice,
+  modRecipe: modUserRecipeSlice,
 })
 
 const persistConfig = {
