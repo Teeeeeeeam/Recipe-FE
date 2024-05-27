@@ -51,7 +51,6 @@ export function UserRecipeFigure({ recipes }: any) {
   useEffect(() => {
     async function chkToken() {
       const isToken = await checkExpireToken()
-      console.log(isToken.payload.data)
       if (isToken.status === 200) {
         setLocalStorage('accessToken', isToken.payload.data)
       }

@@ -1,7 +1,7 @@
 'use client'
 import { fetchGetMethod } from '@/api/recipe-apis'
 import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { DetailRecipe, ThreeCookInfo, Recipe } from '@/types/recipe'
 import Link from 'next/link'
@@ -13,7 +13,6 @@ export default function RecipeDetailMain() {
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
   const params = useParams()
   const thisId = params.id
-  const router = useRouter()
   const dispatch = useDispatch()
   const accessToken = localStorage.getItem('accessToken')
   useEffect(() => {
