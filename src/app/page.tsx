@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { fetchGetMethod } from '@/api/recipe-apis'
-import RecipeFigure from '@/components/recipeFigure'
+import { fetchGetMethod, fetchGetMethodParams } from '@/api/recipe-apis'
+import RecipeFigure, { UserRecipeFigure } from '@/components/recipeFigure'
 import { Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'
@@ -13,12 +13,11 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [userRecipes, setUserRecipes] = useState<Recipe[]>([])
   // 재료검색
   const [inputValue, setInputValue] = useState<string>('')
   const [ingredients, setIngredients] = useState<string[]>([])
   const [inputCategory, setInputCategory] = useState<string>('All')
-  // userRecipe Mocking
-  const [userRecipe, setUserRecipe] = useState<Recipe[]>([])
   // redux
   const dispatch = useDispatch<AppDispatch>()
   //
@@ -27,12 +26,16 @@ export default function Home() {
     async function getData() {
       const result = await fetchGetMethod(`/api/main/recipe`)
       setRecipes(result.data.recipe)
-      // userRecipe Mocking
-      setUserRecipe([
-        result.data.recipe[0],
-        result.data.recipe[1],
-        result.data.recipe[2],
-      ])
+      const options = {
+        page: 0,
+        size: 3,
+        sort: [''].join(),
+      }
+      const result_userRecipe = await fetchGetMethodParams(
+        `/api/posts`,
+        options,
+      )
+      setUserRecipes(result_userRecipe.posts)
     }
     getData()
   }, [])
@@ -144,14 +147,14 @@ export default function Home() {
           </ul>
         </div>
         <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
-          <RecipeFigure recipes={recipes} group={true} />
+          <RecipeFigure recipes={recipes} />
         </div>
       </div>
       <div className="home-users-recipe">
         <h3 className="text-3xl">회원 요리 게시글</h3>
         <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
           <div className="col-span-5 grid grid-cols-3 gap-5">
-            <RecipeFigure recipes={userRecipe} group={false} />
+            <UserRecipeFigure recipes={userRecipes} />
           </div>
           <Link
             href="/list-page/user-recipes"
