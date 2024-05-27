@@ -41,7 +41,7 @@ const Login = ({
       try {
         const res = await postLogin(username, password)
         setLocalStorage('accessToken', res.accessToken)
-
+        setLocalStorage('expiry', Date.now())
         const userInfo = await postLoginInfo()
         dispatch(getLoginInfo(userInfo))
 
