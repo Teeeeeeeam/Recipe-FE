@@ -36,31 +36,17 @@ export async function fetchGetMethodParamsHeader(
   return result
 }
 
-export async function postUserWrite(
-  apiPath: string,
-  data: any,
-  image: any,
-  token: string,
-) {
+export async function postUserWrite(apiPath: string, data: any, image: any) {
   const formData = new FormData()
   formData.append('userAddPostDto', JSON.stringify(data))
   formData.append('file', image)
 
-  try {
-    const result = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}${apiPath}`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-    return result
-  } catch (error) {
-    console.log(error)
-  }
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: formData,
+  })
+  return payload
 }
 
 export async function postUserMod(

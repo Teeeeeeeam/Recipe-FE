@@ -40,7 +40,6 @@ export default function Write() {
   const imgRef = useRef<HTMLInputElement>(null)
   const state = useSelector((state: RootState) => state.writeRecipe)
   const userInfo = useSelector((state: RootState) => state.userInfo)
-
   function submitHandler(e: any) {
     e.preventDefault()
     const accessToken = getLocalStorage('accessToken')
@@ -56,13 +55,16 @@ export default function Write() {
     }
     const postFile = file
     async function postRecipeData() {
-      const result = await postUserWrite(
-        '/api/user/posts',
-        postData,
-        postFile,
-        accessToken,
-      )
-      // console.log(result)
+      try {
+        const result = await postUserWrite(
+          '/api/user/posts',
+          postData,
+          postFile,
+        )
+        window.location.href = `/list-page/main-recipes/${state.id}`
+      } catch (error) {
+        console.log(error)
+      }
     }
     if (accessToken) {
       postRecipeData()
