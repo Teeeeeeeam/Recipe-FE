@@ -6,16 +6,11 @@ import { Options, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-interface PaginationType {
-  totalPage: number
-  thisPage: number
-  handlerPage: any
-}
-
 export default function MainRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [totalPage, setTotalPage] = useState<number>(0)
   const [thisPage, setThisPage] = useState<number>(0)
+  const [inputValue, setInputValue] = useState<number>(thisPage)
 
   const state = useSelector((state: RootState) => state.searchMain)
 
@@ -43,7 +38,7 @@ export default function MainRecipes() {
     }
     getData()
   }, [thisPage])
-  function handlerPage(e: any, str: string, num: number): void {
+  function handlerPage(e: any, str: string, num?: number): void {
     e.preventDefault()
     if (str === 'prev' && thisPage > 0) {
       setThisPage(thisPage - 1)
@@ -51,8 +46,8 @@ export default function MainRecipes() {
     if (str === 'next' && thisPage < totalPage - 1) {
       setThisPage(thisPage + 1)
     }
-    if (str === 'jump' && num >= 0 && num - 1 < totalPage) {
-      setThisPage(num - 1)
+    if (str === 'jump' && num! >= 0 && num! - 1 < totalPage) {
+      setThisPage(num! - 1)
     }
   }
   return (
@@ -60,38 +55,23 @@ export default function MainRecipes() {
       <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
         <RecipeFigure recipes={recipes} group={true} />
       </div>
-      <Pagination
-        totalPage={totalPage}
-        thisPage={thisPage}
-        handlerPage={handlerPage}
-      />
-    </div>
-  )
-}
-
-export function Pagination({
-  totalPage,
-  thisPage,
-  handlerPage,
-}: PaginationType) {
-  const [inputValue, setInputValue] = useState<number>(thisPage)
-  return (
-    <div className="flex justify-center">
-      <form onSubmit={(e) => handlerPage(e, 'jump', inputValue)}>
-        <button type="button" onClick={(e) => handlerPage(e, 'prev')}>
-          prev
-        </button>
-        <input
-          type="text"
-          name="pageNum"
-          onChange={(e: any) => setInputValue(Number(e.target.value))}
-          placeholder={String(thisPage + 1)}
-        />
-        <span>of {totalPage}</span>
-        <button type="button" onClick={(e) => handlerPage(e, 'next')}>
-          next
-        </button>
-      </form>
+      <div className="flex justify-center">
+        <form onSubmit={(e) => handlerPage(e, 'jump', inputValue)}>
+          <button type="button" onClick={(e) => handlerPage(e, 'prev')}>
+            prev
+          </button>
+          <input
+            type="text"
+            name="pageNum"
+            onChange={(e: any) => setInputValue(Number(e.target.value))}
+            placeholder={String(thisPage + 1)}
+          />
+          <span>of {totalPage}</span>
+          <button type="button" onClick={(e) => handlerPage(e, 'next')}>
+            next
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
