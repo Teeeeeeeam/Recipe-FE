@@ -1,7 +1,7 @@
 import { UpdateData } from '@/app/list-page/user-recipes/modification/page'
 import { Options } from '@/types/recipe'
 import axios from 'axios'
-import { headers } from 'next/headers'
+import requester from '.'
 
 // get
 export function fetchGetMethod(apiPath: string) {
@@ -91,4 +91,21 @@ export async function postUserMod(
   } catch (error) {
     console.log(error)
   }
+}
+
+export async function postUserDel(apiPath: string, params: number) {
+  const { payload } = await requester({
+    method: 'Delete',
+    url: `${apiPath}/${params}`,
+  })
+  return payload
+}
+
+export async function verifyPw(apiPath: string, params: any) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: params,
+  })
+  return payload
 }
