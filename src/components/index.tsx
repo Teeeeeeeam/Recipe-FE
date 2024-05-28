@@ -1,11 +1,13 @@
 'use client'
-import { postRefreshToken } from '@/api/auth-apis'
+// import { axiosInstance, interceptorId } from '@/api'
+import { postLogout, postRefreshToken } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
 import {
   getLocalStorage,
   removeLocalStorage,
   setLocalStorage,
 } from '@/lib/local-storage'
+import { useAppSelector } from '@/store'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
 
 import Link from 'next/link'
@@ -19,7 +21,7 @@ export function Header() {
   const [userInfo, setUserInfo] = useState<LoginInfo | null>(null)
 
   const route = useRouter()
-  const state = useSelector((state: any) => state.userInfo)
+  const state = useAppSelector((state) => state.userInfo)
   const dispatch = useDispatch()
 
   // 로그인 성공일 때 받는 redux로 session을 변경(boolean), redux 저장
@@ -34,16 +36,21 @@ export function Header() {
     const current = Date.now()
 
     let token = getLocalStorage('accessToken')
+
     async function handler() {
-      if (current > expiry) {
-        const newAccessToken = await postRefreshToken()
-        setLocalStorage('accessToken', newAccessToken)
-        token = newAccessToken
+      try {
+        if (current > expiry) {
+          const newAccessToken = await postRefreshToken()
+          setLocalStorage('accessToken', newAccessToken)
+          token = newAccessToken
+        }
+        const result = await checkUser('/api/userinfo', token)
+        dispatch(getLoginInfo(result?.data))
+        setUserInfo(result?.data)
+        checkSession(result?.data)
+      } catch (err) {
+        console.log(err)
       }
-      const result = await checkUser('/api/userinfo', token)
-      dispatch(getLoginInfo(result?.data))
-      setUserInfo(result?.data)
-      checkSession(result?.data)
     }
     if (token) {
       handler()
@@ -64,7 +71,7 @@ export function Header() {
     }
   }
 
-  function logOutBtn() {
+  async function logOutBtn() {
     const nullState = {
       id: null,
       loginId: null,
@@ -72,11 +79,15 @@ export function Header() {
       nickName: null,
       roles: null,
     }
-    setUserInfo(null)
-    setSession(false)
-    removeLocalStorage('accessToken')
-    dispatch(getLoginInfo(nullState))
-    route.push('/')
+    const memberId = state.id
+    if (memberId) {
+      await postLogout(memberId)
+      setUserInfo(null)
+      setSession(false)
+      removeLocalStorage('accessToken')
+      dispatch(getLoginInfo(nullState))
+      window.location.href = '/'
+    }
   }
   return (
     <header className="w-full fixed text-gray-600 body-font z-50 ">
