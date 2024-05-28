@@ -34,3 +34,27 @@ export async function checkExpireToken() {
   const result: SuccessFetch = await requester(options)
   return result
 }
+
+interface Like {
+  payload: {
+    message: string
+    success: boolean
+  }
+}
+export async function checkLikesForRecipe(apiPath: string, params: number) {
+  const { payload }: Like = await requester({
+    method: 'GET',
+    url: `${apiPath}/${params}`,
+    // data: params,
+  })
+  return payload
+}
+
+export async function doLikeForRecipe(apiPath: string, params: any) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: params,
+  })
+  return payload
+}

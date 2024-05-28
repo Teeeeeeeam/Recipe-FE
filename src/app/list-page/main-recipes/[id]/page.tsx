@@ -7,18 +7,32 @@ import { DetailRecipe, ThreeCookInfo, Recipe } from '@/types/recipe'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { postWriteState } from '@/store/write-userRecipe-slice'
+import { checkLikesForRecipe, doLikeForRecipe } from '@/api/login-user-apis'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store'
 
 export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<DetailRecipe>()
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
+  const [like, setLike] = useState<boolean>(false)
   const params = useParams()
-  const thisId = params.id
+  const thisId = Number(params.id)
+  const userInfo = useSelector((state: RootState) => state.userInfo)
   const dispatch = useDispatch()
   const accessToken = localStorage.getItem('accessToken')
+
   useEffect(() => {
-    async function getData() {
+    getDataLike()
+  }, [like])
+
+  async function getDataLike() {
+    try {
       const result = await fetchGetMethod(`/api/recipe/${thisId}`)
-      function createThree(str1: string, str2: string) {
+      const resultLike = await checkLikesForRecipe(
+        '/api/recipe/like/check',
+        thisId,
+      )
+      const createThree = (str1: string, str2: string) => {
         return {
           title: str1,
           data: result.data.recipe[str1],
@@ -32,9 +46,27 @@ export default function RecipeDetailMain() {
       ]
       setThisInfo(result.data)
       setThisInfoCook(resultCook)
+      setLike(resultLike.success)
+    } catch (error) {
+      console.log(error)
     }
-    getData()
-  }, [])
+  }
+
+  async function likeHandler() {
+    const userId = userInfo.id
+    const option = {
+      memberId: userId,
+      recipeId: thisId,
+    }
+    try {
+      await doLikeForRecipe('/api/user/recipe/like', option)
+      const result = await checkLikesForRecipe('/api/recipe/like/check', thisId)
+      setLike(result.success)
+      // console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     thisInfo && (
@@ -108,8 +140,16 @@ export default function RecipeDetailMain() {
                 요리글 작성
               </Link>
             </li>
-            <li className="flex mb-2 py-2 w-full bg-gray-400 items-center justify-center rounded-lg cursor-pointer">
-              <Image src="/svg/heart.svg" alt="좋아요" width={20} height={15} />
+            <li
+              onClick={() => likeHandler()}
+              className="flex mb-2 py-2 w-full bg-gray-400 items-center justify-center rounded-lg cursor-pointer"
+            >
+              <Image
+                src={like ? '/svg/heart-fill.svg' : '/svg/heart.svg'}
+                alt="좋아요"
+                width={20}
+                height={15}
+              />
               {thisInfo.recipe.likeCount}
             </li>
             <li className="cursor-pointer py-2 w-full text-center bg-gray-400 rounded-lg">
