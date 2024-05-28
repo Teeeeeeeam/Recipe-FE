@@ -23,6 +23,15 @@ export const postLogin = async (id: string, password: string) => {
   return payload.data
 }
 
+export const postLogout = async (id: string) => {
+  const { payload } = await requester<Response>({
+    method: 'post',
+    url: 'api/logout',
+    data: { 'member-id': id },
+  })
+  return payload
+}
+
 export const postLoginInfo = async () => {
   const { payload } = await requester<LoginInfo>({
     method: 'post',
