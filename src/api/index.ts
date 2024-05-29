@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 })
-const accessToken = getLocalStorage('accessToken')
+
 const requester = async <Payload>(option: AxiosRequestConfig) => {
   const response: AxiosResponse<Payload> = await axiosInstance({
     ...option,
@@ -28,6 +28,7 @@ const requester = async <Payload>(option: AxiosRequestConfig) => {
 
 axiosInstance.interceptors.request.use(
   function (config) {
+    const accessToken = getLocalStorage('accessToken')
     config.headers['Content-Type'] = 'application/json'
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`
@@ -61,7 +62,7 @@ const createAxiosResponseInterceptor = () => {
       // if (!response) {
       //   return Promise.reject(error)
       // }
-      if (error.response.status !== 401) {
+      if (error.response.status !== 401 || error.response.status !== 405) {
         return Promise.reject(error)
       }
       // const { status } = response
