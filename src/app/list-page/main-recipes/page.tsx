@@ -1,6 +1,6 @@
 'use client'
-import { fetchGetMethodParams } from '@/api/recipe-apis'
-import RecipeFigure from '@/components/recipeFigure'
+import { getRecipes } from '@/api/recipe-apis'
+import { RecipeFigure } from '@/components/recipeFigure'
 import { RootState } from '@/store'
 import { Options, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'
@@ -15,29 +15,31 @@ export default function MainRecipes() {
   const state = useSelector((state: RootState) => state.searchMain)
 
   useEffect(() => {
-    async function getData() {
-      try {
-        const url = '/api/recipeV1'
-        const thisOption: Options = {
-          page: thisPage,
-          size: 8,
-          sort: [''].join(''),
-        }
-        state.category === 'cookTitle'
-          ? (thisOption.title = state.value)
-          : state.category === 'cookIngredient'
-            ? (thisOption.ingredients = [state.value].join(''))
-            : ((thisOption.title = state.value),
-              (thisOption.ingredients = state.value))
-        const result = await fetchGetMethodParams(url, thisOption)
-        setRecipes(result.data.content)
-        setTotalPage(result.data.totalPages)
-      } catch (error) {
-        console.log(error)
-      }
-    }
     getData()
   }, [thisPage])
+
+  async function getData() {
+    try {
+      const thisOption: Options = {
+        page: thisPage,
+        size: 8,
+        sort: [''].join(''),
+      }
+      state.category === 'cookTitle'
+        ? (thisOption.title = state.value)
+        : state.category === 'cookIngredient'
+          ? (thisOption.ingredients = [state.value].join(''))
+          : ((thisOption.title = state.value),
+            (thisOption.ingredients = state.value))
+      const result = await getRecipes('/api/recipeV1', thisOption)
+      console.log(result)
+      setRecipes(result.data.content)
+      setTotalPage(result.data.totalPages)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   function handlerPage(e: any, str: string, num?: number): void {
     e.preventDefault()
     if (str === 'prev' && thisPage > 0) {
@@ -53,7 +55,7 @@ export default function MainRecipes() {
   return (
     <div className="">
       <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
-        <RecipeFigure recipes={recipes} group={true} />
+        <RecipeFigure recipes={recipes} />
       </div>
       <div className="flex justify-center">
         <form onSubmit={(e) => handlerPage(e, 'jump', inputValue)}>

@@ -1,5 +1,5 @@
 'use client'
-import { fetchGetMethod } from '@/api/recipe-apis'
+import { fetchGetMethod, getRecipeDetail } from '@/api/recipe-apis'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ export default function RecipeDetailMain() {
 
   async function getDataLike() {
     try {
-      const result = await fetchGetMethod(`/api/recipe/${thisId}`)
+      const resultData = await getRecipeDetail(`/api/recipe/`, thisId)
       const resultLike = await checkLikesForRecipe(
         '/api/recipe/like/check',
         thisId,
@@ -35,16 +35,16 @@ export default function RecipeDetailMain() {
       const createThree = (str1: string, str2: string) => {
         return {
           title: str1,
-          data: result.data.recipe[str1],
+          data: resultData.data.recipe[str1],
           imgUrl: `/svg/${str2}.svg`,
         }
       }
-      const resultCook = [
+      const resultCook: ThreeCookInfo[] = [
         createThree('people', 'people'),
         createThree('cookingTime', 'timer'),
         createThree('cookingLevel', 'stars'),
       ]
-      setThisInfo(result.data)
+      setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
       setLike(resultLike.success)
     } catch (error) {
@@ -62,7 +62,6 @@ export default function RecipeDetailMain() {
       await doLikeForRecipe('/api/user/recipe/like', option)
       const result = await checkLikesForRecipe('/api/recipe/like/check', thisId)
       setLike(result.success)
-      // console.log(result)
     } catch (error) {
       console.log(error)
     }

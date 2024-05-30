@@ -2,9 +2,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { fetchGetMethod, fetchGetMethodParams } from '@/api/recipe-apis'
-import RecipeFigure, { UserRecipeFigure } from '@/components/recipeFigure'
-import { Recipe } from '@/types/recipe'
+import {
+  fetchGetMethod,
+  fetchGetMethodParams,
+  getHomePosting,
+  getHomeRecipe,
+} from '@/api/recipe-apis'
+import { RecipeFigure, UserPostingFigure } from '@/components/recipeFigure'
+import { PostingFigure, Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'
 import { postSearchState } from '@/store/search-recipe-slice'
@@ -13,7 +18,7 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
-  const [userRecipes, setUserRecipes] = useState<Recipe[]>([])
+  const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
   // 재료검색
   const [inputValue, setInputValue] = useState<string>('')
   const [ingredients, setIngredients] = useState<string[]>([])
@@ -23,22 +28,23 @@ export default function Home() {
   //
   const router = useRouter()
   useEffect(() => {
-    async function getData() {
-      const result = await fetchGetMethod(`/api/main/recipe`)
-      setRecipes(result.data.recipe)
-      const options = {
-        page: 0,
-        size: 3,
-        sort: [''].join(),
-      }
-      const result_userRecipe = await fetchGetMethodParams(
-        `/api/posts`,
-        options,
-      )
-      setUserRecipes(result_userRecipe.posts)
-    }
     getData()
   }, [])
+  async function getData() {
+    const options = {
+      page: 0,
+      size: 3,
+      sort: [''].join(),
+    }
+    try {
+      const result = await getHomeRecipe(`/api/main/recipe`)
+      const result_posting = await getHomePosting(`/api/posts`, options)
+      setRecipes(result.data.recipe)
+      setUserPosting(result_posting.posts)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   function submitHandler(e: any): void {
     e.preventDefault()
@@ -169,7 +175,7 @@ export default function Home() {
         <h3 className="text-3xl">회원 요리 게시글</h3>
         <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
           <div className="col-span-5 grid grid-cols-3 gap-5">
-            <UserRecipeFigure recipes={userRecipes} />
+            <UserPostingFigure recipes={userPosting} />
           </div>
           <Link
             href="/list-page/user-recipes"

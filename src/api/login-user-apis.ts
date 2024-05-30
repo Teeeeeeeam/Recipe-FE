@@ -35,6 +35,7 @@ export async function checkExpireToken() {
   return result
 }
 
+// 레시피 like
 interface Like {
   payload: {
     message: string
@@ -49,9 +50,26 @@ export async function checkLikesForRecipe(apiPath: string, params: number) {
   })
   return payload
 }
-
 export async function doLikeForRecipe(apiPath: string, params: any) {
-  const { payload } = await requester({
+  const { payload }: Like = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: params,
+  })
+  return payload
+}
+
+// 게시글 like
+export async function checkLikesForPosting(apiPath: string, id: string) {
+  const { payload }: Like = await requester({
+    method: 'GET',
+    url: apiPath,
+    params: { postId: id },
+  })
+  return payload
+}
+export async function doLikeForPosting(apiPath: string, params: any) {
+  const { payload }: Like = await requester({
     method: 'POST',
     url: apiPath,
     data: params,
