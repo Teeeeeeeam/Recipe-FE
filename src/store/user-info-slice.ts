@@ -20,6 +20,7 @@ const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
+    resetState: () => initialState,
     getLoginInfo: (state, action: PayloadAction<LoginInfo>) => {
       state.id = action.payload.id
       state.loginId = action.payload.loginId
@@ -30,5 +31,5 @@ const userInfoSlice = createSlice({
   },
 })
 
-export const { getLoginInfo } = userInfoSlice.actions
+export const { getLoginInfo, resetState } = userInfoSlice.actions
 export default userInfoSlice.reducer

@@ -41,12 +41,15 @@ export const postLoginInfo = async () => {
 }
 
 export const postRefreshToken = async () => {
-  removeLocalStorage('accessToken')
-  const { payload } = await requester<RefreshToken>({
-    method: 'post',
-    url: `/api/auth/refresh-token/validate`,
-  })
-  return payload.data
+  try {
+    const { payload } = await requester<RefreshToken>({
+      method: 'post',
+      url: `/api/auth/refresh-token/validate`,
+    })
+    return payload.data
+  } catch (err) {
+    throw Error('에이 바보야')
+  }
 }
 
 export const postJoin = async (
