@@ -1,12 +1,10 @@
 'use client'
 
 import { RootState } from '@/store'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { DetailUserRecipe } from '../[id]/page'
 import Image from 'next/image'
 import { postUserMod } from '@/api/recipe-apis'
-import { getLocalStorage } from '@/lib/local-storage'
 import { useRouter } from 'next/navigation'
 
 export interface UpdateData {
@@ -19,21 +17,19 @@ export interface UpdateData {
 }
 
 export default function Mod() {
-  const state = useSelector(
-    (state: RootState) => state.modRecipe,
-  ) as DetailUserRecipe
+  const state = useSelector((state: RootState) => state.modRecipe)
   const initialState = {
-    people: Number(state.postServing.replace('인분', '')),
-    cookingTime: Number(state.postCookingTime.replace('분', '')),
+    people: Number(state.postServing!.replace('인분', '')),
+    cookingTime: Number(state.postCookingTime!.replace('분', '')),
   }
 
-  const [thisTitle, setThisTitle] = useState<string>(state.postTitle)
-  const [thisImage, setThisImage] = useState<string>(state.postImageUrl)
+  const [thisTitle, setThisTitle] = useState<string>(state.postTitle!)
+  const [thisImage, setThisImage] = useState<string>(state.postImageUrl!)
   const [file, setFile] = useState<File | null>(null)
   const [thisPeople, setThisPeople] = useState<number>(initialState.people)
   const [thisTime, setThisTime] = useState<number>(initialState.cookingTime)
-  const [thisLevel, setThisLevel] = useState<string>(state.postCookingLevel)
-  const [thisCont, setThisCont] = useState<string>(state.postContent)
+  const [thisLevel, setThisLevel] = useState<string>(state.postCookingLevel!)
+  const [thisCont, setThisCont] = useState<string>(state.postContent!)
   const [thisPw, setThisPw] = useState<string>('')
 
   const imgRef = useRef<HTMLInputElement>(null)
@@ -46,26 +42,27 @@ export default function Mod() {
 
   async function submitHandler(e: any) {
     e.preventDefault()
-    const token = getLocalStorage('accessToken')
-    const updatePostDto: UpdateData = {
-      postContent: thisCont,
-      postTitle: thisTitle,
-      postServing: `${thisPeople}인분`,
-      postCookingTime: `${thisTime}분`,
-      postCookingLevel: thisLevel,
-      postPassword: thisPw,
-    }
-    const postFile = file
-    const result = await postUserMod(
-      `/api/user/update/posts/${state.id}`,
-      updatePostDto,
-      postFile,
-      token,
-    )
-    if (result?.status === 200) {
-      route.push('/list-page/user-recipes')
+    try {
+      const updatePostDto: UpdateData = {
+        postContent: thisCont,
+        postTitle: thisTitle,
+        postServing: `${thisPeople}인분`,
+        postCookingTime: `${thisTime}분`,
+        postCookingLevel: thisLevel,
+        postPassword: thisPw,
+      }
+      const postFile = file
+      const result = await postUserMod(
+        `/api/user/update/posts/${state.id}`,
+        updatePostDto,
+        postFile,
+      )
+      window.location.href = '/list-page/user-recipes'
+    } catch (error) {
+      console.log(error)
     }
   }
+
   function uploadImg() {
     if (imgRef.current && imgRef.current.files) {
       const selectFile = imgRef.current.files[0]
@@ -176,7 +173,7 @@ export default function Mod() {
               </ul>
             </li>
             <li className="w-[250px] py-1 bg-green-100 rounded-full text-center">
-              {state.recipe.title}
+              {state.recipe!.title}
             </li>
           </ul>
         </fieldset>

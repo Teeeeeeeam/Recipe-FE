@@ -8,11 +8,6 @@ export interface Recipe extends Record<string, string | number> {
   people: string
   title: string
 }
-
-export interface RecipeForMain extends Record<string, Recipe[] | boolean> {
-  recipes: Recipe[]
-}
-
 export interface DetailRecipe
   extends Record<string, string[] | CookStep[] | Recipe> {
   cookStep: CookStep[]
@@ -24,11 +19,51 @@ export type CookStep = {
   cook_step_id: string
   cook_steps: string
 }
-
 export interface ThreeCookInfo {
   title: string
   imgUrl: string
-  data: string
+  data: string | number | PostingDetailMember | PostingDetailRecipe
+}
+
+// for userPostingDetail
+export interface Posting extends Record<string, string[] | [] | PostingDetail> {
+  commnets: string[] | []
+  post: PostingDetail
+}
+export interface PostingDetail {
+  [key: string]: string | number | PostingDetailMember | PostingDetailRecipe
+  create_at: string
+  id: number
+  postContent: string
+  postCookingLevel: string
+  postCookingTime: string
+  postImageUrl: string
+  postLikeCount: number
+  postServing: string
+  postTitle: string
+  member: PostingDetailMember
+  recipe: PostingDetailRecipe
+}
+export interface PostingDetailMember {
+  nickname: string
+}
+export interface PostingDetailRecipe {
+  id: number
+  title: string
+}
+
+//
+export interface PostingFigure {
+  create_at: string
+  id: number
+  member: PostingMember
+  postImageUrl: string
+  postTitle: string
+  recipe: PostingDetailRecipe
+}
+interface PostingMember {
+  nickname: string
+  loginId: string
 }
 
 // api ts
@@ -37,4 +72,16 @@ export interface Options {
   page: number
   size: number
   sort: string
+}
+
+export interface DetailUserRecipe extends Record<string, any> {
+  create_at: string
+  member: { [nickname: string]: string }
+  postContent: string
+  postCookingLevel: string
+  psotCookingTime: string
+  postImageUrl: string
+  postLikeCount: number
+  postServing: string
+  postTitle: string
 }

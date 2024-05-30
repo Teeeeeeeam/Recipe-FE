@@ -1,16 +1,32 @@
-import { DetailUserRecipe } from '@/app/list-page/user-recipes/[id]/page'
+import { PostingDetailMember, PostingDetailRecipe } from '@/types/recipe'
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState: { [key: string]: null } = {
+interface InitState {
+  create_at: null | string
+  id: null | number
+  postContent: null | string
+  postCookingLevel: null | string
+  postCookingTime: null | string
+  postImageUrl: null | string
+  postLikeCount: null | number
+  postServing: null | string
+  postTitle: null | string
+  member: null | PostingDetailMember
+  recipe: null | PostingDetailRecipe
+}
+
+const initialState: InitState = {
   create_at: null,
-  member: null,
+  id: null,
   postContent: null,
   postCookingLevel: null,
-  psotCookingTime: null,
+  postCookingTime: null,
   postImageUrl: null,
   postLikeCount: null,
   postServing: null,
   postTitle: null,
+  member: null,
+  recipe: null,
 }
 
 const modRecipeSlice = createSlice({
