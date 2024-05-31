@@ -1,5 +1,14 @@
 import axios, { AxiosResponseHeaders, RawAxiosResponseHeaders } from 'axios'
 import requester from '.'
+import {
+  EmailOption,
+  MyLikes,
+  MyPostings,
+  NickNameOption,
+  UserInfo,
+  verifyEmailOption,
+} from '@/types/user'
+import { Options } from '@/types/recipe'
 
 export async function checkUser(apiPath: string, token: string | undefined) {
   const result = await axios
@@ -73,6 +82,130 @@ export async function doLikeForPosting(apiPath: string, params: any) {
     method: 'POST',
     url: apiPath,
     data: params,
+  })
+  return payload
+}
+
+// 마이페이지 로그인 검증
+export async function enterMyPage(apiPath: string, option: any) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 마이페이지 - 로그인 정보
+interface inquiryUser {
+  payload: {
+    success: boolean
+    message: string
+    data: UserInfo
+  }
+}
+export async function inquiryUser(apiPath: string, option: string) {
+  const { payload }: inquiryUser = await requester({
+    method: 'GET',
+    url: `${apiPath}${option}`,
+  })
+  return payload
+}
+
+// 작성 게시글 조회
+interface InquiryPosting {
+  payload: {
+    success: boolean
+    message: string
+    data: {
+      content: MyPostings[] | []
+      nextPage: boolean
+    }
+  }
+}
+export async function inquiryPosting(apiPath: string, option: Options) {
+  const { payload }: InquiryPosting = await requester({
+    method: 'GET',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 게시글 좋아요 조회
+interface inquiryLikePosting {
+  payload: {
+    success: boolean
+    message: string
+    data: {
+      content: MyLikes[] | []
+      nextPage: boolean
+    }
+  }
+}
+export async function inquiryLikePosting(apiPath: string, option: Options) {
+  const { payload }: inquiryLikePosting = await requester({
+    method: 'GET',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 레시피 좋아요 조회
+interface inquiryLikeRecipe {
+  payload: {
+    success: boolean
+    message: string
+    data: {
+      content: MyLikes[] | []
+      nextPage: boolean
+    }
+  }
+}
+export async function inquiryLikeRecipe(apiPath: string, option: Options) {
+  const { payload }: inquiryLikeRecipe = await requester({
+    method: 'GET',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 닉네임 수정
+export async function updateNickName(apiPath: string, option: NickNameOption) {
+  const { payload } = await requester({
+    method: 'PUT',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 이메일 수정
+export async function updateEmail(apiPath: string, option: EmailOption) {
+  const { payload } = await requester({
+    method: 'PUT',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+// 이메일 검증 코드 보내기
+export async function sendEmail(apiPath: string, option: string) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    params: { email: option },
+  })
+  return payload
+}
+// 이메일 코드 검증
+export async function confirmCode(apiPath: string, option: verifyEmailOption) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    params: { email: option.email, code: option.code },
   })
   return payload
 }
