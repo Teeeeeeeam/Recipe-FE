@@ -47,7 +47,8 @@ export default function MyPageLayout({
               </li>
               <li className="hover:bg-gray-100">
                 <Link
-                  href="/my-page/success/viewMyPosting"
+                  href=""
+                  // href="/my-page/success/viewMyPosting"
                   className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                 >
                   작성한 글
@@ -55,7 +56,8 @@ export default function MyPageLayout({
               </li>
               <li className="hover:bg-gray-100">
                 <Link
-                  href="/my-page/success/viewRecipeLikes"
+                  href=""
+                  // href="/my-page/success/viewRecipeLikes"
                   className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                 >
                   레시피 좋아요
@@ -63,7 +65,8 @@ export default function MyPageLayout({
               </li>
               <li className="hover:bg-gray-100">
                 <Link
-                  href="/my-page/success/viewPostingLikes"
+                  href=""
+                  // href="/my-page/success/viewPostingLikes"
                   className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                 >
                   게시글 좋아요
@@ -71,7 +74,8 @@ export default function MyPageLayout({
               </li>
               <li className="hover:bg-gray-100">
                 <Link
-                  href="/my-page/success/withdrawal"
+                  href=""
+                  // href="/my-page/success/withdrawal"
                   className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                 >
                   회원탈퇴
