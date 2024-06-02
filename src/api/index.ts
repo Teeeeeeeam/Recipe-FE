@@ -16,12 +16,7 @@ const axiosInstance = axios.create({
 })
 
 const requester = async <Payload>(option: AxiosRequestConfig) => {
-  const accessToken = getLocalStorage('accessToken')
-  const response: AxiosResponse<Payload> = await axiosInstance(
-    accessToken
-      ? { headers: { Authorization: `Bearer ${accessToken}` }, ...option }
-      : { ...option },
-  )
+  const response: AxiosResponse<Payload> = await axiosInstance({ ...option })
 
   return {
     status: response.status,
@@ -32,10 +27,10 @@ const requester = async <Payload>(option: AxiosRequestConfig) => {
 
 axiosInstance.interceptors.request.use(
   function (config) {
-    // const accessToken = getLocalStorage('accessToken')
-    // if (accessToken) {
-    //   config.headers['Authorization'] = `Bearer ${accessToken}`
-    // }
+    const accessToken = getLocalStorage('accessToken')
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`
+    }
     return config
   },
   function (error) {
