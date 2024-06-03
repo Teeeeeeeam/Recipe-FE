@@ -5,10 +5,10 @@ import {
 } from '@/lib/local-storage'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { postRefreshToken } from './auth-apis'
-import store from '@/store'
+// import { store } from '@/store'
 import { resetState } from '@/store/user-info-slice'
 
-const { dispatch } = store
+// const { dispatch } = store
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -74,7 +74,7 @@ const createAxiosResponseInterceptor = () => {
         return axiosInstance(config)
       } catch (err) {
         removeLocalStorage('accessToken')
-        dispatch(resetState())
+        // dispatch(resetState())
         window.location.href = '/user/login'
         return Promise.reject(err)
       }
