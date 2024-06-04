@@ -87,13 +87,14 @@ const Login = ({
         </button>
       </form>
       <div className="flex pt-3 pb-2 text-sm border-b-[1.5px] border-green-100 gap-x-1">
-        <Link href="/user/join">
-          <p className="hover:text-green-150">회원가입</p>
-        </Link>
+        <p className="hover:text-green-150">
+          <Link href="/user/join">회원가입</Link>
+        </p>
         <p>|</p>
-        <Link href="/user/id-inquiry">
-          <p className="hover:text-green-150">아이디 / 비밀번호 찾기</p>
-        </Link>
+
+        <p className="hover:text-green-150">
+          <Link href="/user/id-inquiry">아이디 / 비밀번호 찾기</Link>
+        </p>
       </div>
       <div className="flex justify-center gap-x-4">
         <Link
