@@ -112,7 +112,11 @@ export async function inquiryUser(apiPath: string, option: string) {
   return payload
 }
 
-// 작성 게시글 조회
+// 마이페이지 - 작성 게시글 조회
+interface InquiryPostingOption {
+  pageable: Options
+  lastId: string
+}
 interface InquiryPosting {
   payload: {
     success: boolean
@@ -123,11 +127,10 @@ interface InquiryPosting {
     }
   }
 }
-export async function inquiryPosting(apiPath: string, option: Options) {
+export async function inquiryPosting(apiPath: string) {
   const { payload }: InquiryPosting = await requester({
     method: 'GET',
     url: apiPath,
-    data: option,
   })
   return payload
 }
@@ -206,6 +209,15 @@ export async function confirmCode(apiPath: string, option: verifyEmailOption) {
     method: 'POST',
     url: apiPath,
     params: { email: option.email, code: option.code },
+  })
+  return payload
+}
+
+// 게시글 (무한스크롤)
+export async function postingAll(apiPath: string) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
   })
   return payload
 }
