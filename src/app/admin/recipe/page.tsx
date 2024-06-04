@@ -2,6 +2,7 @@
 
 import { deleteRecipe, getRecipe } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
+import CustomCheckbox from '@/components/common/customr-check-box'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { RecipeDtoList } from '@/types/admin'
 import Image from 'next/image'
@@ -20,6 +21,7 @@ const AdminRecipe = ({
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('재료')
   const [isFilter, setIsFilter] = useState(false)
+  const [deleteList, setDeleteList] = useState([])
 
   const { ingredients, title } = searchParams
   const router = useRouter()
@@ -27,25 +29,11 @@ const AdminRecipe = ({
   const getRecipes = useCallback(async () => {
     if (!hasMore) return
     try {
-      if (
-        (title === undefined || title === '') &&
-        (ingredients === undefined || ingredients === '')
-      ) {
-        const res = await getRecipe(lastId, null, null)
-        const newRecipes = res.recipeDtoList
-        setLastId(newRecipes[newRecipes.length - 1].id)
-        setRecipes((prev) => [...prev, ...newRecipes])
-        setHasMore(res.nextPage)
-      } else {
-        const res =
-          ingredients !== undefined
-            ? await getRecipe(lastId, ingredients, null)
-            : await getRecipe(lastId, null, title)
-        const newRecipes = res.recipeDtoList
-        setLastId(newRecipes[newRecipes.length - 1].id)
-        setRecipes((prev) => [...prev, ...newRecipes])
-        setHasMore(res.nextPage)
-      }
+      const res = await getRecipe(lastId, ingredients ?? null, title ?? null)
+      const newRecipes = res.recipeDtoList
+      setLastId(newRecipes[newRecipes.length - 1].id)
+      setRecipes((prev) => [...prev, ...newRecipes])
+      setHasMore(res.nextPage)
     } catch (error) {
       console.log(error)
     }
@@ -83,7 +71,6 @@ const AdminRecipe = ({
       <form
         className="grid grid-cols-[1fr_4fr_1fr_1fr] w-full items-center text-center gap-x-2 mb-2"
         onSubmit={(e) => {
-          console.log('제출')
           e.preventDefault()
           handleSearchSubmit()
         }}
@@ -167,9 +154,12 @@ const AdminRecipe = ({
             recipes.map((el) => (
               <ul
                 key={el.id}
-                className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center py-4 bg-navy-100"
+                className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100"
               >
-                <li>체크</li>
+                <li className="flex justify-center items-center">
+                  <CustomCheckbox />
+                  {/* <input type="checkbox" id={String(el.id)} /> */}
+                </li>
                 <li>{el.id}</li>
                 <Link href={`/list-page/main-recipes/${el.id}`}>
                   <li className="cursor-pointer hover:text-green-150">

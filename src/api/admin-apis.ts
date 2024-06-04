@@ -164,10 +164,10 @@ export const deleteMembers = async (id: number[]) => {
   return payload
 }
 
-export const getNotice = async () => {
+export const getNotice = async (id: number | null) => {
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/admin/notices?page=0&size=10&sort=string`,
+    url: `/api/admin/notices?${id ? `last-id=${id}` : ''}&page=0&size=1&sort=string`,
   })
   return payload.data
 }
