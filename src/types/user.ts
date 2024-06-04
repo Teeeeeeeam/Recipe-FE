@@ -27,7 +27,7 @@ export interface NickNameOption {
 export interface EmailOption {
   email: string
   code: string
-  loinId: string | null
+  loginId: string | null
   loginType: string | null
 }
 export interface verifyEmailOption {

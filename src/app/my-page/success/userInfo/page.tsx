@@ -7,8 +7,10 @@ import {
   updateNickName,
   confirmCode,
 } from '@/api/login-user-apis'
+import { getLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
 import { UserInfo } from '@/types/user'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -29,9 +31,6 @@ export default function UserInfo() {
 
   useEffect(() => {
     getInquiryUserInfo()
-    if (state.nickName) {
-      setModNickName(state.nickName)
-    }
   }, [mount])
 
   useEffect(() => {
@@ -64,25 +63,19 @@ export default function UserInfo() {
         }
         await updateNickName('/api/user/info/update/nickname', options)
       }
-      // if (isModEmail) {
-      //   const options = {
-      //     email: modEmail,
-      //     code: code,
-      //     loinId: state.loginId,
-      //     loginType: state.loginType,
-      //   }
-      //   if (isVerify) {
-      //     const result = await updateEmail(
-      //       '/api/user/info/update/email',
-      //       options,
-      //     )
-      //     console.log(result)
-      //   }
-      // }
+      if (isModEmail && isVerify) {
+        const options = {
+          email: modEmail,
+          code: code,
+          loginId: state.loginId,
+          loginType: state.loginType,
+        }
+        await updateEmail('/api/user/info/update/email', options)
+      }
       setToggle(false)
       setMount(!mount)
     } catch (error) {
-      alert('다시 시도해주세요.')
+      console.log(error)
       // 401 error 시 my-page의 비밀번호 검증으로 redirect
     }
   }
@@ -177,7 +170,10 @@ export default function UserInfo() {
                   ? '변경할 이메일을 적어주세요'
                   : ''}
             </p>
-            <form className="flex flex-wrap flex-col">
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="flex flex-wrap flex-col"
+            >
               <div className="w-full mb-4 flex justify-between ">
                 <input
                   type="text"
