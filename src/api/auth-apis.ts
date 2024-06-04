@@ -181,3 +181,11 @@ export const updatePassword = async (
   })
   return payload
 }
+
+export const postVisit = async () => {
+  const { payload } = await requester<Response>({
+    method: 'post',
+    url: '/api/visit',
+  })
+  return payload
+}
