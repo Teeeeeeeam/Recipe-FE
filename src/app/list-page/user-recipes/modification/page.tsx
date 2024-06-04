@@ -1,37 +1,29 @@
 'use client'
 
 import { RootState } from '@/store'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Image from 'next/image'
-import { postUserMod } from '@/api/recipe-apis'
+import {
+  UpdateData,
+  getUserPostingDetail,
+  postUserMod,
+} from '@/api/recipe-apis'
 import { useRouter } from 'next/navigation'
-
-export interface UpdateData {
-  postContent: string
-  postTitle: string
-  postServing: string
-  postCookingTime: string
-  postCookingLevel: string
-  postPassword: string
-}
+import { ModData } from '@/types/recipe'
 
 export default function Mod() {
-  const state = useSelector((state: RootState) => state.modRecipe)
-  const initialState = {
-    people: Number(state.postServing!.replace('인분', '')),
-    cookingTime: Number(state.postCookingTime!.replace('분', '')),
-  }
-
-  const [thisTitle, setThisTitle] = useState<string>(state.postTitle!)
-  const [thisImage, setThisImage] = useState<string>(state.postImageUrl!)
+  const [modData, setModData] = useState<ModData | null>(null)
+  const [thisTitle, setThisTitle] = useState<string>('')
+  const [thisImage, setThisImage] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
-  const [thisPeople, setThisPeople] = useState<number>(initialState.people)
-  const [thisTime, setThisTime] = useState<number>(initialState.cookingTime)
-  const [thisLevel, setThisLevel] = useState<string>(state.postCookingLevel!)
-  const [thisCont, setThisCont] = useState<string>(state.postContent!)
+  const [thisPeople, setThisPeople] = useState<string>('')
+  const [thisTime, setThisTime] = useState<string>('')
+  const [thisLevel, setThisLevel] = useState<string>('')
+  const [thisCont, setThisCont] = useState<string>('')
   const [thisPw, setThisPw] = useState<string>('')
 
+  const postIdForMod = useSelector((state: RootState) => state.modRecipe)
   const imgRef = useRef<HTMLInputElement>(null)
   const route = useRouter()
   const radioOptions = [
@@ -39,6 +31,35 @@ export default function Mod() {
     { label: '중', value: '중' },
     { label: '하', value: '초' },
   ]
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  useEffect(() => {
+    if (modData) {
+      setThisTitle(modData.postTitle)
+      setThisImage(modData.postImageUrl)
+      setThisPeople(modData.postServing)
+      setThisTime(modData.postCookingTime)
+      setThisLevel(modData.postCookingLevel)
+      setThisCont(modData.postContent)
+    }
+  }, [modData])
+
+  async function getData() {
+    try {
+      const thisId = String(postIdForMod)
+      const result = await getUserPostingDetail('/api/user/posts/', thisId)
+      const fitData = result.data.post
+      fitData.postServing = fitData.postServing.replace('인분', '')
+      fitData.postCookingTime = fitData.postCookingTime.replace('분', '')
+      setModData(fitData)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  console.log(modData)
 
   async function submitHandler(e: any) {
     e.preventDefault()
@@ -52,8 +73,8 @@ export default function Mod() {
         postPassword: thisPw,
       }
       const postFile = file
-      const result = await postUserMod(
-        `/api/user/update/posts/${state.id}`,
+      await postUserMod(
+        `/api/user/update/posts/${postIdForMod}`,
         updatePostDto,
         postFile,
       )
@@ -79,7 +100,6 @@ export default function Mod() {
     }
   }
 
-  console.log(state)
   return (
     <div className="space-y-10">
       <form className="relative">
@@ -127,7 +147,7 @@ export default function Mod() {
                 type="text"
                 value={thisPeople}
                 onChange={(e) => {
-                  setThisPeople(Number(e.target.value))
+                  setThisPeople(e.target.value)
                 }}
                 className="w-[140px] py-1 pl-4 bg-green-100 rounded-full"
                 placeholder="숫자만 입력"
@@ -142,7 +162,7 @@ export default function Mod() {
                 type="text"
                 value={thisTime}
                 onChange={(e) => {
-                  setThisTime(Number(e.target.value))
+                  setThisTime(e.target.value)
                 }}
                 className="w-[140px] py-1 pl-4 bg-green-100 rounded-full"
                 placeholder="숫자만 입력"
@@ -173,7 +193,7 @@ export default function Mod() {
               </ul>
             </li>
             <li className="w-[250px] py-1 bg-green-100 rounded-full text-center">
-              {state.recipe!.title}
+              {modData?.recipe.title}
             </li>
           </ul>
         </fieldset>

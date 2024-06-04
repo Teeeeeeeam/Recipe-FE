@@ -2,9 +2,11 @@
 import { inquiryPosting } from '@/api/login-user-apis'
 import { postUserDel } from '@/api/recipe-apis'
 import { RootState } from '@/store'
+import { recipeId } from '@/store/mod-userRecipe-slice'
 import { MyPostings } from '@/types/user'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 
 export default function ViewMyPosting() {
@@ -14,6 +16,7 @@ export default function ViewMyPosting() {
   const [mount, setMount] = useState<boolean>(false)
 
   const state = useSelector((state: RootState) => state.userInfo)
+  const dispatch = useDispatch()
   const loader = useRef(null)
 
   useEffect(() => {
@@ -51,6 +54,10 @@ export default function ViewMyPosting() {
     } catch (error) {
       console.log(error)
     }
+  }
+  async function modPosting(thisId: number) {
+    dispatch(recipeId(thisId))
+    window.location.href = '/list-page/user-recipes/modification'
   }
 
   // Intersection Observer 콜백 함수
@@ -94,7 +101,13 @@ export default function ViewMyPosting() {
                     </Link>
                   </li>
                   <li className="py-3">
-                    <button className="mr-5">수정</button>
+                    <button
+                      type="button"
+                      onClick={() => modPosting(item.id)}
+                      className="mr-5"
+                    >
+                      수정
+                    </button>
                     <button
                       type="button"
                       onClick={() => deletePosting(item.id)}
