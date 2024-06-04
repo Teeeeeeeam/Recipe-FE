@@ -85,3 +85,18 @@ export interface DetailUserRecipe extends Record<string, any> {
   postServing: string
   postTitle: string
 }
+
+// 수정페이지 렌더링용 초기 데이터
+export interface ModData {
+  create_at: string
+  id: number
+  postContent: string
+  postCookingLevel: string
+  postCookingTime: string
+  postImageUrl: string
+  postLikeCount: number
+  postServing: string
+  postTitle: string
+  member: PostingDetailMember
+  recipe: PostingDetailRecipe
+}

@@ -23,9 +23,11 @@ export default function RecipeDetailUser() {
   const thisId = Number(params.id)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const dispatch = useDispatch()
+
   useEffect(() => {
     getDataLike()
   }, [like])
+
   async function getDataLike() {
     try {
       const result = await getUserPostingDetail(
@@ -63,6 +65,7 @@ export default function RecipeDetailUser() {
       console.log(error)
     }
   }
+
   async function likeHandler() {
     const userId = userInfo.id
     const option = {
@@ -87,9 +90,9 @@ export default function RecipeDetailUser() {
         password: postPw,
         postId: thisInfo?.id,
       }
-      const result = await verifyPw('/api/valid/posts', body)
+      await verifyPw('/api/valid/posts', body)
       if (orDelMod === 'mod') {
-        dispatch(recipeId(thisInfo))
+        dispatch(recipeId(thisInfo?.id))
         window.location.href = '/list-page/user-recipes/modification'
       }
       if (orDelMod === 'del') {

@@ -1,4 +1,3 @@
-import { UpdateData } from '@/app/list-page/user-recipes/modification/page'
 import {
   DetailRecipe,
   Options,
@@ -133,6 +132,14 @@ export async function postUserWrite(apiPath: string, data: any, image: any) {
 }
 
 // 게시글 수정
+export interface UpdateData {
+  postContent: string
+  postTitle: string
+  postServing: string
+  postCookingTime: string
+  postCookingLevel: string
+  postPassword: string
+}
 export async function postUserMod(
   apiPath: string,
   data: UpdateData,
