@@ -1,14 +1,15 @@
 'use client'
 // import { axiosInstance, interceptorId } from '@/api'
-import { postLogout, postRefreshToken } from '@/api/auth-apis'
+import { postLogout, postRefreshToken, postVisit } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
 import {
   getLocalStorage,
   removeLocalStorage,
   setLocalStorage,
 } from '@/lib/local-storage'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
+import { isVisited } from '@/store/visited-slice'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -22,7 +23,8 @@ export function Header() {
 
   const route = useRouter()
   const state = useAppSelector((state) => state.userInfo)
-  const dispatch = useDispatch()
+  const visitedInfo = useAppSelector((state) => state.visited)
+  const dispatch = useAppDispatch()
 
   // 로그인 성공일 때 받는 redux로 session을 변경(boolean), redux 저장
   useEffect(() => {
@@ -40,6 +42,7 @@ export function Header() {
     async function handler() {
       try {
         if (current > expiry) {
+          removeLocalStorage('accessToken')
           const newAccessToken = await postRefreshToken()
           setLocalStorage('accessToken', newAccessToken)
           token = newAccessToken
@@ -56,6 +59,34 @@ export function Header() {
       handler()
     }
   }, [])
+
+  useEffect(() => {
+    const current = Date.now()
+    const now = new Date()
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    ).getTime()
+    const endOfDay =
+      startOfDay + 23 * 60 * 60 * 1000 + 59 * 60 * 1000 + 59 * 1000
+    const { visited, expiry } = visitedInfo
+
+    async function fetchVisit() {
+      if (visited && expiry && expiry > current) {
+        return
+      } else {
+        try {
+          const res = await postVisit()
+          console.log(res)
+          dispatch(isVisited({ visited: true, expiry: endOfDay }))
+        } catch (err) {
+          dispatch(isVisited({ visited: true, expiry: endOfDay }))
+        }
+      }
+    }
+    fetchVisit()
+  }, [dispatch, visitedInfo])
 
   // fetch 또는 redux로 받아온 데이터(object)의 value가 null인지를 판단해 session을 변경(boolean)
   function checkSession(info: any) {
