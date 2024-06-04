@@ -11,6 +11,7 @@ import searchRecipeSlice from './search-recipe-slice'
 import writeUserRecipeSlice from './write-userRecipe-slice'
 import userInfoSlice from './user-info-slice'
 import modUserRecipeSlice from './mod-userRecipe-slice'
+import visitedSlice from './visited-slice'
 
 const rootReducer = combineReducers({
   searchIdData: searchIDSlice.reducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   writeRecipe: writeUserRecipeSlice,
   userInfo: userInfoSlice,
   modRecipe: modUserRecipeSlice,
+  visited: visitedSlice,
 })
 
 const createPersistStorage = (): WebStorage => {
@@ -44,7 +46,7 @@ const storage = createPersistStorage()
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['userInfo', 'searchMain', 'writeRecipe', 'modRecipe'],
+  whitelist: ['userInfo', 'searchMain', 'writeRecipe', 'modRecipe', 'visited'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
