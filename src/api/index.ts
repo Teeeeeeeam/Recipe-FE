@@ -5,7 +5,7 @@ import {
 } from '@/lib/local-storage'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { postRefreshToken } from './auth-apis'
-// import { store } from '@/store'
+import { store } from '@/store'
 import { resetState } from '@/store/user-info-slice'
 
 // const { dispatch } = store
@@ -26,29 +26,17 @@ const requester = async <Payload>(option: AxiosRequestConfig) => {
 }
 
 axiosInstance.interceptors.request.use(
-  function (config) {
+  (config) => {
     const accessToken = getLocalStorage('accessToken')
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }
     return config
   },
-  function (error) {
+  (error) => {
     return Promise.reject(error)
   },
 )
-
-export const getAccessToken = async () => {
-  try {
-    const accessToken = await postRefreshToken()
-    setLocalStorage('accessToken', accessToken)
-    return accessToken
-  } catch (error) {
-    removeLocalStorage('accessToken')
-    // 다른 요청 있을 때 수정 해야됨
-    window.location.href = '/user/login'
-  }
-}
 
 // 여러 요청 동시에 진행될 때 memoization 필요?
 const createAxiosResponseInterceptor = () => {
@@ -77,6 +65,8 @@ const createAxiosResponseInterceptor = () => {
         // dispatch(resetState())
         window.location.href = '/user/login'
         return Promise.reject(err)
+      } finally {
+        createAxiosResponseInterceptor()
       }
     },
   )
@@ -84,6 +74,19 @@ const createAxiosResponseInterceptor = () => {
 createAxiosResponseInterceptor()
 
 export default requester
+
+// export const getAccessToken = async () => {
+//   try {
+//     const accessToken = await postRefreshToken()
+//     setLocalStorage('accessToken', accessToken)
+//     return accessToken
+//   } catch (error) {
+//     removeLocalStorage('accessToken')
+//     // 다른 요청 있을 때 수정 해야됨
+//     window.location.href = '/user/login'
+//   }
+// }
+
 // if ((status === 401 || status === 405) && !config._retry) {
 //   config._retry = true
 //   axios.interceptors.response.eject(interceptor)
