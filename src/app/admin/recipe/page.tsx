@@ -2,7 +2,6 @@
 
 import { deleteRecipe, getRecipe } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
-import CustomCheckbox from '@/components/common/customr-check-box'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { RecipeDtoList } from '@/types/admin'
 import Image from 'next/image'
@@ -66,6 +65,7 @@ const AdminRecipe = ({
       router.push('/admin/recipe')
     }
   }
+
   return (
     <div>
       <form
@@ -157,8 +157,7 @@ const AdminRecipe = ({
                 className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100"
               >
                 <li className="flex justify-center items-center">
-                  <CustomCheckbox />
-                  {/* <input type="checkbox" id={String(el.id)} /> */}
+                  <input type="checkbox" id={String(el.id)} />
                 </li>
                 <li>{el.id}</li>
                 <Link href={`/list-page/main-recipes/${el.id}`}>
