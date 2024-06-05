@@ -87,8 +87,10 @@ export interface Members extends Response {
 export interface NoticeInfo {
   id: number
   noticeTitle: string
+  noticeContent: string
   created_at: string
   member: {
+    id: number
     nickname: string
   }
 }
@@ -98,4 +100,32 @@ export interface Notices extends Response {
     nextPage: boolean
     notice: NoticeInfo[]
   }
+}
+
+export interface DailyVisitInfo {
+  date: string
+  count: number
+}
+
+export interface DailyVisit {
+  data: DailyVisitInfo[]
+}
+
+export interface WeeklyVisitInfo {
+  week: string
+  count: number
+}
+export interface WeeklyVisit {
+  data: WeeklyVisitInfo[]
+}
+
+export interface MonthlyVisitInfo {
+  month: string
+  count: number
+}
+export interface MonthlyVisit {
+  data: MonthlyVisitInfo[]
+}
+export interface NumberOfVisitor {
+  data: number
 }
