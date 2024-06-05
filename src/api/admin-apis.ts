@@ -1,11 +1,15 @@
 import {
   Comments,
   CookStep,
+  DailyVisit,
   Members,
+  MonthlyVisit,
   Notices,
+  NumberOfVisitor,
   Posts,
   Recipe,
   RecipeForm,
+  WeeklyVisit,
 } from '@/types/admin'
 import requester from './index'
 
@@ -167,7 +171,15 @@ export const deleteMembers = async (id: number[]) => {
 export const getNotice = async (id: number | null) => {
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/admin/notices?${id ? `last-id=${id}` : ''}&page=0&size=1&sort=string`,
+    url: `/api/notices?${id ? `last-id=${id}` : ''}&page=0&size=1&sort=string`,
+  })
+  return payload.data
+}
+
+export const getNoticeDetail = async (id: number) => {
+  const { payload } = await requester<Notices>({
+    method: 'get',
+    url: `/api/notice/${id}`,
   })
   return payload.data
 }
@@ -196,4 +208,75 @@ export const postNotice = async (
       'Content-Type': 'multipart/form-data',
     },
   })
+}
+
+export const getAllDayVisit = async () => {
+  const { payload } = await requester<NumberOfVisitor>({
+    method: 'get',
+    url: 'api/admin/visit-count/all',
+  })
+  return payload.data
+}
+
+export const getYesterdayVisit = async () => {
+  const { payload } = await requester<NumberOfVisitor>({
+    method: 'get',
+    url: '/api/admin/visit-count/before',
+  })
+  return payload.data
+}
+
+export const getTodayVisit = async () => {
+  const { payload } = await requester<NumberOfVisitor>({
+    method: 'get',
+    url: '/api/admin/visit-count/today',
+  })
+  return payload.data
+}
+
+export const getDailyVisit = async (days: boolean | null) => {
+  const { payload } = await requester<DailyVisit>({
+    method: 'get',
+    url: `/api/admin/visit-count/days${days ? `?days=${days}` : ''}`,
+  })
+  return payload.data
+}
+
+export const getWeeklyVisit = async () => {
+  const { payload } = await requester<WeeklyVisit>({
+    method: 'get',
+    url: `/api/admin/visit-count/week`,
+  })
+  return payload.data
+}
+export const getMonthlyVisit = async () => {
+  const { payload } = await requester<MonthlyVisit>({
+    method: 'get',
+    url: `/api/admin/visit-count/month`,
+  })
+  return payload.data
+}
+
+export const getRecipeCount = async () => {
+  const { payload } = await requester<{ data: number }>({
+    method: 'get',
+    url: '/api/admin/recipes/count',
+  })
+  return payload.data
+}
+
+export const getPostCount = async () => {
+  const { payload } = await requester<{ data: number }>({
+    method: 'get',
+    url: '/api/admin/posts/count',
+  })
+  return payload.data
+}
+
+export const getMemberCount = async () => {
+  const { payload } = await requester<{ data: number }>({
+    method: 'get',
+    url: '/api/admin/members/count',
+  })
+  return payload.data
 }

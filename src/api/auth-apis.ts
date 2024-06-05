@@ -42,6 +42,7 @@ export const postLoginInfo = async () => {
 
 export const postRefreshToken = async () => {
   try {
+    removeLocalStorage('accessToken')
     const { payload } = await requester<RefreshToken>({
       method: 'post',
       url: `/api/auth/refresh-token/validate`,
