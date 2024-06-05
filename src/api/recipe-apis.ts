@@ -92,11 +92,10 @@ interface UserPosting {
     posts: PostingFigure[]
   }
 }
-export async function getUserPosting(apiPath: string, option: Options) {
+export async function getUserPosting(apiPath: string) {
   const { payload }: UserPosting = await requester({
     method: 'GET',
     url: apiPath,
-    data: option,
   })
   return payload
 }
