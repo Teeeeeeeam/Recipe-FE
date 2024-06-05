@@ -3,13 +3,15 @@
 import { postLogout, postVisit } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
 import { getLocalStorage, removeLocalStorage } from '@/lib/local-storage'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { RootState, useAppDispatch, useAppSelector } from '@/store'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
 import { isVisited } from '@/store/visited-slice'
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export function Header() {
   const [session, setSession] = useState<boolean>(false)
@@ -19,6 +21,46 @@ export function Header() {
   const state = useAppSelector((state) => state.userInfo)
   const visitedInfo = useAppSelector((state) => state.visited)
   const dispatch = useAppDispatch()
+
+  // 알림
+  const [notifyContent, setNotifyContent] = useState<string[] | []>([])
+  const [eventId, setEventId] = useState<string>('')
+
+  useEffect(() => {
+    const EventSource = EventSourcePolyfill || NativeEventSource
+    const accessToken = getLocalStorage('accessToken')
+
+    if (accessToken) {
+      const eventSource = new EventSource(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/connect`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Connection: 'keep-alive',
+          },
+        },
+      )
+
+      eventSource.addEventListener(
+        'open',
+        function (e) {
+          console.log('연결성공')
+        },
+        false,
+      )
+      eventSource.addEventListener(
+        'message',
+        function (e) {
+          setEventId(e.lastEventId)
+          setNotifyContent((prev) => [...prev, e.data])
+        },
+        false,
+      )
+      return () => {
+        eventSource.close()
+      }
+    }
+  }, [])
 
   // 로그인 성공일 때 받는 redux로 session을 변경(boolean), redux 저장
   useEffect(() => {
