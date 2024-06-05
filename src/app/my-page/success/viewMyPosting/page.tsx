@@ -26,7 +26,7 @@ export default function ViewMyPosting() {
   async function getInquiryPosting(isInit: boolean) {
     try {
       const result = await inquiryPosting(
-        `/api/user/info/${state.loginId}/posts?size=${10}${!isInit && lastId ? `&last-id=${lastId}` : ''}`,
+        `/api/user/info/${state.loginId}/posts?size=10${isInit === false && lastId ? `&last-id=${lastId}` : ''}`,
       )
       // lastId
       const dataLastId = String(
