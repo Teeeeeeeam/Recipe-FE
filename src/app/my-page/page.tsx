@@ -15,8 +15,8 @@ export default function MyPage() {
     e.preventDefault()
     const userData = {
       password: pw,
-      loginId: loginState.loginId,
-      loginType: loginState.loginType,
+      loginId: loginState?.loginId,
+      loginType: loginState?.loginType,
     }
     try {
       await enterMyPage('/api/user/info/valid', userData)

@@ -221,3 +221,20 @@ export async function postingAll(apiPath: string) {
   })
   return payload
 }
+
+// 회원 탈퇴
+interface WidthdrawalOption {
+  loginId: string
+  checkBox: boolean
+}
+export async function doWidthdrawalUser(
+  apiPath: string,
+  option: WidthdrawalOption,
+) {
+  const { payload } = await requester({
+    method: 'DELETE',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
