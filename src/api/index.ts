@@ -9,7 +9,7 @@ import { store } from '@/store'
 import { resetState } from '@/store/user-info-slice'
 
 // const { dispatch } = store
-
+const TEN_MINUTE = 60000
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
@@ -55,12 +55,15 @@ const createAxiosResponseInterceptor = () => {
       axiosInstance.interceptors.response.eject(interceptor)
       try {
         const newAccessToken = await postRefreshToken()
-        if (newAccessToken) {
-          setLocalStorage('accessToken', newAccessToken)
-          config.headers['Authorization'] = `Bearer ${newAccessToken}`
-        }
+        console.log('리프레시')
+
+        setLocalStorage('accessToken', newAccessToken)
+        setLocalStorage('expiry', Date.now() + TEN_MINUTE)
+        config.headers['Authorization'] = `Bearer ${newAccessToken}`
+
         return axiosInstance(config)
       } catch (err) {
+        console.log('리프레시 실패')
         removeLocalStorage('accessToken')
         // dispatch(resetState())
         window.location.href = '/user/login'

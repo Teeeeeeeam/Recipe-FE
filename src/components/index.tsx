@@ -1,12 +1,8 @@
 'use client'
 // import { axiosInstance, interceptorId } from '@/api'
-import { postLogout, postRefreshToken, postVisit } from '@/api/auth-apis'
+import { postLogout, postVisit } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
-import {
-  getLocalStorage,
-  removeLocalStorage,
-  setLocalStorage,
-} from '@/lib/local-storage'
+import { getLocalStorage, removeLocalStorage } from '@/lib/local-storage'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
 import { isVisited } from '@/store/visited-slice'
@@ -14,8 +10,6 @@ import { isVisited } from '@/store/visited-slice'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
 
 export function Header() {
   const [session, setSession] = useState<boolean>(false)
@@ -34,19 +28,9 @@ export function Header() {
 
   // localstorage에 token이 남아있다면 session을 변경(boolean), fetch데이터 저장
   useEffect(() => {
-    const expiry = getLocalStorage('expiry')
-    const current = Date.now()
-
     let token = getLocalStorage('accessToken')
-
     async function handler() {
       try {
-        if (current > expiry) {
-          removeLocalStorage('accessToken')
-          const newAccessToken = await postRefreshToken()
-          setLocalStorage('accessToken', newAccessToken)
-          token = newAccessToken
-        }
         const result = await checkUser('/api/userinfo', token)
         dispatch(getLoginInfo(result?.data))
         setUserInfo(result?.data)
@@ -80,7 +64,7 @@ export function Header() {
           const res = await postVisit()
           console.log(res)
           dispatch(isVisited({ visited: true, expiry: endOfDay }))
-        } catch (err) {
+        } catch {
           dispatch(isVisited({ visited: true, expiry: endOfDay }))
         }
       }

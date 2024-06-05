@@ -19,7 +19,9 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
 
   return (
     <div className="flex flex-col items-center w-[250px] p-8 space-y-2 h-full border-r-[1px] border-navy-150">
-      <h2 className="mb-2">Menu</h2>
+      <h2 className="mb-2 cursor-pointer transition-transform hover:scale-110">
+        <Link href="/admin">Menu</Link>
+      </h2>
       <Link href="/admin/members" className="w-full">
         <AdminButton id="members" segment={segment}>
           사용자 관리
