@@ -16,17 +16,18 @@ export default function Withdrawal() {
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const { loginId, loginType } = userInfo
+  console.log(loginType)
 
   async function withdrawalHandler() {
     try {
+      const nullState = {
+        id: null,
+        loginId: null,
+        loginType: null,
+        nickName: null,
+        roles: null,
+      }
       if (loginId && loginType === 'normal') {
-        const nullState = {
-          id: null,
-          loginId: null,
-          loginType: null,
-          nickName: null,
-          roles: null,
-        }
         const options = {
           loginId,
           checkBox: agree,
@@ -36,6 +37,10 @@ export default function Withdrawal() {
         removeLocalStorage('accessToken')
         dispatch(getLoginInfo(nullState))
         window.location.href = '/'
+      } else if (loginId && loginType !== 'normal') {
+        window.location.href =
+          `${process.env.NEXT_PUBLIC_API_URL}/api/oauth2/social/unlink?social-id=` +
+          `${loginType === 'kakao' ? 'kakao' : loginType === 'naver' ? 'naver' : ''}`
       }
     } catch (error) {
       console.log(error)
@@ -43,7 +48,7 @@ export default function Withdrawal() {
   }
   return (
     <>
-      <div className="w-11/12 mx-auto border p-3">
+      <div className="w-11/12 mx-auto border p-3 mb-5">
         <div className="h-[40vh] overflow-y-scroll mb-3 border-y ">
           <dl className="mb-4">
             <dt className="mb-1">
@@ -119,12 +124,13 @@ export default function Withdrawal() {
           <input type="checkbox" onChange={() => setAgree(!agree)} />
         </div>
       </div>
-      <div>
+      <div className="w-11/12 mx-auto text-end">
         <button
           type="button"
           onClick={() =>
             agree ? setIsClick(true) : alert('약관에 동의해주세요')
           }
+          className=" px-3 py-2 border rounded-md"
         >
           탈퇴하기
         </button>
@@ -145,27 +151,13 @@ export default function Withdrawal() {
                 >
                   Cancel
                 </button>
-                {loginType === 'normal' ? (
-                  <button
-                    type="button"
-                    onClick={() => withdrawalHandler()}
-                    className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
-                  >
-                    Ok
-                  </button>
-                ) : (
-                  <Link
-                    href={
-                      loginType === 'kakao'
-                        ? ''
-                        : loginType === 'naver'
-                          ? ''
-                          : ''
-                    }
-                  >
-                    OK
-                  </Link>
-                )}
+                <button
+                  type="button"
+                  onClick={() => withdrawalHandler()}
+                  className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+                >
+                  Ok
+                </button>
               </div>
             </div>
           </div>
