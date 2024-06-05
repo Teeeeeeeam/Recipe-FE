@@ -26,9 +26,16 @@ export interface ThreeCookInfo {
 }
 
 // for userPostingDetail
-export interface Posting extends Record<string, string[] | [] | PostingDetail> {
-  commnets: string[] | []
+export interface Posting
+  extends Record<string, Comments[] | [] | PostingDetail> {
+  comments: Comments[] | []
   post: PostingDetail
+}
+export interface Comments {
+  id: number
+  comment_content: string
+  nickName: string
+  create_at: string
 }
 export interface PostingDetail {
   [key: string]: string | number | PostingDetailMember | PostingDetailRecipe

@@ -2,6 +2,7 @@
 
 import { checkLikesForPosting, doLikeForPosting } from '@/api/login-user-apis'
 import { getUserPostingDetail, postUserDel, verifyPw } from '@/api/recipe-apis'
+import { Comment } from '@/components/comment'
 import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { PostingDetail, ThreeCookInfo } from '@/types/recipe'
@@ -20,8 +21,9 @@ export default function RecipeDetailUser() {
   const [postPw, setPostPw] = useState<string>('')
 
   const params = useParams()
-  const thisId = Number(params.id)
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const { id } = userInfo
+  const thisId = Number(params.id)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -143,12 +145,17 @@ export default function RecipeDetailUser() {
               </div>
             </section>
             <section className="detail-step w-full">
-              <div className="flex flex-wrap flex-col py-2 border-t border-[#000]">
+              <div className="p-2 border-y border-[#000]">
                 <h4 className="text-2xl mb-3">내용</h4>
-                <p>{thisInfo.postContent}</p>
+                <p className="overflow-wrap break-words">
+                  {thisInfo.postContent}
+                </p>
               </div>
             </section>
-            <section>댓글</section>
+            <section>
+              <Comment userId={id} thisId={thisId} />
+            </section>
+
             <aside className="absolute py-5 top-0 right-0 w-1/12">
               <ul className="flex flex-col items-center">
                 <li className="mb-2 py-2 w-full text-center bg-gray-400 rounded-lg">
