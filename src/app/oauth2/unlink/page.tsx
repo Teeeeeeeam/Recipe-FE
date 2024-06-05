@@ -3,13 +3,12 @@
 import { removeLocalStorage } from '@/lib/local-storage'
 import { getLoginInfo } from '@/store/user-info-slice'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 export default function UnLink({
   searchParams,
 }: {
-  [key: string]: { [key: string]: string }
+  searchParams: { [key: string]: string }
 }) {
   const dispatch = useDispatch()
 
