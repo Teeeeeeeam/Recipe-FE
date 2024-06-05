@@ -1,4 +1,5 @@
 import {
+  Comments,
   DetailRecipe,
   Options,
   Posting,
@@ -175,6 +176,79 @@ export async function postUserDel(apiPath: string, option: number) {
 export async function verifyPw(apiPath: string, option: any) {
   const { payload } = await requester({
     method: 'POST',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 게시글 댓글 조회
+interface GetComment {
+  payload: {
+    data: {
+      content: Comments[] | []
+      empty: boolean
+      first: boolean
+      last: boolean
+      number: number
+      numberOfElements: number
+      pageable: {
+        offset: number
+        pageNumber: number
+        pageSize: number
+        paged: boolean
+        sort: {
+          empty: boolean
+          sorted: boolean
+          unsorted: boolean
+        }
+      }
+      size: number
+      sort: {
+        empty: boolean
+        sorted: boolean
+        unsorted: boolean
+      }
+      totalElements: number
+      totalPages: number
+    }
+  }
+}
+export async function getComment(apiPath: string, option: any) {
+  const { payload }: GetComment = await requester({
+    method: 'GET',
+    url: apiPath,
+    params: option,
+  })
+  return payload
+}
+
+// 게시글 댓글 작성
+interface PostCommentOptions {
+  commentContent: string
+  memberId: string
+  postId: string | number
+}
+export async function postComment(apiPath: string, option: PostCommentOptions) {
+  const { payload } = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
+// 게시글 댓글 삭제
+interface deleteCommentOptions {
+  memberId: string | number
+  commentId: number
+}
+export async function deleteComment(
+  apiPath: string,
+  option: deleteCommentOptions,
+) {
+  const { payload } = await requester({
+    method: 'Delete',
     url: apiPath,
     data: option,
   })
