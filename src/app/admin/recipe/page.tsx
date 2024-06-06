@@ -20,8 +20,8 @@ const AdminRecipe = ({
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('재료')
   const [isFilter, setIsFilter] = useState(false)
-  const [deleteList, setDeleteList] = useState([])
-
+  const [deleteList, setDeleteList] = useState<number[]>([])
+  const [selectAll, setSelectAll] = useState<boolean>(false)
   const { ingredients, title } = searchParams
   const router = useRouter()
 
@@ -58,11 +58,39 @@ const AdminRecipe = ({
     }
   }, [])
 
+  const handleCheckboxChange = (postId: number) => {
+    setDeleteList((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId],
+    )
+  }
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setDeleteList([])
+    } else {
+      const allIds = recipes.map((el) => el.id)
+      setDeleteList(allIds)
+    }
+    setSelectAll(!selectAll)
+  }
+
+  const handleAllDeleteClick = async () => {
+    if (deleteList.length > 0) {
+      if (confirm('선택된 요리글들을 삭제하시겠습니까?')) {
+        await deleteRecipe(deleteList)
+        alert('요리글이 삭제 되었습니다.')
+        location.reload()
+      }
+    }
+  }
+
   const handleDeleteRecipeClick = async (id: number) => {
     if (confirm('해당 레시피를 삭제하시겠습니까?')) {
-      await deleteRecipe(id)
+      await deleteRecipe([id])
       alert('삭제가 완료되었습니다.')
-      router.push('/admin/recipe')
+      location.reload()
     }
   }
 
@@ -140,7 +168,23 @@ const AdminRecipe = ({
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
         <ul className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li>체크</li>
+          <li className="relative flex justify-center items-center">
+            <input
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAll}
+              className="cursor-pointer"
+            />
+            <Image
+              src={`/svg/trash.svg`}
+              alt="delete-icon"
+              width={20}
+              height={20}
+              className="absolute left-[40px] cursor-pointer translate-transition hover:scale-x-110"
+              onClick={handleAllDeleteClick}
+              priority
+            />
+          </li>
           <li>레시피 번호</li>
           <li>요리명</li>
           <li>주재료</li>
@@ -157,7 +201,11 @@ const AdminRecipe = ({
                 className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100"
               >
                 <li className="flex justify-center items-center">
-                  <input type="checkbox" id={String(el.id)} />
+                  <input
+                    type="checkbox"
+                    checked={deleteList.includes(el.id)}
+                    onChange={() => handleCheckboxChange(el.id)}
+                  />
                 </li>
                 <li>{el.id}</li>
                 <Link href={`/list-page/main-recipes/${el.id}`}>

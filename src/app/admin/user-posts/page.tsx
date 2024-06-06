@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteRecipe, getPosts } from '@/api/admin-apis'
+import { deletePosts, deleteRecipe, getPosts } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import Image from 'next/image'
@@ -21,6 +21,8 @@ const UserPosts = ({
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('요리글 제목')
   const [isFilter, setIsFilter] = useState(false)
+  const [deleteList, setDeleteList] = useState<number[]>([])
+  const [selectAll, setSelectAll] = useState<boolean>(false)
 
   const { recipeTitle, postTitle, id } = searchParams
 
@@ -71,6 +73,32 @@ const UserPosts = ({
       setSearchInput(postTitle)
     }
   }, [])
+
+  const handleCheckboxChange = (postId: number) => {
+    setDeleteList((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId],
+    )
+  }
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setDeleteList([])
+    } else {
+      const allIds = posts.map((post) => post.id)
+      setDeleteList(allIds)
+    }
+    setSelectAll(!selectAll)
+  }
+
+  const handleAllDeleteClick = async () => {
+    if (confirm('선택된 요리글들을 삭제하시겠습니까?')) {
+      await deletePosts(deleteList)
+      alert('요리글이 삭제 되었습니다.')
+      location.reload()
+    }
+  }
 
   return (
     <div>
@@ -134,7 +162,23 @@ const UserPosts = ({
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
         <ul className="grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li>체크</li>
+          <li className="relative flex justify-center items-center">
+            <input
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAll}
+              className="cursor-pointer"
+            />
+            <Image
+              src={`/svg/trash.svg`}
+              alt="delete-icon"
+              width={20}
+              height={20}
+              className="absolute left-[45px] cursor-pointer translate-transition hover:scale-x-110"
+              onClick={handleAllDeleteClick}
+              priority
+            />
+          </li>
           <li>요리글 번호</li>
           <li>요리명</li>
           <li>아이디</li>
@@ -142,7 +186,12 @@ const UserPosts = ({
           <li>등록일자</li>
           <li>관리</li>
         </ul>
-        <PostList posts={posts} ref={lastElementRef} />
+        <PostList
+          posts={posts}
+          ref={lastElementRef}
+          deleteList={deleteList}
+          handleCheckboxChange={handleCheckboxChange}
+        />
       </div>
     </div>
   )

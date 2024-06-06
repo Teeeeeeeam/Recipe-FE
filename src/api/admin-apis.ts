@@ -102,10 +102,10 @@ export const updateRecipe = async (
   return payload
 }
 
-export const deleteRecipe = async (id: number) => {
+export const deleteRecipe = async (ids: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/recipe/${id}`,
+    url: `/api/admin/recipe/ids=${ids}`,
   })
   return payload
 }
@@ -123,26 +123,26 @@ export const getPosts = async (
   return payload
 }
 
-export const deletePosts = async (id: number) => {
+export const deletePosts = async (ids: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/user/posts/${id}`,
+    url: `/api/admin/posts/?ids=${ids}`,
   })
   return payload
 }
 
-export const getComments = async (id: string) => {
+export const getComments = async (id: number, lastId: number | null) => {
   const { payload } = await requester<Comments>({
     method: 'get',
-    url: `/api/admin/posts/comments?post-id=${id}&page=0&size=1&sort=string`,
+    url: `/api/admin/posts/comments?post-id=${id}${lastId ? `&last-id=${lastId}` : ''}&page=0&size=10&sort=string`,
   })
   return payload.data
 }
 
-export const deleteComments = async (id: string) => {
+export const deleteComments = async (ids: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: ``,
+    url: `/api/admin/posts/comments?ids=${ids}`,
   })
   return payload
 }

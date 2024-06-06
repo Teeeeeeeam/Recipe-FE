@@ -92,8 +92,14 @@ const Notice = () => {
                 <li>{el.member.nickname}</li>
                 <li>{el.created_at.slice(0, 10)}</li>
                 <li>
-                  수정 /
-                  <button onClick={() => handleDeleteClick(el.id)}>삭제</button>
+                  수정
+                  <span>{` / `}</span>
+                  <button
+                    onClick={() => handleDeleteClick(el.id)}
+                    className="hover:text-green-150"
+                  >
+                    삭제
+                  </button>
                 </li>
               </ul>
             ))}
