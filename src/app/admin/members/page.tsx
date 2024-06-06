@@ -1,6 +1,6 @@
 'use client'
 
-import { getMembers } from '@/api/admin-apis'
+import { deleteMembers, getMembers } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { MemberInfo } from '@/types/admin'
@@ -20,7 +20,8 @@ const Members = ({
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [filter, setFilter] = useState('아이디')
   const [isFilter, setIsFilter] = useState(false)
-
+  const [deleteList, setDeleteList] = useState<number[]>([])
+  const [selectAll, setSelectAll] = useState<boolean>(false)
   const { loginId, username, email, nickname } = searchParams
 
   const getMember = useCallback(async () => {
@@ -81,14 +82,43 @@ const Members = ({
     getMember()
   }
 
-  const handleDeleteMemberClick = async (id: number) => {
-    const arr = []
-    arr.push(id)
-
-    console.log(arr)
-    // await deleteMembers(arr)
+  const handleCheckboxChange = (postId: number) => {
+    setDeleteList((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId],
+    )
+  }
+  console.log(members)
+  const handleSelectAll = () => {
+    if (selectAll) {
+      console.log('h')
+      setDeleteList([])
+    } else {
+      console.log('b')
+      const allIds = members.map((el) => el.id)
+      setDeleteList(allIds)
+    }
+    setSelectAll(!selectAll)
   }
 
+  const handleAllDeleteClick = async () => {
+    if (deleteList.length > 0) {
+      if (confirm('선택된 회원들을 추방 하시겠습니까?')) {
+        await deleteMembers(deleteList)
+        alert('해당 회원들이 추방 되었습니다.')
+        location.reload()
+      }
+    }
+  }
+
+  const handleDeleteMemberClick = async (id: number) => {
+    if (confirm('해당 회원을 추방 하시겠습니까?')) {
+      await deleteMembers([id])
+      alert('해당 회원이 추방 되었습니다.')
+      location.reload()
+    }
+  }
   return (
     <div>
       <form
@@ -151,7 +181,23 @@ const Members = ({
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
         <ul className="grid grid-cols-[1fr_2fr_2fr_2fr_3fr_1fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li>체크</li>
+          <li className="relative flex justify-center items-center">
+            <input
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAll}
+              className="cursor-pointer"
+            />
+            <Image
+              src={`/svg/trash.svg`}
+              alt="delete-icon"
+              width={20}
+              height={20}
+              className="absolute left-[45px] cursor-pointer translate-transition hover:scale-x-110"
+              onClick={handleAllDeleteClick}
+              priority
+            />
+          </li>
           <li>이름</li>
           <li>닉네임</li>
           <li>아이디</li>
@@ -165,7 +211,13 @@ const Members = ({
                 key={el.id}
                 className="grid grid-cols-[1fr_2fr_2fr_2fr_3fr_1fr] text-[12px] lg:text-[16px] text-center py-4 bg-navy-100"
               >
-                <li>체크</li>
+                <li className="flex justify-center items-center">
+                  <input
+                    type="checkbox"
+                    checked={deleteList.includes(el.id)}
+                    onChange={() => handleCheckboxChange(el.id)}
+                  />
+                </li>
                 <li>{el.username}</li>
                 <li>{el.nickname}</li>
                 <li>
@@ -176,7 +228,7 @@ const Members = ({
                 <li>{el.email}</li>
                 <li>
                   <button onClick={() => handleDeleteMemberClick(el.id)}>
-                    탈퇴
+                    추방
                   </button>
                 </li>
               </ul>
