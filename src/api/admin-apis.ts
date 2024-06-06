@@ -4,6 +4,7 @@ import {
   DailyVisit,
   Members,
   MonthlyVisit,
+  NoticeInfo,
   Notices,
   NumberOfVisitor,
   Posts,
@@ -171,13 +172,13 @@ export const deleteMembers = async (id: number[]) => {
 export const getNotice = async (id: number | null) => {
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/notices?${id ? `last-id=${id}` : ''}&page=0&size=1&sort=string`,
+    url: `/api/notices?${id ? `last-id=${id}` : ''}&page=0&size=10&sort=string`,
   })
   return payload.data
 }
 
 export const getNoticeDetail = async (id: number) => {
-  const { payload } = await requester<Notices>({
+  const { payload } = await requester<{ data: NoticeInfo }>({
     method: 'get',
     url: `/api/notice/${id}`,
   })
@@ -208,6 +209,15 @@ export const postNotice = async (
       'Content-Type': 'multipart/form-data',
     },
   })
+  return payload
+}
+
+export const deleteNotice = async (id: number) => {
+  const { payload } = await requester<Response>({
+    method: 'delete',
+    url: `/api/admin/notices/${id}`,
+  })
+  return payload
 }
 
 export const getAllDayVisit = async () => {

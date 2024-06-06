@@ -89,6 +89,7 @@ export interface NoticeInfo {
   noticeTitle: string
   noticeContent: string
   created_at: string
+  img_url: string
   member: {
     id: number
     nickname: string
