@@ -1,6 +1,6 @@
 'use client'
 
-import { getNotice } from '@/api/admin-apis'
+import { deleteNotice, getNotice } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { NoticeInfo } from '@/types/admin'
@@ -17,16 +17,24 @@ const Notice = () => {
     if (!hasMore) return
     try {
       const res = await getNotice(lastId)
+
       const newNotices = res.notice
       setNotices((prev) => [...prev, ...newNotices])
       setHasMore(res.nextPage)
+      setLastId(newNotices[newNotices.length - 1].id)
     } catch (err) {
       console.log(err)
     }
   }, [hasMore, lastId])
 
   const lastElementRef = useInfiniteScroll(fetchGetNotice, hasMore)
-
+  const handleDeleteClick = async (id: number) => {
+    if (confirm('해당 공지사항을 삭제하시겠습니까?')) {
+      const res = await deleteNotice(id)
+      alert('해당 공지사항이 삭제되었습니다.')
+      location.reload()
+    }
+  }
   return (
     <div>
       <form
@@ -78,10 +86,15 @@ const Notice = () => {
               >
                 <li>체크</li>
                 <li>{el.id}</li>
-                <li>{el.noticeTitle}</li>
+                <Link href={`/notice/${el.id}`}>
+                  <li>{el.noticeTitle}</li>
+                </Link>
                 <li>{el.member.nickname}</li>
                 <li>{el.created_at.slice(0, 10)}</li>
-                <li>관리</li>
+                <li>
+                  수정 /
+                  <button onClick={() => handleDeleteClick(el.id)}>삭제</button>
+                </li>
               </ul>
             ))}
           <div ref={lastElementRef}></div>

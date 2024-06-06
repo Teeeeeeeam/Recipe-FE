@@ -66,15 +66,28 @@ const WriteNotice = () => {
         <div className="w-[100px] py-1 text-center bg-navy-100 rounded-full text-white">
           이미지 선택
         </div>
-        <div className="flex items-center justify-center w-full h-[160px] bcookStep">
-          <Image
-            src={imgFile ? imgFile : `/svg/img-box.svg`}
-            alt="preview-img"
-            width={0}
-            height={0}
-            className="w-[140px] h-[140px]"
-            priority
-          />
+        <div className=" flex items-center justify-center w-full h-[160px] bcookStep">
+          <div className="relative p-2">
+            <Image
+              src={imgFile ? imgFile : `/svg/img-box.svg`}
+              alt="preview-img"
+              width={0}
+              height={0}
+              className="w-[140px] h-[140px]"
+              priority
+            />
+            <Image
+              src={`/svg/close.svg`}
+              alt="close"
+              width={0}
+              height={0}
+              className="absolute w-[30px] h-[30px] top-0 right-0 transition-transform hover:scale-110 cursor-pointer"
+              onClick={() => {
+                setFile(null)
+                setImgFile('')
+              }}
+            />
+          </div>
         </div>
         <input
           type="file"
@@ -84,11 +97,11 @@ const WriteNotice = () => {
           className="w-full"
         />
       </div>
-      {/* <div className="flex mt-4 justify-center w-full"> */}
-      <button type="submit" className="px-4 py-2 bg-green-100 rounded-md">
-        공지사항 등록
-      </button>
-      {/* </div> */}
+      <div className="flex mt-4 justify-center w-full">
+        <button type="submit" className="px-4 py-2 bg-green-100 rounded-md">
+          공지사항 등록
+        </button>
+      </div>
     </form>
   )
 }

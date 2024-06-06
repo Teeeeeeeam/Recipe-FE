@@ -22,6 +22,11 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
       <h2 className="mb-2 cursor-pointer transition-transform hover:scale-110">
         <Link href="/admin">Menu</Link>
       </h2>
+      <Link href="/admin" className="w-full">
+        <AdminButton id="" segment={segment}>
+          통계
+        </AdminButton>
+      </Link>
       <Link href="/admin/members" className="w-full">
         <AdminButton id="members" segment={segment}>
           사용자 관리
