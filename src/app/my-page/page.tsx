@@ -33,7 +33,7 @@ export default function MyPage() {
   return (
     <>
       {loginType === 'normal' && (
-        <div className="bg-slate-800 bg-opacity-50 flex justify-center items-center absolute top-0 right-0 bottom-0 left-0">
+        <div className="bg-slate-800 bg-opacity-50 flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
           <div className="bg-white px-10 py-14 rounded-md text-center">
             <p className="text-xl mb-4 font-bold text-slate-500">
               로그인 비밀번호를 입력해주세요.
