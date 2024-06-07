@@ -1,5 +1,10 @@
 'use client'
-import { deleteComment, getComment, postComment } from '@/api/recipe-apis'
+import {
+  deleteComment,
+  getComment,
+  modComment,
+  postComment,
+} from '@/api/recipe-apis'
 import { Comments } from '@/types/recipe'
 import { useEffect, useState } from 'react'
 
@@ -11,6 +16,10 @@ export function Comment({ thisId, userId }: PropsType) {
   const [comment, setComment] = useState<Comments[] | []>([])
   const [mount, setMount] = useState<boolean>(false)
   const [content, setContent] = useState<string>('')
+  const [isMod, setIsMod] = useState<{ [key: number]: boolean }>({})
+  const [saveComment, setSaveComment] = useState<{ [key: number]: string }>({})
+  const [isDel, setIsDel] = useState<boolean>(false)
+  const [targetDel, setTargetDel] = useState<number | null>(null)
 
   useEffect(() => {
     getCommentData()
@@ -20,7 +29,7 @@ export function Comment({ thisId, userId }: PropsType) {
     try {
       const option = {
         page: 0,
-        size: 10,
+        size: 100,
         sort: [''].join(''),
         posts: thisId,
       }
@@ -41,6 +50,43 @@ export function Comment({ thisId, userId }: PropsType) {
         }
         await postComment('/api/user/comments', options)
         setContent('')
+        setMount(!mount)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function modHandler(itemId: number) {
+    try {
+      const options = {
+        commentContent: saveComment[itemId] || '',
+        memberId: userId,
+        commentId: itemId,
+      }
+      if ((saveComment[itemId] || '').length > 0) {
+        await modComment('/api/user/comments', options)
+        setIsMod((prev) => ({ ...prev, [itemId]: false }))
+        setSaveComment((prev) => ({ ...prev, [itemId]: '' }))
+        setMount(!mount)
+      } else {
+        alert('댓글은 1자 이상 부탁드려요')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function deleteHandler() {
+    try {
+      if (userId && targetDel) {
+        const options = {
+          memberId: userId,
+          commentId: targetDel,
+        }
+        await deleteComment('/api/user/comments', options)
+        setIsDel(false)
+        setTargetDel(null)
         setMount(!mount)
       }
     } catch (error) {
@@ -80,22 +126,7 @@ export function Comment({ thisId, userId }: PropsType) {
       </div>
       {comment.length > 0 &&
         comment.map((item) => {
-          async function deleteHandler() {
-            try {
-              if (userId && item.id) {
-                const options = {
-                  memberId: userId,
-                  commentId: item.id,
-                }
-                await deleteComment('/api/user/comments', options)
-                setMount(!mount)
-              }
-            } catch (error) {
-              console.log(error)
-            }
-          }
           const thisDate = item.create_at.slice(0, item.create_at.indexOf('T'))
-
           return (
             <div
               key={item.id}
@@ -106,21 +137,70 @@ export function Comment({ thisId, userId }: PropsType) {
                   <p className="font-medium">{item.nickName}</p>
                   <span className="text-xs">{thisDate}</span>
                 </div>
-                <p className="text-sm">{item.comment_content}</p>
+                {isMod[item.id] ? (
+                  <textarea
+                    value={saveComment[item.id] || ''}
+                    onChange={(e) => {
+                      setSaveComment((prev) => ({
+                        ...prev,
+                        [item.id]: e.target.value,
+                      }))
+                    }}
+                    className="w-full px-2 rounded-md"
+                  ></textarea>
+                ) : (
+                  <p className="text-sm">{item.comment_content}</p>
+                )}
+
                 <div className="mt-5 flex items-center justify-end text-gray-600">
-                  <button
-                    type="button"
-                    className="cursor-pointer border mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                  >
-                    수정
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => deleteHandler()}
-                    className="cursor-pointer border py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                  >
-                    삭제
-                  </button>
+                  {isMod[item.id] ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => modHandler(item.id)}
+                        className="cursor-pointer border mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                      >
+                        완료
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMod((prev) => ({ ...prev, [item.id]: false }))
+                        }}
+                        className="cursor-pointer border py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                      >
+                        취소
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMod((prev) => ({ ...prev, [item.id]: true }))
+                          if (!saveComment[item.id] && item.comment_content) {
+                            setSaveComment((prev) => ({
+                              ...prev,
+                              [item.id]: item.comment_content,
+                            }))
+                          }
+                        }}
+                        className="cursor-pointer border mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsDel(true)
+                          setTargetDel(item.id)
+                        }}
+                        className="cursor-pointer border py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                      >
+                        삭제
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -129,6 +209,36 @@ export function Comment({ thisId, userId }: PropsType) {
       {comment.length === 0 && (
         <div className="mx-auto my-8 flex rounded-xl border border-gray-100 p-4 text-left text-gray-600 shadow-lg sm:p-8">
           첫 댓글을 달아주세요
+        </div>
+      )}
+      {isDel && (
+        <div className="bg-slate-800 bg-opacity-50 flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
+          <div className="bg-white px-10 py-14 rounded-md text-center">
+            <p className="text-xl mb-4 font-bold text-slate-500">
+              삭제하시겠습니까?
+            </p>
+            <form className="flex felx-wrap flex-col">
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDel(false)
+                    setTargetDel(null)
+                  }}
+                  className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deleteHandler()}
+                  className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+                >
+                  Ok
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </>

@@ -238,6 +238,16 @@ export async function postComment(apiPath: string, option: PostCommentOptions) {
   return payload
 }
 
+// 게시글 댓글 수정
+export async function modComment(apiPath: string, option: any) {
+  const { payload } = await requester({
+    method: 'PUT',
+    url: apiPath,
+    data: option,
+  })
+  return payload
+}
+
 // 게시글 댓글 삭제
 interface deleteCommentOptions {
   memberId: string | number
