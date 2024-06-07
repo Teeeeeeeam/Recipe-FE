@@ -55,7 +55,6 @@ export async function checkLikesForRecipe(apiPath: string, params: number) {
   const { payload }: Like = await requester({
     method: 'GET',
     url: `${apiPath}/${params}`,
-    // data: params,
   })
   return payload
 }
@@ -82,6 +81,42 @@ export async function doLikeForPosting(apiPath: string, params: any) {
     method: 'POST',
     url: apiPath,
     data: params,
+  })
+  return payload
+}
+
+// 레시피 즐겨찾기
+interface doBookmarkOption {
+  memberId: string
+  recipeId: number
+}
+interface InquiryBookmark {
+  payload: {
+    message: string
+    success: boolean
+  }
+}
+interface DoBookmark {
+  payload: {
+    message: string
+    success: boolean
+    data: {
+      ['즐겨 찾기 상태']: boolean
+    }
+  }
+}
+export async function checkBookmark(apiPath: string, params: number) {
+  const { payload }: InquiryBookmark = await requester({
+    method: 'GET',
+    url: `${apiPath}?recipe-id=${params}`,
+  })
+  return payload
+}
+export async function doBookmark(apiPath: string, option: doBookmarkOption) {
+  const { payload }: DoBookmark = await requester({
+    method: 'POST',
+    url: apiPath,
+    data: option,
   })
   return payload
 }
@@ -135,7 +170,7 @@ export async function inquiryPosting(apiPath: string) {
   return payload
 }
 
-// 게시글 좋아요 조회
+// 마이페이지 - 게시글 좋아요 조회
 interface inquiryLikePosting {
   payload: {
     success: boolean
@@ -155,7 +190,7 @@ export async function inquiryLikePosting(apiPath: string, option: Options) {
   return payload
 }
 
-// 레시피 좋아요 조회
+// 마이페이지 - 레시피 좋아요 조회
 interface inquiryLikeRecipe {
   payload: {
     success: boolean
@@ -175,7 +210,7 @@ export async function inquiryLikeRecipe(apiPath: string, option: Options) {
   return payload
 }
 
-// 닉네임 수정
+// 마이페이지 - 닉네임 수정
 export async function updateNickName(apiPath: string, option: NickNameOption) {
   const { payload } = await requester({
     method: 'PUT',
@@ -185,7 +220,7 @@ export async function updateNickName(apiPath: string, option: NickNameOption) {
   return payload
 }
 
-// 이메일 수정
+// 마이페이지 - 이메일 수정
 export async function updateEmail(apiPath: string, option: EmailOption) {
   const { payload } = await requester({
     method: 'PUT',
@@ -194,7 +229,7 @@ export async function updateEmail(apiPath: string, option: EmailOption) {
   })
   return payload
 }
-// 이메일 검증 코드 보내기
+// 마이페이지 - 이메일 검증 코드 보내기
 export async function sendEmail(apiPath: string, option: string) {
   const { payload } = await requester({
     method: 'POST',
@@ -203,7 +238,7 @@ export async function sendEmail(apiPath: string, option: string) {
   })
   return payload
 }
-// 이메일 코드 검증
+// 마이페이지 - 이메일 코드 검증
 export async function confirmCode(apiPath: string, option: verifyEmailOption) {
   const { payload } = await requester({
     method: 'POST',
@@ -213,7 +248,7 @@ export async function confirmCode(apiPath: string, option: verifyEmailOption) {
   return payload
 }
 
-// 게시글 (무한스크롤)
+// 마이페이지 - 게시글 (무한스크롤)
 export async function postingAll(apiPath: string) {
   const { payload } = await requester({
     method: 'POST',
@@ -222,7 +257,7 @@ export async function postingAll(apiPath: string) {
   return payload
 }
 
-// 회원 탈퇴
+// 마이페이지 - 회원 탈퇴
 interface WidthdrawalOption {
   loginId: string
   checkBox: boolean

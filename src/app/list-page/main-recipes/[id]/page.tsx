@@ -1,13 +1,18 @@
 'use client'
-import { fetchGetMethod, getRecipeDetail } from '@/api/recipe-apis'
+import { getRecipeDetail } from '@/api/recipe-apis'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { DetailRecipe, ThreeCookInfo, Recipe } from '@/types/recipe'
+import { DetailRecipe, ThreeCookInfo } from '@/types/recipe'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { postWriteState } from '@/store/write-userRecipe-slice'
-import { checkLikesForRecipe, doLikeForRecipe } from '@/api/login-user-apis'
+import {
+  checkBookmark,
+  checkLikesForRecipe,
+  doBookmark,
+  doLikeForRecipe,
+} from '@/api/login-user-apis'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 
@@ -15,6 +20,8 @@ export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<DetailRecipe>()
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
   const [like, setLike] = useState<boolean>(false)
+  const [bookmark, setBookmark] = useState<boolean>(false)
+
   const params = useParams()
   const thisId = Number(params.id)
   const userInfo = useSelector((state: RootState) => state.userInfo)
@@ -22,16 +29,17 @@ export default function RecipeDetailMain() {
   const accessToken = localStorage.getItem('accessToken')
 
   useEffect(() => {
-    getDataLike()
-  }, [like])
+    getData()
+  }, [like, bookmark])
 
-  async function getDataLike() {
+  async function getData() {
     try {
       const resultData = await getRecipeDetail(`/api/recipe/`, thisId)
       const resultLike = await checkLikesForRecipe(
         '/api/recipe/like/check',
         thisId,
       )
+      const resultBookmark = await checkBookmark('/api/check/bookmarks', thisId)
       const createThree = (str1: string, str2: string) => {
         return {
           title: str1,
@@ -47,6 +55,7 @@ export default function RecipeDetailMain() {
       setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
       setLike(resultLike.success)
+      setBookmark(resultBookmark.success)
     } catch (error) {
       console.log(error)
     }
@@ -62,6 +71,21 @@ export default function RecipeDetailMain() {
       await doLikeForRecipe('/api/user/recipe/like', option)
       const result = await checkLikesForRecipe('/api/recipe/like/check', thisId)
       setLike(result.success)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function bookmarkHandler() {
+    try {
+      if (userInfo.id) {
+        const options = {
+          memberId: userInfo.id,
+          recipeId: thisId,
+        }
+        const result = await doBookmark('/api/user/recipe', options)
+        setBookmark(result.data['즐겨 찾기 상태'])
+      }
     } catch (error) {
       console.log(error)
     }
@@ -151,8 +175,16 @@ export default function RecipeDetailMain() {
               />
               {thisInfo.recipe.likeCount}
             </li>
-            <li className="cursor-pointer py-2 w-full text-center bg-gray-400 rounded-lg">
-              북마크
+            <li
+              onClick={() => bookmarkHandler()}
+              className="flex mb-2 py-2 w-full bg-gray-400 items-center justify-center rounded-lg cursor-pointer"
+            >
+              <Image
+                src={bookmark ? '/svg/bookmark-fill.svg' : '/svg/bookmark.svg'}
+                alt="북마크"
+                width={20}
+                height={15}
+              />
             </li>
           </ul>
         </aside>
