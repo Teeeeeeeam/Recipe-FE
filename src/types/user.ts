@@ -12,10 +12,22 @@ export interface MyPostings {
   postTitle: string
 }
 
-// 좋아요
-export interface MyLikes {
+// 마이페이지 좋아요(레시피)
+export interface MyLikesRecipe {
+  like_id: number
+  content_id: number
+  title: string
+}
+export interface MyLikesPosting {
+  like_id: number
+  content_id: number
+  title: string
+  content: string
+}
+
+// 마이페이지 북마크
+export interface MyBookmark {
   id: number
-  content: string | null
   title: string
 }
 
