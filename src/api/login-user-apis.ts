@@ -2,7 +2,8 @@ import axios, { AxiosResponseHeaders, RawAxiosResponseHeaders } from 'axios'
 import requester from '.'
 import {
   EmailOption,
-  MyLikes,
+  MyLikesPosting,
+  MyLikesRecipe,
   MyPostings,
   NickNameOption,
   UserInfo,
@@ -45,6 +46,11 @@ export async function checkExpireToken() {
 }
 
 // 레시피 like
+interface LikeOptions {
+  memberId: string
+  recipeId?: number
+  postId?: number
+}
 interface Like {
   payload: {
     message: string
@@ -58,7 +64,7 @@ export async function checkLikesForRecipe(apiPath: string, params: number) {
   })
   return payload
 }
-export async function doLikeForRecipe(apiPath: string, params: any) {
+export async function doLikeForRecipe(apiPath: string, params: LikeOptions) {
   const { payload }: Like = await requester({
     method: 'POST',
     url: apiPath,
@@ -76,7 +82,7 @@ export async function checkLikesForPosting(apiPath: string, id: string) {
   })
   return payload
 }
-export async function doLikeForPosting(apiPath: string, params: any) {
+export async function doLikeForPosting(apiPath: string, params: LikeOptions) {
   const { payload }: Like = await requester({
     method: 'POST',
     url: apiPath,
@@ -86,7 +92,7 @@ export async function doLikeForPosting(apiPath: string, params: any) {
 }
 
 // 레시피 즐겨찾기
-interface doBookmarkOption {
+interface DoBookmarkOption {
   memberId: string
   recipeId: number
 }
@@ -112,7 +118,7 @@ export async function checkBookmark(apiPath: string, params: number) {
   })
   return payload
 }
-export async function doBookmark(apiPath: string, option: doBookmarkOption) {
+export async function doBookmark(apiPath: string, option: DoBookmarkOption) {
   const { payload }: DoBookmark = await requester({
     method: 'POST',
     url: apiPath,
@@ -132,7 +138,7 @@ export async function enterMyPage(apiPath: string, option: any) {
 }
 
 // 마이페이지 - 로그인 정보
-interface inquiryUser {
+interface InquiryUser {
   payload: {
     success: boolean
     message: string
@@ -140,7 +146,7 @@ interface inquiryUser {
   }
 }
 export async function inquiryUser(apiPath: string, option: string) {
-  const { payload }: inquiryUser = await requester({
+  const { payload }: InquiryUser = await requester({
     method: 'GET',
     url: `${apiPath}${option}`,
   })
@@ -148,10 +154,6 @@ export async function inquiryUser(apiPath: string, option: string) {
 }
 
 // 마이페이지 - 작성 게시글 조회
-interface InquiryPostingOption {
-  pageable: Options
-  lastId: string
-}
 interface InquiryPosting {
   payload: {
     success: boolean
@@ -171,41 +173,41 @@ export async function inquiryPosting(apiPath: string) {
 }
 
 // 마이페이지 - 게시글 좋아요 조회
-interface inquiryLikePosting {
+interface InquiryLikePosting {
   payload: {
     success: boolean
     message: string
     data: {
-      content: MyLikes[] | []
+      content: MyLikesPosting[] | []
       nextPage: boolean
     }
   }
 }
 export async function inquiryLikePosting(apiPath: string, option: Options) {
-  const { payload }: inquiryLikePosting = await requester({
+  const { payload }: InquiryLikePosting = await requester({
     method: 'GET',
     url: apiPath,
-    data: option,
+    params: option,
   })
   return payload
 }
 
 // 마이페이지 - 레시피 좋아요 조회
-interface inquiryLikeRecipe {
+interface InquiryLikeRecipe {
   payload: {
     success: boolean
     message: string
     data: {
-      content: MyLikes[] | []
+      content: MyLikesRecipe[] | []
       nextPage: boolean
     }
   }
 }
 export async function inquiryLikeRecipe(apiPath: string, option: Options) {
-  const { payload }: inquiryLikeRecipe = await requester({
+  const { payload }: InquiryLikeRecipe = await requester({
     method: 'GET',
     url: apiPath,
-    data: option,
+    params: option,
   })
   return payload
 }
