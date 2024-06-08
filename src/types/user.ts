@@ -25,6 +25,12 @@ export interface MyLikesPosting {
   content: string
 }
 
+// 마이페이지 북마크
+export interface MyBookmark {
+  id: number
+  title: string
+}
+
 // 유저 정보 변경 axios put option ts
 export interface NickNameOption {
   loginId: string | null

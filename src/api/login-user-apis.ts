@@ -2,6 +2,7 @@ import axios, { AxiosResponseHeaders, RawAxiosResponseHeaders } from 'axios'
 import requester from '.'
 import {
   EmailOption,
+  MyBookmark,
   MyLikesPosting,
   MyLikesRecipe,
   MyPostings,
@@ -205,6 +206,26 @@ interface InquiryLikeRecipe {
 }
 export async function inquiryLikeRecipe(apiPath: string, option: Options) {
   const { payload }: InquiryLikeRecipe = await requester({
+    method: 'GET',
+    url: apiPath,
+    params: option,
+  })
+  return payload
+}
+
+// 마이페이지 - 북마크 조회
+interface InquiryBookmarkMyPage {
+  payload: {
+    success: boolean
+    message: string
+    data: {
+      bookmark_list: MyBookmark[] | []
+      hasNext: boolean
+    }
+  }
+}
+export async function inquiryBookmark(apiPath: string, option: Options) {
+  const { payload }: InquiryBookmarkMyPage = await requester({
     method: 'GET',
     url: apiPath,
     params: option,
