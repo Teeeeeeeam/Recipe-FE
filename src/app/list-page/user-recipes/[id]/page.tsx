@@ -70,17 +70,19 @@ export default function RecipeDetailUser() {
 
   async function likeHandler() {
     const userId = userInfo.id
-    const option = {
-      memberId: userId,
-      postId: thisId,
-    }
     try {
-      await doLikeForPosting('/api/user/postLike', option)
-      const result = await checkLikesForPosting(
-        '/api/likeCheck',
-        String(thisId),
-      )
-      setLike(result.success)
+      if (userId) {
+        const option = {
+          memberId: userId,
+          postId: thisId,
+        }
+        await doLikeForPosting('/api/user/postLike', option)
+        const result = await checkLikesForPosting(
+          '/api/likeCheck',
+          String(thisId),
+        )
+        setLike(result.success)
+      }
     } catch (error) {
       console.log(error)
     }
