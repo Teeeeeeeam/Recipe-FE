@@ -13,7 +13,7 @@ const useInfiniteScroll = (
     const options = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.8,
+      threshold: 1.0,
     }
 
     const observer = new IntersectionObserver(

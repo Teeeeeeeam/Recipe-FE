@@ -2,8 +2,10 @@
 
 import { deleteNotice, getNotice } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
+import useCheckbox from '@/hooks/use-check-box'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { NoticeInfo } from '@/types/admin'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useCallback } from 'react'
 
@@ -28,13 +30,22 @@ const Notice = () => {
   }, [hasMore, lastId])
 
   const lastElementRef = useInfiniteScroll(fetchGetNotice, hasMore)
-  const handleDeleteClick = async (id: number) => {
-    if (confirm('해당 공지사항을 삭제하시겠습니까?')) {
-      const res = await deleteNotice(id)
-      alert('해당 공지사항이 삭제되었습니다.')
-      location.reload()
-    }
-  }
+  // const handleDeleteClick = async (id: number) => {
+  //   if (confirm('해당 공지사항을 삭제하시겠습니까?')) {
+  //     const res = await deleteNotice(id)
+  //     alert('해당 공지사항이 삭제되었습니다.')
+  //     location.reload()
+  //   }
+  // }
+  const {
+    deleteList,
+    selectAll,
+    handleCheckboxChange,
+    handleSelectAll,
+    handleAllDeleteClick,
+    handleDeleteClick,
+  } = useCheckbox()
+
   return (
     <div>
       <form
@@ -69,9 +80,27 @@ const Notice = () => {
         </Link>
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
-        <ul className="grid grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li>체크</li>
-          <li>공지사항 번호</li>
+        <ul className="grid grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
+          <li className="flex justify-center items-center">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={() => handleSelectAll(notices.map((el) => el.id))}
+                className="cursor-pointer w-5 h-5"
+              />
+              <Image
+                src={`/svg/trash.svg`}
+                alt="delete-icon"
+                width={40}
+                height={40}
+                className="absolute top-0 left-[25px] cursor-pointer translate-transition hover:scale-x-110"
+                onClick={() => handleAllDeleteClick(deleteList, deleteNotice)}
+                priority
+              />
+            </div>
+          </li>
+          <li>번호</li>
           <li>제목</li>
           <li>글쓴이</li>
           <li>등록일자</li>
@@ -82,9 +111,16 @@ const Notice = () => {
             notices.map((el) => (
               <ul
                 key={el.id}
-                className="grid grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4"
+                className="grid grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center bg-navy-100 py-4"
               >
-                <li>체크</li>
+                <li className="flex justify-center items-center">
+                  <input
+                    type="checkbox"
+                    checked={deleteList.includes(el.id)}
+                    onChange={() => handleCheckboxChange(el.id)}
+                    className="cursor-pointer w-5 h-5"
+                  />
+                </li>
                 <li>{el.id}</li>
                 <Link href={`/notice/${el.id}`}>
                   <li>{el.noticeTitle}</li>
@@ -92,10 +128,12 @@ const Notice = () => {
                 <li>{el.member.nickname}</li>
                 <li>{el.created_at.slice(0, 10)}</li>
                 <li>
-                  수정
+                  <button className="hover:text-green-150">
+                    <Link href={`/admin/notice/modify/${el.id}`}>수정</Link>
+                  </button>
                   <span>{` / `}</span>
                   <button
-                    onClick={() => handleDeleteClick(el.id)}
+                    onClick={() => handleDeleteClick(el.id, deleteNotice)}
                     className="hover:text-green-150"
                   >
                     삭제

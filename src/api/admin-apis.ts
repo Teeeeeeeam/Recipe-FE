@@ -8,16 +8,19 @@ import {
   Notices,
   NumberOfVisitor,
   Posts,
+  QuestionDetail,
+  Questions,
   Recipe,
   RecipeForm,
   WeeklyVisit,
 } from '@/types/admin'
 import requester from './index'
+import { Response } from '@/types/auth'
 
 export const getRecipe = async (
   lastId: number | null,
-  title: string | null,
   ingredients: string | null,
+  title: string | null,
 ) => {
   const { payload } = await requester<Recipe>({
     method: 'get',
@@ -69,31 +72,40 @@ export const postRecipe = async (
 }
 
 export const updateRecipe = async (
+  recipeId: number,
   title: string,
   cookLevel: string,
   people: string,
   ingredients: string[],
   cookTime: string,
   cookSteps: CookStep[],
-  file: File,
+  newCookSteps: string[],
+  deleteCookStepsId: string[],
+  file: File | null,
 ) => {
   const formData = new FormData()
-  formData.append('file', file)
-  formData.append(
-    'recipeSaveRequest',
-    JSON.stringify({
-      title,
-      cookLevel,
-      people,
-      ingredients,
-      cookTime,
-      cookSteps,
-    }),
-  )
+  if (file) formData.append('file', file)
+
+  const recipeUpdateRequest: any = {
+    title,
+    cookLevel,
+    people,
+    ingredients,
+    cookTime,
+    cookSteps,
+  }
+  if (newCookSteps.length > 0) {
+    recipeUpdateRequest.newCookSteps = newCookSteps
+  }
+
+  if (deleteCookStepsId.length > 0) {
+    recipeUpdateRequest.deleteCookStepsId = deleteCookStepsId
+  }
+  formData.append('recipeUpdateRequest', JSON.stringify(recipeUpdateRequest))
 
   const { payload } = await requester<Response>({
-    method: 'post',
-    url: '/api/admin/save/recipe',
+    method: 'put',
+    url: `/api/admin/update/${recipeId}`,
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -111,14 +123,23 @@ export const deleteRecipe = async (ids: number[]) => {
 }
 
 export const getPosts = async (
+  postId: number | null,
   loginId: string | null,
   recipeTitle: string | null,
   postTitle: string | null,
-  postId: number | null,
 ) => {
+  const params = new URLSearchParams({
+    ...(loginId && { 'login-id': loginId }),
+    ...(recipeTitle && { 'recipe-title': recipeTitle }),
+    ...(postTitle && { 'post-title': postTitle }),
+    ...(postId !== null && { 'post-id': String(postId) }),
+    page: '0',
+    size: '10',
+    sort: 'string',
+  })
   const { payload } = await requester<Posts>({
     method: 'get',
-    url: `/api/search?${loginId ? `login-id=${loginId}` : ''}${recipeTitle ? `&recipe-title=${recipeTitle}` : ''}${postTitle ? `post-title=${postTitle}` : ''}${postId ? `post-id=${postId}` : ''}page=0size=10&sort=string`,
+    url: `/api/search?${params.toString()}`,
   })
   return payload
 }
@@ -161,10 +182,10 @@ export const getMembers = async (
   return payload.data
 }
 
-export const deleteMembers = async (id: number[]) => {
+export const deleteMembers = async (ids: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/members?ids=${id}`,
+    url: `/api/admin/members?ids=${ids}`,
   })
   return payload
 }
@@ -212,10 +233,10 @@ export const postNotice = async (
   return payload
 }
 
-export const deleteNotice = async (id: number) => {
+export const deleteNotice = async (ids: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/notices/${id}`,
+    url: `/api/admin/notices?ids=${ids}`,
   })
   return payload
 }
@@ -289,4 +310,50 @@ export const getMemberCount = async () => {
     url: '/api/admin/members/count',
   })
   return payload.data
+}
+
+export const getQuestions = async (
+  lastId: number | null,
+  questionsType: string | null,
+  questionStatus: string | null,
+) => {
+  const params = new URLSearchParams({
+    ...(lastId !== null ? { 'last-id': String(lastId) } : {}),
+    ...(questionsType ? { 'question-type': questionsType } : {}),
+    ...(questionStatus ? { question_status: questionStatus } : {}),
+    page: '0',
+    size: '10',
+    sort: 'string',
+  })
+
+  const { payload } = await requester<{ data: Questions }>({
+    method: 'get',
+    url: `/api/admin/questions?${params.toString()}`,
+  })
+  return payload.data
+}
+
+export const getQuestionsDetail = async (id: number) => {
+  const { payload } = await requester<{ data: QuestionDetail }>({
+    method: 'get',
+    url: `/api/admin/question/${id}`,
+  })
+  return payload.data
+}
+
+export const postAnswer = async (
+  id: number,
+  title: string,
+  content: string,
+) => {
+  const { payload } = await requester<Response>({
+    method: 'post',
+    url: `/api/admin/questions/${id}/answers`,
+    data: {
+      answer_title: title,
+      answer_content: content,
+      questionStatus: 'COMPLETED',
+    },
+  })
+  return payload
 }
