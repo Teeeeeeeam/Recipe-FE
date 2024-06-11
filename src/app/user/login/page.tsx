@@ -10,6 +10,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
+const TEN_MINUTE = 60000
+
 const Login = ({
   searchParams,
 }: {
@@ -40,8 +42,9 @@ const Login = ({
     } else {
       try {
         const res = await postLogin(username, password)
+
         setLocalStorage('accessToken', res.accessToken)
-        setLocalStorage('expiry', Date.now())
+        setLocalStorage('expiry', Date.now() + TEN_MINUTE)
         const userInfo = await postLoginInfo()
         dispatch(getLoginInfo(userInfo))
 

@@ -1,6 +1,5 @@
 'use client'
 import { postRecipe } from '@/api/admin-apis'
-import RecipeFormInput from '@/components/common/recipe-form-input'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useRef } from 'react'
@@ -106,22 +105,56 @@ const WriteRecipe = () => {
         </div>
         <div className="flex flex-col items-center justify-center text-white gap-y-2">
           <div className="flex gap-x-2">
-            <div className="w-[100px] py-1 text-center bg-green-100 rounded-full">
+            <div className="flex items-center justify-center w-[100px] py-1 text-center bg-green-100 rounded-full">
               인분
             </div>
-            <RecipeFormInput value={people} onChange={setPeople} />
+            <select
+              value={people}
+              onChange={(e) => setPeople(e.target.value)}
+              className="max-w-[160px] w-full py-3 pl-2 bg-green-100 rounded-md"
+            >
+              <option value="">선택하세요</option>
+              <option value="1인분">1인분</option>
+              <option value="2인분">2인분</option>
+              <option value="3인분">3인분</option>
+              <option value="4인분">4인분</option>
+              <option value="5인분">5인분</option>
+              <option value="6인분이상">6인분 이상</option>
+            </select>
           </div>
           <div className="flex gap-x-2">
-            <div className="w-[100px] py-1 text-center bg-green-100 rounded-full">
+            <div className="flex items-center justify-center w-[100px] py-1 text-center bg-green-100 rounded-full">
               요리시간
             </div>
-            <RecipeFormInput value={cookTime} onChange={setCookTime} />
+            <select
+              value={cookTime}
+              onChange={(e) => setCookTime(e.target.value)}
+              className="max-w-[160px] w-full py-3 pl-2 bg-green-100 rounded-md"
+            >
+              <option value="">선택하세요</option>
+              <option value="5분이내">5분 이내</option>
+              <option value="15분이내">15분 이내</option>
+              <option value="30분이내">30분 이내</option>
+              <option value="60분이내">60분 이내</option>
+              <option value="90분이내">90분 이내</option>
+              <option value="2시간이내">2시간 이내</option>
+              <option value="2시간이상">2시간 이상</option>
+            </select>
           </div>
           <div className="flex gap-x-2">
-            <div className="w-[100px] py-1 text-center bg-green-100 rounded-full">
+            <div className="flex items-center justify-center w-[100px] py-1 text-center bg-green-100 rounded-full">
               난이도
             </div>
-            <RecipeFormInput value={cookLevel} onChange={setCookLevel} />
+            <select
+              value={cookLevel}
+              onChange={(e) => setCookLevel(e.target.value)}
+              className="max-w-[160px] w-full py-3 pl-2 bg-green-100 rounded-md "
+            >
+              <option value="">선택하세요</option>
+              <option value="상급">상급</option>
+              <option value="중급">중급</option>
+              <option value="초급">초급</option>
+            </select>
           </div>
         </div>
       </div>
