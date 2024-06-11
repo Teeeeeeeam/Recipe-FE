@@ -16,10 +16,11 @@ const Comments = ({ id }: { id: number }) => {
     if (!hasMore) return
     const res = await getComments(id, lastId)
     const newComment = res.comment
-
-    setComments((prev) => [...prev, ...newComment])
-    setHasMore(res.nextPage)
-    setLastId(newComment[newComment.length - 1].id)
+    if (newComment.length) {
+      setComments((prev) => [...prev, ...newComment])
+      setHasMore(res.nextPage)
+      setLastId(newComment[newComment.length - 1].id)
+    }
   }, [hasMore, lastId, comments])
 
   const lastElementRef = useInfiniteScroll(getComment, hasMore)

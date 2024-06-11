@@ -1,10 +1,10 @@
 'use client'
 
-import { postNotice } from '@/api/admin-apis'
+import { getNoticeDetail, postNotice } from '@/api/admin-apis'
 import RecipeFormInput from '@/components/common/recipe-form-input'
 import { useAppSelector } from '@/store'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 
 const ModifyNotice = () => {
@@ -18,8 +18,17 @@ const ModifyNotice = () => {
   const userInfo = useAppSelector((state) => state.userInfo)
   const router = useRouter()
 
+  const params = useParams()
+  const noticeId = params.id
+
+  const fetchGetNoticeDetail = async () => {
+    const res = await getNoticeDetail(Number(noticeId))
+    console.log(res)
+    setTitle(res.noticeTitle)
+    setContent(res.noticeContent)
+  }
   useEffect(() => {
-    //공지사항 데이터 받아오는 로직
+    fetchGetNoticeDetail()
   }, [])
 
   const previewImg = () => {

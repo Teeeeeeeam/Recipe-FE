@@ -6,7 +6,10 @@ import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import Image from 'next/image'
 
 import { useState, useEffect, useCallback } from 'react'
-import PostList from './post-list'
+import useCheckbox from '@/hooks/use-check-box'
+import Comments from './comments'
+import Link from 'next/link'
+import { PostList } from '@/types/admin'
 
 const FILTER_LIST = ['요리글 제목', '레시피 제목', '아이디']
 
@@ -21,32 +24,39 @@ const UserPosts = ({
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('요리글 제목')
   const [isFilter, setIsFilter] = useState(false)
-  const [deleteList, setDeleteList] = useState<number[]>([])
-  const [selectAll, setSelectAll] = useState<boolean>(false)
 
+  const [activeCommentId, setActiveCommentId] = useState<number | null>(null)
+
+  const handleGetCommentClick = (id: number) => {
+    if (activeCommentId) {
+      setActiveCommentId(null)
+    } else {
+      setActiveCommentId((prevId) => (prevId === id ? null : id))
+    }
+  }
   const { recipeTitle, postTitle, id } = searchParams
 
-  const getRecipes = useCallback(async () => {
+  const fetchGetPosts = useCallback(async () => {
     if (!hasMore) return
     try {
       const res = await getPosts(
+        postId,
         id ?? null,
         recipeTitle ?? null,
         postTitle ?? null,
-        postId,
       )
       const newPosts = res.posts
+      const lastId = newPosts[newPosts.length - 1].id
+
+      setPostId(lastId)
       setPosts((prev) => [...prev, ...newPosts])
-      setPostId(newPosts[newPosts.length - 1].id)
       setHasMore(res.nextPage)
     } catch (error) {
-      //에러 처리
-      //존재하지 않는 검색값일때
       console.log(error)
     }
   }, [postId, hasMore, searchParams])
 
-  const lastElementRef = useInfiniteScroll(getRecipes, hasMore)
+  const lastElementRef = useInfiniteScroll(fetchGetPosts, hasMore)
 
   const handleSearchSubmit = () => {
     let query = ['']
@@ -61,7 +71,7 @@ const UserPosts = ({
     const newUrl = `/admin/user-posts?${queryString}`
     window.location.href = newUrl
     setPosts([])
-    getRecipes()
+    fetchGetPosts()
   }
 
   useEffect(() => {
@@ -74,32 +84,14 @@ const UserPosts = ({
     }
   }, [])
 
-  const handleCheckboxChange = (postId: number) => {
-    setDeleteList((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId],
-    )
-  }
-
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setDeleteList([])
-    } else {
-      const allIds = posts.map((post) => post.id)
-      setDeleteList(allIds)
-    }
-    setSelectAll(!selectAll)
-  }
-
-  const handleAllDeleteClick = async () => {
-    if (confirm('선택된 요리글들을 삭제하시겠습니까?')) {
-      await deletePosts(deleteList)
-      alert('요리글이 삭제 되었습니다.')
-      location.reload()
-    }
-  }
-
+  const {
+    deleteList,
+    selectAll,
+    handleCheckboxChange,
+    handleSelectAll,
+    handleAllDeleteClick,
+    handleDeleteClick,
+  } = useCheckbox()
   return (
     <div>
       <form
@@ -161,23 +153,25 @@ const UserPosts = ({
         </button>
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
-        <ul className="grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li className="relative flex justify-center items-center">
-            <input
-              type="checkbox"
-              checked={selectAll}
-              onChange={handleSelectAll}
-              className="cursor-pointer"
-            />
-            <Image
-              src={`/svg/trash.svg`}
-              alt="delete-icon"
-              width={20}
-              height={20}
-              className="absolute left-[45px] cursor-pointer translate-transition hover:scale-x-110"
-              onClick={handleAllDeleteClick}
-              priority
-            />
+        <ul className="grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md">
+          <li className="flex justify-center items-center">
+            <div className="relative flex">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={() => handleSelectAll(posts.map((el) => el.id))}
+                className="cursor-pointer w-5 h-5"
+              />
+              <Image
+                src={`/svg/trash.svg`}
+                alt="delete-icon"
+                width={40}
+                height={40}
+                className="absolute top-0 left-[25px] cursor-pointer translate-transition hover:scale-x-110"
+                onClick={() => handleAllDeleteClick(deleteList, deletePosts)}
+                priority
+              />
+            </div>
           </li>
           <li>요리글 번호</li>
           <li>요리명</li>
@@ -186,12 +180,47 @@ const UserPosts = ({
           <li>등록일자</li>
           <li>관리</li>
         </ul>
-        <PostList
-          posts={posts}
-          ref={lastElementRef}
-          deleteList={deleteList}
-          handleCheckboxChange={handleCheckboxChange}
-        />
+        <div className="flex flex-col space-y-2 mt-2">
+          {posts &&
+            posts.map((el) => (
+              <div key={el.id}>
+                <ul className="relative grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100">
+                  <li>
+                    <input
+                      type="checkbox"
+                      checked={deleteList.includes(el.id)}
+                      onChange={() => handleCheckboxChange(el.id)}
+                      className="cursor-pointer w-5 h-5"
+                    />
+                  </li>
+                  <li>{el.id}</li>
+                  <Link href={`/list-page/user-recipes/${el.id}`}>
+                    <li className="cursor-pointer hover:text-green-150">
+                      {el.postTitle}
+                    </li>
+                  </Link>
+                  <li>{el.member.loginId}</li>
+                  <Link href={`/list-page/main-recipes/${el.recipe.id}`}>
+                    <li className="hover:text-green-150">{el.recipe.title}</li>
+                  </Link>
+                  <li>{el.create_at.slice(0, 10)}</li>
+                  <li className="space-x-1">
+                    <button onClick={() => handleGetCommentClick(el.id)}>
+                      댓글
+                    </button>
+                    <span>/</span>
+                    <button
+                      onClick={() => handleDeleteClick(el.id, deletePosts)}
+                    >
+                      삭제
+                    </button>
+                  </li>
+                </ul>
+                {activeCommentId === el.id && <Comments id={el.id} />}
+              </div>
+            ))}
+          <div ref={lastElementRef}></div>
+        </div>
       </div>
     </div>
   )

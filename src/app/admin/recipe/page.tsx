@@ -168,22 +168,24 @@ const AdminRecipe = ({
       </form>
       <div className="bg-navy-50 p-2 text-white rounded-md">
         <ul className="grid grid-cols-[1fr_2fr_3fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md ">
-          <li className="relative flex justify-center items-center">
-            <input
-              type="checkbox"
-              checked={selectAll}
-              onChange={handleSelectAll}
-              className="cursor-pointer"
-            />
-            <Image
-              src={`/svg/trash.svg`}
-              alt="delete-icon"
-              width={20}
-              height={20}
-              className="absolute left-[40px] cursor-pointer translate-transition hover:scale-x-110"
-              onClick={handleAllDeleteClick}
-              priority
-            />
+          <li className="flex justify-center items-center">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={handleSelectAll}
+                className="cursor-pointer w-5 h-5"
+              />
+              <Image
+                src={`/svg/trash.svg`}
+                alt="delete-icon"
+                width={40}
+                height={40}
+                className="absolute top-0 left-[25px] cursor-pointer translate-transition hover:scale-x-110"
+                onClick={handleAllDeleteClick}
+                priority
+              />
+            </div>
           </li>
           <li>레시피 번호</li>
           <li>요리명</li>
@@ -205,6 +207,7 @@ const AdminRecipe = ({
                     type="checkbox"
                     checked={deleteList.includes(el.id)}
                     onChange={() => handleCheckboxChange(el.id)}
+                    className="w-5 h-5 cursor-pointer"
                   />
                 </li>
                 <li>{el.id}</li>
