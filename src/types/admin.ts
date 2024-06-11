@@ -36,10 +36,12 @@ export interface RecipeForm extends Response {
   }
 }
 export interface CookStep {
-  cook_step_id?: string
+  cook_step_id: string
   cook_steps: string
 }
-
+export interface NewCookStep {
+  newCookSteps: string
+}
 export interface Posts {
   nextPage: boolean
   posts: PostList[]
@@ -129,4 +131,32 @@ export interface MonthlyVisit {
 }
 export interface NumberOfVisitor {
   data: number
+}
+
+export interface QuestionInfo {
+  id: number
+  questionType: 'ACCOUNT_INQUIRY' | 'GENERAL_INQUIRY'
+  title: string
+  status: 'PENDING' | 'COMPLETED'
+  create_at: string
+  member: {
+    id: 11
+    loginId: string
+  }
+}
+
+export interface Questions {
+  nextPage: boolean
+  questions: QuestionInfo[]
+}
+
+export interface QuestionDetail {
+  questionType: 'ACCOUNT_INQUIRY' | 'GENERAL_INQUIRY'
+  title: string
+  question_content: string
+  status: 'PENDING' | 'COMPLETED'
+  answerType: string
+  create_at: string
+  answer_email: string
+  member?: { id: number; nickname: string; loginId: string }
 }

@@ -29,27 +29,29 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
       </Link>
       <Link href="/admin/members" className="w-full">
         <AdminButton id="members" segment={segment}>
-          사용자 관리
+          사용자
         </AdminButton>
       </Link>
       <Link href="/admin/user-posts" className="w-full">
         <AdminButton id="user-posts" segment={segment}>
-          회원 게시글 관리
+          회원 게시글
         </AdminButton>
       </Link>
       <Link href="/admin/recipe" className="w-full">
         <AdminButton id="recipe" segment={segment}>
-          레시피 관리
+          레시피
         </AdminButton>
       </Link>
       <Link href="/admin/notice" className="w-full">
         <AdminButton id="notice" segment={segment}>
-          공지사항 관리
+          공지사항
         </AdminButton>
       </Link>
-      <AdminButton id="qna" segment={segment}>
-        고객 지원
-      </AdminButton>
+      <Link href="/admin/questions" className="w-full">
+        <AdminButton id="questions" segment={segment}>
+          문의사항
+        </AdminButton>
+      </Link>
     </div>
   )
 }
