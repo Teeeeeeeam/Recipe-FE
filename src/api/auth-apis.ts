@@ -32,7 +32,7 @@ export const postLogout = async (id: string) => {
   return payload
 }
 
-export const postLoginInfo = async () => {
+export const postUserInfo = async () => {
   const { payload } = await requester<LoginInfo>({
     method: 'post',
     url: '/api/userinfo',

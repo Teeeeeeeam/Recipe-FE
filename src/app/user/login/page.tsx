@@ -1,6 +1,6 @@
 'use client'
 
-import { postLoginInfo, postLogin } from '@/api/auth-apis'
+import { postUserInfo, postLogin } from '@/api/auth-apis'
 import AuthInput from '@/components/common/auth-input'
 import { setLocalStorage } from '@/lib/local-storage'
 import { useAppDispatch } from '@/store'
@@ -30,14 +30,14 @@ const Login = ({
       console.log(accessToken)
       if (accessToken) {
         setLocalStorage('accessToken', accessToken)
-        const userInfo = await postLoginInfo()
+        const userInfo = await postUserInfo()
         dispatch(getLoginInfo(userInfo))
         router.push('/')
       }
     }
     fetchData()
   }, [searchParams])
-
+  console.log(searchParams)
   const handleLoginSubmit = async () => {
     if (!username || !password) {
       alert('아이디와 비밀번호를 입력하세요.')
@@ -47,7 +47,7 @@ const Login = ({
 
         setLocalStorage('accessToken', res.accessToken)
         setLocalStorage('expiry', Date.now() + TEN_MINUTE)
-        const userInfo = await postLoginInfo()
+        const userInfo = await postUserInfo()
         dispatch(getLoginInfo(userInfo))
 
         if (userInfo.roles === 'ROLE_ADMIN') {
