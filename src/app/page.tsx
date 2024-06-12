@@ -102,7 +102,17 @@ export default function Home() {
       </div>
       <div className="home-recipe-recipe bg-[#222E50] bg-opacity-80 pt-10">
         <div className="flex items-center justify-center">
-          <h3 className="mb-3 lg:text-3xl md:text-3xl text-2xl text-gray-300 rounded-lg">
+          <h3
+            onClick={() =>
+              dispatch(
+                postSearchState({
+                  category: undefined,
+                  value: undefined,
+                }),
+              )
+            }
+            className="mb-3 lg:text-3xl md:text-3xl text-2xl text-gray-300 rounded-lg"
+          >
             <Link href="/list-page/main-recipes">Search Recipe</Link>
           </h3>
         </div>
