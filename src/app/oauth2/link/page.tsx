@@ -17,10 +17,12 @@ const Link = ({
   const router = useRouter()
 
   const fetchLogin = async () => {
-    setLocalStorage('accessToken', accessToken)
-    const userInfo = await postUserInfo()
-    dispatch(getLoginInfo(userInfo))
-    router.push('/')
+    if (accessToken) {
+      setLocalStorage('accessToken', accessToken)
+      const userInfo = await postUserInfo()
+      dispatch(getLoginInfo(userInfo))
+      router.push('/')
+    }
   }
   useEffect(() => {
     fetchLogin()
