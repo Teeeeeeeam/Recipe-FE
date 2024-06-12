@@ -56,11 +56,7 @@ export default function Write() {
     const postFile = file
     async function postRecipeData() {
       try {
-        const result = await postUserWrite(
-          '/api/user/posts',
-          postData,
-          postFile,
-        )
+        await postUserWrite('/api/user/posts', postData, postFile)
         window.location.href = `/list-page/main-recipes/${state.id}`
       } catch (error) {
         console.log(error)

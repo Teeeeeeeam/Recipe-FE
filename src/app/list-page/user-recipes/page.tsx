@@ -21,18 +21,20 @@ export default function UserRecipes() {
         `/api/posts?size=8${isInit === false && lastId ? `&post-id=${lastId}` : ''}`,
       )
       // lastId
-      const dataLastId = String(result.posts[result.posts.length - 1]?.id)
+      const dataLastId = String(
+        result.data.posts[result.data.posts.length - 1]?.id,
+      )
 
       if (isInit) {
-        setPosting(result.posts)
+        setPosting(result.data.posts)
       } else {
         setPosting((prev) => {
-          const newData = result.posts
+          const newData = result.data.posts
           return [...prev, ...newData]
         })
       }
       setLastId(dataLastId)
-      setNext(result.nextPage)
+      setNext(result.data.nextPage)
     } catch (error) {
       console.log(error)
     }

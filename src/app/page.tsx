@@ -2,12 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import {
-  fetchGetMethod,
-  fetchGetMethodParams,
-  getHomePosting,
-  getHomeRecipe,
-} from '@/api/recipe-apis'
+import { getHomePosting, getHomeRecipe } from '@/api/recipe-apis'
 import { RecipeFigure, UserPostingFigure } from '@/components/recipeFigure'
 import { PostingFigure, Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
@@ -40,7 +35,7 @@ export default function Home() {
       const result = await getHomeRecipe(`/api/main/recipe`)
       const result_posting = await getHomePosting(`/api/posts`, options)
       setRecipes(result.data.recipe)
-      setUserPosting(result_posting.posts)
+      setUserPosting(result_posting.data.posts)
     } catch (error) {
       console.log(error)
     }
