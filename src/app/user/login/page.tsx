@@ -22,25 +22,25 @@ const Login = ({
 
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const accessToken = new URL(window.location.href).searchParams.get(
-    'access-token',
-  )
-  console.log(accessToken)
-  const fetchData = async (accessToken: string) => {
-    console.log('fetch실행됨')
-    setLocalStorage('accessToken', accessToken)
-    const userInfo = await postUserInfo()
-    dispatch(getLoginInfo(userInfo))
-    alert('로그인 성공')
-    router.push('/')
-  }
-  useEffect(() => {
-    console.log('useEffect 실행')
-    if (accessToken) {
-      console.log('홍홍')
-      fetchData(accessToken)
-    }
-  }, [searchParams])
+  // const accessToken = new URL(window.location.href).searchParams.get(
+  //   'access-token',
+  // )
+  // console.log(accessToken)
+  // const fetchData = async (accessToken: string) => {
+  //   console.log('fetch실행됨')
+  //   setLocalStorage('accessToken', accessToken)
+  //   const userInfo = await postUserInfo()
+  //   dispatch(getLoginInfo(userInfo))
+  //   alert('로그인 성공')
+  //   router.push('/')
+  // }
+  // useEffect(() => {
+  //   console.log('useEffect 실행')
+  //   if (accessToken) {
+  //     console.log('홍홍')
+  //     fetchData(accessToken)
+  //   }
+  // }, [accessToken])
 
   console.log(searchParams)
   const handleLoginSubmit = async () => {
