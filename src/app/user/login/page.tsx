@@ -25,7 +25,9 @@ const Login = ({
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(searchParams)
       const accessToken = searchParams['access-token']
+      console.log(accessToken)
       if (accessToken) {
         setLocalStorage('accessToken', accessToken)
         const userInfo = await postLoginInfo()
