@@ -23,10 +23,7 @@ const Login = ({
   const dispatch = useAppDispatch()
   const router = useRouter()
 
-  const accessToken = searchParams['access-token']
-  const fetchData = async () => {
-    console.log(searchParams)
-    console.log(accessToken)
+  const fetchData = async (accessToken: string) => {
     setLocalStorage('accessToken', accessToken)
     const userInfo = await postUserInfo()
     dispatch(getLoginInfo(userInfo))
@@ -34,8 +31,12 @@ const Login = ({
     router.push('/')
   }
   useEffect(() => {
-    fetchData()
-  }, [])
+    const accessToken = searchParams['access-token']
+    if (accessToken) {
+      fetchData(accessToken)
+    }
+  }, [searchParams])
+
   console.log(searchParams)
   const handleLoginSubmit = async () => {
     if (!username || !password) {
