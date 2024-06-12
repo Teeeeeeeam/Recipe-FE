@@ -13,6 +13,7 @@ const Link = ({
 }) => {
   const accessToken = searchParams['access-token']
   const dispatch = useAppDispatch()
+
   const fetchLogin = async () => {
     setLocalStorage('accessToken', accessToken)
     const userInfo = await postUserInfo()
