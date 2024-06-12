@@ -14,6 +14,7 @@
     "@types/react-redux": "^7.1.33",
     "axios": "^1.6.8",
     "chart.js": "^4.4.3",
+    "event-source-polyfill": "^1.0.31",
     "jwt-decode": "^4.0.0",
     "next": "14.2.3",
     "react": "^18",
@@ -24,6 +25,7 @@
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@types/event-source-polyfill": "^1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
