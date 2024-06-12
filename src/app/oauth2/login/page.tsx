@@ -16,8 +16,8 @@ const Link = ({
   const dispatch = useAppDispatch()
   const router = useRouter()
 
-  // console.log('이건 const로 선언한 토큰', accessToken)
-  // console.log('이건 그냥 searchParams', searchParams)
+  console.log('이건 const로 선언한 토큰', accessToken)
+  console.log('이건 그냥 searchParams', searchParams)
 
   const fetchLogin = async () => {
     console.log('if문 밖')
@@ -36,29 +36,17 @@ const Link = ({
   }, [])
 
   //
-  function useQuery() {
-    const [foo, setFoo] = useState(null)
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      const queryObject: any = {}
-      params.forEach((value, key) => {
-        queryObject[key] = value
-      })
-      setFoo(queryObject)
-    }
-    return foo
-  }
-  const query: any = useQuery()
-  const token = query ? query.token : null
+  // 현재 페이지의 URL 가져오기
+  const currentUrl = window.location.href
 
-  useEffect(() => {
-    if (token) {
-      console.log('access-token:', token)
-      // 필요한 작업 수행 (예: 토큰 저장, API 호출 등)
-    } else {
-      console.log('Token not found')
-    }
-  }, [token])
+  // URL 객체 생성
+  const url = new URL(currentUrl)
+
+  // URLSearchParams를 사용하여 쿼리 파라미터 가져오기
+  const foo = new URLSearchParams(url.search)
+
+  // 쿼리 파라미터 출력
+  console.log('Query String:', foo.toString())
 
   return <></>
 }
