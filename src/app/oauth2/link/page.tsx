@@ -4,6 +4,7 @@ import { postUserInfo } from '@/api/auth-apis'
 import { setLocalStorage } from '@/lib/local-storage'
 import { useAppDispatch } from '@/store'
 import { getLoginInfo } from '@/store/user-info-slice'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const Link = ({
@@ -13,13 +14,13 @@ const Link = ({
 }) => {
   const accessToken = searchParams['access-token']
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const fetchLogin = async () => {
     setLocalStorage('accessToken', accessToken)
     const userInfo = await postUserInfo()
     dispatch(getLoginInfo(userInfo))
-    console.log(searchParams)
-    alert('로그인 성공')
+    router.push('/')
   }
   useEffect(() => {
     fetchLogin()
