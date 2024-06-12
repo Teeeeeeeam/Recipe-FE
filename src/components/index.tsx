@@ -6,10 +6,12 @@ import { getLocalStorage, removeLocalStorage } from '@/lib/local-storage'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
 import { isVisited } from '@/store/visited-slice'
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import NotifyRecent from './notify-recent'
 
 export function Header() {
   const [session, setSession] = useState<boolean>(false)
@@ -19,6 +21,68 @@ export function Header() {
   const state = useAppSelector((state) => state.userInfo)
   const visitedInfo = useAppSelector((state) => state.visited)
   const dispatch = useAppDispatch()
+
+  // 알림
+  const [notifyContent, setNotifyContent] = useState<string[] | []>([])
+  const [eventId, setEventId] = useState<string>('')
+  const [eventCount, setEventCount] = useState<number>(0) // 이벤트 카운트를 위한 상태 변수
+  const [isConnect, setIsConnect] = useState<boolean>(false)
+
+  const EventSource = EventSourcePolyfill || NativeEventSource
+  const HEARTBEAT_TIMEOUT = 60 * 60 * 1000 // 1hour
+  const accessToken = getLocalStorage('accessToken')
+
+  useEffect(() => {
+    if (accessToken) {
+      const eventSource = new EventSource(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/connect`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          heartbeatTimeout: HEARTBEAT_TIMEOUT, // heartbeatTimeout 설정
+        },
+      )
+
+      eventSource.addEventListener(
+        'open',
+        function () {
+          setIsConnect(true)
+          setEventCount(0)
+        },
+        false,
+      )
+
+      eventSource.addEventListener(
+        'message',
+        function (e) {
+          const eventData = e.data // 응답값
+          const eventId = e.lastEventId // 응답의 lastEventId
+
+          setEventId(eventId)
+          if (!eventData.includes('EventStream Created')) {
+            setNotifyContent((prev) => [...prev, eventData])
+            setEventCount((prev) => prev + 1)
+          }
+        },
+        false,
+      )
+
+      return () => {
+        eventSource.close()
+      }
+    }
+  }, [])
+
+  /*
+  useEffect(() => {
+    if (isConnect) {
+      // 59분 59초에 연결 해제 요청
+    } else {
+      // 연결 요청
+    }
+  }, [isConnect])
+  */
 
   // 로그인 성공일 때 받는 redux로 session을 변경(boolean), redux 저장
   useEffect(() => {
@@ -96,6 +160,16 @@ export function Header() {
     }
     const memberId = state.id
     if (memberId) {
+      const eventSource = new EventSource(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/connect`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Last-Event-ID': eventId,
+          },
+        },
+      )
+      eventSource.close()
       await postLogout(memberId)
       setUserInfo(null)
       setSession(false)
@@ -113,6 +187,7 @@ export function Header() {
         >
           Recipe Radar
         </Link>
+        {session && <NotifyRecent eventCount={eventCount} />}
         {session && userInfo ? (
           <div className="min-w-[150px] flex items-center justify-between">
             <p className="text-gray-300">
