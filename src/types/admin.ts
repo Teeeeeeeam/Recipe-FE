@@ -139,8 +139,9 @@ export interface QuestionInfo {
   title: string
   status: 'PENDING' | 'COMPLETED'
   create_at: string
+  img_url: string
   member: {
-    id: 11
+    id: number
     loginId: string
   }
 }
@@ -159,4 +160,17 @@ export interface QuestionDetail {
   create_at: string
   answer_email: string
   member?: { id: number; nickname: string; loginId: string }
+}
+
+export interface BlackListInfo {
+  id: number
+  email: string
+  black_check: boolean
+}
+
+export interface BlackList {
+  data: {
+    nextPage: boolean
+    blackList: BlackListInfo[]
+  }
 }

@@ -49,6 +49,7 @@ const useCheckbox = (initialItems = []) => {
 
   return {
     deleteList,
+    setDeleteList,
     selectAll,
     handleCheckboxChange,
     handleSelectAll,

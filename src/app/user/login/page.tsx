@@ -8,41 +8,17 @@ import { getLoginInfo } from '@/store/user-info-slice'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const TEN_MINUTE = 60000
 
-const Login = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) => {
+const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useAppDispatch()
   const router = useRouter()
-  // const accessToken = new URL(window.location.href).searchParams.get(
-  //   'access-token',
-  // )
-  // console.log(accessToken)
-  // const fetchData = async (accessToken: string) => {
-  //   console.log('fetch실행됨')
-  //   setLocalStorage('accessToken', accessToken)
-  //   const userInfo = await postUserInfo()
-  //   dispatch(getLoginInfo(userInfo))
-  //   alert('로그인 성공')
-  //   router.push('/')
-  // }
-  // useEffect(() => {
-  //   console.log('useEffect 실행')
-  //   if (accessToken) {
-  //     console.log('홍홍')
-  //     fetchData(accessToken)
-  //   }
-  // }, [accessToken])
 
-  console.log(searchParams)
   const handleLoginSubmit = async () => {
     if (!username || !password) {
       alert('아이디와 비밀번호를 입력하세요.')
@@ -131,14 +107,6 @@ const Login = ({
             priority
           />
         </Link>
-        <Image
-          src="/google-icon.svg"
-          alt="naver-icon"
-          width={50}
-          height={50}
-          className="cursor-not-allowed transition-transform hover:scale-110"
-          priority
-        />
       </div>
     </div>
   )

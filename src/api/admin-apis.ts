@@ -1,4 +1,5 @@
 import {
+  BlackList,
   Comments,
   CookStep,
   DailyVisit,
@@ -24,7 +25,7 @@ export const getRecipe = async (
 ) => {
   const { payload } = await requester<Recipe>({
     method: 'get',
-    url: `/api/admin/recipe?${ingredients ? `ingredients=${ingredients}` : ''}${title ? `&title=${title}` : ''}${lastId !== null ? `&lastId=${lastId}` : ''}&page=0&size=10&sort=string`,
+    url: `/api/admin/recipe?${ingredients ? `ingredients=${ingredients}` : ''}${title ? `&title=${title}` : ''}${lastId !== null ? `&lastId=${lastId}` : ''}&size=10`,
   })
   return payload.data
 }
@@ -133,15 +134,13 @@ export const getPosts = async (
     ...(recipeTitle && { 'recipe-title': recipeTitle }),
     ...(postTitle && { 'post-title': postTitle }),
     ...(postId !== null && { 'post-id': String(postId) }),
-    page: '0',
     size: '10',
-    sort: 'string',
   })
-  const { payload } = await requester<Posts>({
+  const { payload } = await requester<{ data: Posts }>({
     method: 'get',
     url: `/api/search?${params.toString()}`,
   })
-  return payload
+  return payload.data
 }
 
 export const deletePosts = async (ids: number[]) => {
@@ -155,7 +154,7 @@ export const deletePosts = async (ids: number[]) => {
 export const getComments = async (id: number, lastId: number | null) => {
   const { payload } = await requester<Comments>({
     method: 'get',
-    url: `/api/admin/posts/comments?post-id=${id}${lastId ? `&last-id=${lastId}` : ''}&page=0&size=10&sort=string`,
+    url: `/api/admin/posts/comments?post-id=${id}${lastId ? `&last-id=${lastId}` : ''}&size=10`,
   })
   return payload.data
 }
@@ -177,7 +176,7 @@ export const getMembers = async (
 ) => {
   const { payload } = await requester<Members>({
     method: 'get',
-    url: `/api/admin/members/search?member-id=${memberId ? memberId : ''}${loginId ? `&login-id=${loginId}` : ''}${username ? `&username=${username}` : ''}${email ? `&email=${email}` : ''}${username ? `&username=${username}` : ''}${nickname ? `&nickname=${nickname}` : ''}&page=0&size=3&sort=string`,
+    url: `/api/admin/members/search?member-id=${memberId ? memberId : ''}${loginId ? `&login-id=${loginId}` : ''}${username ? `&username=${username}` : ''}${email ? `&email=${email}` : ''}${username ? `&username=${username}` : ''}${nickname ? `&nickname=${nickname}` : ''}&size=10`,
   })
   return payload.data
 }
@@ -193,7 +192,7 @@ export const deleteMembers = async (ids: number[]) => {
 export const getNotice = async (id: number | null) => {
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/notices?${id ? `last-id=${id}` : ''}&page=0&size=10&sort=string`,
+    url: `/api/notices?${id ? `last-id=${id}` : ''}&size=10`,
   })
   return payload.data
 }
@@ -225,6 +224,32 @@ export const postNotice = async (
   const { payload } = await requester<Response>({
     method: 'post',
     url: `/api/admin/notices`,
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return payload
+}
+
+export const updateNotice = async (
+  title: string,
+  content: string,
+  id: number,
+  file: File | null,
+) => {
+  const formData = new FormData()
+  file && formData.append('file', file)
+  formData.append(
+    'adminUpdateRequest',
+    JSON.stringify({
+      noticeContent: content,
+      noticeTitle: title,
+    }),
+  )
+  const { payload } = await requester<Response>({
+    method: 'put',
+    url: `/api/admin/notices/${id}`,
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -318,17 +343,15 @@ export const getQuestions = async (
   questionStatus: string | null,
 ) => {
   const params = new URLSearchParams({
-    ...(lastId !== null ? { 'last-id': String(lastId) } : {}),
+    ...(lastId ? { 'last-id': String(lastId) } : {}),
     ...(questionsType ? { 'question-type': questionsType } : {}),
     ...(questionStatus ? { question_status: questionStatus } : {}),
-    page: '0',
     size: '10',
-    sort: 'string',
-  })
+  }).toString()
 
   const { payload } = await requester<{ data: Questions }>({
     method: 'get',
-    url: `/api/admin/questions?${params.toString()}`,
+    url: `/api/admin/questions?${params}`,
   })
   return payload.data
 }
@@ -354,6 +377,31 @@ export const postAnswer = async (
       answer_content: content,
       questionStatus: 'COMPLETED',
     },
+  })
+  return payload
+}
+
+export const getBlackList = async (
+  lastId: number | null,
+  email: string | null,
+) => {
+  const params = new URLSearchParams({
+    ...(lastId ? { lastId: String(lastId) } : {}),
+    ...(email ? { email } : {}),
+    size: '10',
+  }).toString()
+
+  const { payload } = await requester<BlackList>({
+    method: 'get',
+    url: `/api/admin/black/search?${params}`,
+  })
+  return payload.data
+}
+
+export const deleteBlackList = async (ids: number[]) => {
+  const { payload } = await requester<Response>({
+    method: 'delete',
+    url: `/api/admin/blacklist?ids=${ids}`,
   })
   return payload
 }
