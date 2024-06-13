@@ -5,14 +5,10 @@ import { getLoginInfo } from '@/store/user-info-slice'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 
-export default function UnLink({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) {
+export default function UnLink() {
   const dispatch = useDispatch()
 
-  const isUnLink = searchParams.status
+  const isUnLink = new URL(window.location.href).searchParams.get('status')
   if (isUnLink == 'true') {
     const nullState = {
       id: null,
