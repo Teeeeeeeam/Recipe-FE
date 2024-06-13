@@ -11,21 +11,21 @@ import {
   verifyEmailOption,
 } from '@/types/user'
 import { Options } from '@/types/recipe'
+import { LoginInfo } from '@/store/user-info-slice'
 
-export async function checkUser(apiPath: string, token: string | undefined) {
-  const result = await axios
-    .post(
-      `${process.env.NEXT_PUBLIC_API_URL}${apiPath}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-    .then((res) => res.data)
-    .catch((error) => console.log(error))
-  return result
+interface CheckUser {
+  payload: {
+    success: boolean
+    message: string
+    data: LoginInfo
+  }
+}
+export async function checkUser(apiPath: string) {
+  const { payload }: CheckUser = await requester({
+    method: 'POST',
+    url: apiPath,
+  })
+  return payload
 }
 
 interface SuccessFetch {

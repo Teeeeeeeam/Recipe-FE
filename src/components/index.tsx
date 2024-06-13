@@ -1,36 +1,74 @@
 'use client'
-// import { axiosInstance, interceptorId } from '@/api'
+
 import { postLogout, postVisit } from '@/api/auth-apis'
 import { checkUser } from '@/api/login-user-apis'
 import { getLocalStorage, removeLocalStorage } from '@/lib/local-storage'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { LoginInfo, getLoginInfo } from '@/store/user-info-slice'
+import { getLoginInfo, resetState } from '@/store/user-info-slice'
 import { isVisited } from '@/store/visited-slice'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
-
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import NotifyRecent from './notify-recent'
+import Link from 'next/link'
+import NotifyRecent from '@/components/notify-recent'
 
-export function Header() {
-  const [session, setSession] = useState<boolean>(false)
-  const [userInfo, setUserInfo] = useState<LoginInfo | null>(null)
+export default function Header() {
+  const [isSession, setIsSession] = useState<boolean>(false)
 
-  const route = useRouter()
   const state = useAppSelector((state) => state.userInfo)
   const visitedInfo = useAppSelector((state) => state.visited)
   const dispatch = useAppDispatch()
+  const accessToken = getLocalStorage('accessToken')
+
+  // access token이 있을 때 유저 정보를 확인하는 api요청
+  useEffect(() => {
+    setIsSession(false)
+    dispatch(resetState())
+    if (accessToken) {
+      inquiryUser()
+    }
+  }, [accessToken])
+
+  async function inquiryUser() {
+    try {
+      const result = await checkUser('/api/userinfo')
+      dispatch(getLoginInfo(result.data))
+      setIsSession(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function logOutBtn() {
+    const memberId = state.id
+    try {
+      if (memberId) {
+        const eventSource = new EventSource(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/connect`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Last-Event-ID': eventId,
+            },
+          },
+        )
+        eventSource.close()
+        await postLogout(memberId)
+        setIsSession(false)
+        removeLocalStorage('accessToken')
+        dispatch(resetState())
+        window.location.href = '/'
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // 알림
-  const [notifyContent, setNotifyContent] = useState<string[] | []>([])
   const [eventId, setEventId] = useState<string>('')
   const [eventCount, setEventCount] = useState<number>(0) // 이벤트 카운트를 위한 상태 변수
-  const [isConnect, setIsConnect] = useState<boolean>(false)
 
   const EventSource = EventSourcePolyfill || NativeEventSource
   const HEARTBEAT_TIMEOUT = 60 * 60 * 1000 // 1hour
-  const accessToken = getLocalStorage('accessToken')
 
   useEffect(() => {
     if (accessToken) {
@@ -47,7 +85,6 @@ export function Header() {
       eventSource.addEventListener(
         'open',
         function () {
-          setIsConnect(true)
           setEventCount(0)
         },
         false,
@@ -61,7 +98,6 @@ export function Header() {
 
           setEventId(eventId)
           if (!eventData.includes('EventStream Created')) {
-            setNotifyContent((prev) => [...prev, eventData])
             setEventCount((prev) => prev + 1)
           }
         },
@@ -74,40 +110,7 @@ export function Header() {
     }
   }, [])
 
-  /*
-  useEffect(() => {
-    if (isConnect) {
-      // 59분 59초에 연결 해제 요청
-    } else {
-      // 연결 요청
-    }
-  }, [isConnect])
-  */
-
-  // 로그인 성공일 때 받는 redux로 session을 변경(boolean), redux 저장
-  useEffect(() => {
-    setUserInfo(state)
-    checkSession(state)
-  }, [state])
-
-  // localstorage에 token이 남아있다면 session을 변경(boolean), fetch데이터 저장
-  useEffect(() => {
-    let token = getLocalStorage('accessToken')
-    async function handler() {
-      try {
-        const result = await checkUser('/api/userinfo', token)
-        dispatch(getLoginInfo(result?.data))
-        setUserInfo(result?.data)
-        checkSession(result?.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    if (token) {
-      handler()
-    }
-  }, [])
-
+  // 방문
   useEffect(() => {
     const current = Date.now()
     const now = new Date()
@@ -136,48 +139,6 @@ export function Header() {
     fetchVisit()
   }, [dispatch, visitedInfo])
 
-  // fetch 또는 redux로 받아온 데이터(object)의 value가 null인지를 판단해 session을 변경(boolean)
-  function checkSession(info: any) {
-    for (let i in info) {
-      if (info[i] !== null) {
-        setSession(true)
-        return
-      }
-      if (info[i] === null) {
-        setSession(false)
-        return
-      }
-    }
-  }
-
-  async function logOutBtn() {
-    const nullState = {
-      id: null,
-      loginId: null,
-      loginType: null,
-      nickName: null,
-      roles: null,
-    }
-    const memberId = state.id
-    if (memberId) {
-      const eventSource = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user/connect`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Last-Event-ID': eventId,
-          },
-        },
-      )
-      eventSource.close()
-      await postLogout(memberId)
-      setUserInfo(null)
-      setSession(false)
-      removeLocalStorage('accessToken')
-      dispatch(getLoginInfo(nullState))
-      window.location.href = '/'
-    }
-  }
   return (
     <header className="w-full fixed text-gray-600 body-font z-50 ">
       <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between bg-[#214D33]">
@@ -187,17 +148,17 @@ export function Header() {
         >
           Recipe Radar
         </Link>
-        {session && <NotifyRecent eventCount={eventCount} />}
-        {session && userInfo ? (
+        {isSession && <NotifyRecent eventCount={eventCount} />}
+        {isSession ? (
           <div className="min-w-[150px] flex items-center justify-between">
             <p className="text-gray-300">
               <Link
-                href={userInfo.roles === 'ROLE_ADMIN' ? '/admin' : '/my-page'}
+                href={state.roles === 'ROLE_ADMIN' ? '/admin' : '/my-page'}
                 className="w-full"
               >
-                {userInfo.roles === 'ROLE_ADMIN'
+                {state.roles === 'ROLE_ADMIN'
                   ? '관리자'
-                  : `${userInfo.nickName}님`}
+                  : `${state.nickName}님`}
               </Link>
             </p>
             <button
