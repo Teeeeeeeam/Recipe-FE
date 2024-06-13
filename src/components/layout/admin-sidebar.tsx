@@ -52,6 +52,11 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
           문의사항
         </AdminButton>
       </Link>
+      <Link href="/admin/black-list" className="w-full">
+        <AdminButton id="black-list" segment={segment}>
+          블랙리스트
+        </AdminButton>
+      </Link>
     </div>
   )
 }
