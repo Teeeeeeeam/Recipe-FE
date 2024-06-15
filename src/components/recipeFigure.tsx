@@ -13,28 +13,28 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
         return (
           <figure
             key={item.id}
-            className="bg-[#222E50] rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
+            className="rounded-lg border border-[#C6C6C6] shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
           >
             <Image
               src={item.imageUrl}
               alt={item.title}
               width={500}
               height={500}
-              className="h-56 lg:h-60 w-11/12 mx-auto rounded"
+              className="h-56 lg:h-60 w-11/12 mx-auto rounded border border-[#C6C6C6]"
               priority
             />
             <figcaption className="w-11/12 mx-auto pt-3 text-gray-300">
-              <span className="block text-sm text-primary text-right">
+              <span className="block text-sm text-primary text-right text-[#77D8B6]">
                 좋아요: {item.likeCount}
               </span>
               <dl>
-                <dt className="font-semibold text-xl leading-6 my-2">
+                <dt className="font-semibold text-xl leading-6 my-2 text-black">
                   {item.title}
                 </dt>
-                <dd className="paragraph-normal">{`${item.people}, ${item.cookingLevel}`}</dd>
+                <dd className="paragraph-normal text-[#9B9B9B]">{`${item.people}, ${item.cookingLevel}`}</dd>
               </dl>
               <Link
-                className="mt-3 block"
+                className="mt-3 block text-[#1D1D1D]"
                 href={`/list-page/main-recipes/${item.id}`}
               >
                 자세히 보기
@@ -58,30 +58,30 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
         return (
           <figure
             key={item.id}
-            className="bg-[#222E50] rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
+            className="rounded-lg border border-[#C6C6C6] shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
           >
             <Image
               src={item.postImageUrl}
               alt={item.postTitle}
               width={500}
               height={500}
-              className="h-56 lg:h-60 w-11/12 mx-auto rounded"
+              className="h-56 lg:h-60 w-11/12 mx-auto rounded border border-[#C6C6C6]"
               priority
             />
             <figcaption className="w-11/12 mx-auto pt-3 text-gray-300">
-              <span className="block text-sm text-primary text-right">
+              <span className="block text-sm text-primary text-right text-[#77D8B6]">
                 {createDate}
               </span>
               <dl>
-                <dt className="font-semibold text-xl leading-6 my-2">
+                <dt className="font-semibold text-xl leading-6 my-2 text-black">
                   {item.postTitle}
                 </dt>
-                <dd className="paragraph-normal">
+                <dd className="paragraph-normal text-[#9B9B9B]">
                   {item.member.nickname}님 작성
                 </dd>
               </dl>
               <Link
-                className="mt-3 block"
+                className="mt-3 block text-[#1D1D1D]"
                 href={`/list-page/user-recipes/${item.id}`}
               >
                 자세히 보기

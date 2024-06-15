@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
       <div className="home-banner">
-        <section className="text-gray-600 body-font mb-12 py-3 bg-[#222E50] bg-opacity-80">
+        <section className="text-gray-600 body-font mb-12 py-3 bg-white bg-opacity-80">
           <div className="mx-auto flex md:flex-row flex-col items-center justify-around">
             <div className="flex flex-col items-center text-center">
               <h1 className="mb-3 md:mb-0 lg:mb-0 title-font text-3xl font-medium text-[#78D8B6]">
@@ -95,7 +95,7 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <div className="home-recipe-recipe bg-[#222E50] bg-opacity-80 pt-10">
+      <div className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
         <div className="flex items-center justify-center">
           <h3
             onClick={() =>
@@ -106,7 +106,7 @@ export default function Home() {
                 }),
               )
             }
-            className="mb-3 lg:text-3xl md:text-3xl text-2xl text-gray-300 rounded-lg"
+            className="mb-3 lg:text-3xl md:text-3xl text-2xl text-black rounded-lg"
           >
             <Link href="/list-page/main-recipes">Search Recipe</Link>
           </h3>
@@ -184,9 +184,9 @@ export default function Home() {
           </div>
           <Link
             href="/list-page/user-recipes"
-            className="col-span-1 col-end-auto bg-[#222E50] rounded-lg"
+            className="col-span-1 col-end-auto bg-[#D1D5DA] rounded-lg border border-[#C6C6C6]"
           >
-            <p className="h-full flex justify-center items-center text-gray-300">
+            <p className="h-full flex justify-center items-center text-black">
               더보기
             </p>
           </Link>
