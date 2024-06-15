@@ -96,7 +96,7 @@ export function Comment({ thisId, userId }: PropsType) {
 
   return (
     <>
-      <div className="w-full mb-4 border-b">
+      <div className="w-full mb-4 border-b border-black">
         <div className="w-full rounded-lg px-4 py-2">
           <div className="flex flex-wrap -mx-3 mb-6">
             <h2 className="px-4 pt-3 pb-2 text-gray-800 text-lg">
@@ -124,91 +124,100 @@ export function Comment({ thisId, userId }: PropsType) {
           </div>
         </div>
       </div>
-      {comment.length > 0 &&
-        comment.map((item) => {
-          const thisDate = item.create_at.slice(0, item.create_at.indexOf('T'))
-          return (
-            <div
-              key={item.id}
-              className="mx-auto my-8 flex rounded-xl border border-gray-100 p-4 text-left text-gray-600 shadow-lg sm:p-8"
-            >
-              <div className="w-full text-left">
-                <div className="mb-2 flex flex-col justify-between text-gray-600 sm:flex-row">
-                  <p className="font-medium">{item.nickName}</p>
-                  <span className="text-xs">{thisDate}</span>
-                </div>
-                {isMod[item.id] ? (
-                  <textarea
-                    value={saveComment[item.id] || ''}
-                    onChange={(e) => {
-                      setSaveComment((prev) => ({
-                        ...prev,
-                        [item.id]: e.target.value,
-                      }))
-                    }}
-                    className="w-full px-2 rounded-md"
-                  ></textarea>
-                ) : (
-                  <p className="text-sm">{item.comment_content}</p>
-                )}
-
-                <div className="mt-5 flex items-center justify-end text-gray-600">
+      {comment.length > 0 && (
+        <div className="px-5">
+          {comment.map((item) => {
+            const thisDate = item.create_at.slice(
+              0,
+              item.create_at.indexOf('T'),
+            )
+            return (
+              <div
+                key={item.id}
+                className="mx-auto my-8 flex rounded-xl border border-gray-300 p-4 text-left text-gray-600 shadow-lg sm:p-8"
+              >
+                <div className="w-full text-left">
+                  <div className="mb-2 flex flex-col justify-between text-gray-600 sm:flex-row">
+                    <p className="font-medium">{item.nickName}</p>
+                    <span className="text-xs">{thisDate}</span>
+                  </div>
                   {isMod[item.id] ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => modHandler(item.id)}
-                        className="cursor-pointer border mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                      >
-                        완료
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsMod((prev) => ({ ...prev, [item.id]: false }))
-                        }}
-                        className="cursor-pointer border py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                      >
-                        취소
-                      </button>
-                    </>
+                    <textarea
+                      value={saveComment[item.id] || ''}
+                      onChange={(e) => {
+                        setSaveComment((prev) => ({
+                          ...prev,
+                          [item.id]: e.target.value,
+                        }))
+                      }}
+                      className="w-full px-2 rounded-md"
+                    ></textarea>
                   ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsMod((prev) => ({ ...prev, [item.id]: true }))
-                          if (!saveComment[item.id] && item.comment_content) {
-                            setSaveComment((prev) => ({
-                              ...prev,
-                              [item.id]: item.comment_content,
-                            }))
-                          }
-                        }}
-                        className="cursor-pointer border mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                      >
-                        수정
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsDel(true)
-                          setTargetDel(item.id)
-                        }}
-                        className="cursor-pointer border py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
-                      >
-                        삭제
-                      </button>
-                    </>
+                    <p className="text-sm">{item.comment_content}</p>
                   )}
+
+                  <div className="mt-5 flex items-center justify-end text-gray-600">
+                    {isMod[item.id] ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => modHandler(item.id)}
+                          className="cursor-pointer border border-gray-300 mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                        >
+                          완료
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsMod((prev) => ({ ...prev, [item.id]: false }))
+                          }}
+                          className="cursor-pointer border border-gray-300 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                        >
+                          취소
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsMod((prev) => ({ ...prev, [item.id]: true }))
+                            if (!saveComment[item.id] && item.comment_content) {
+                              setSaveComment((prev) => ({
+                                ...prev,
+                                [item.id]: item.comment_content,
+                              }))
+                            }
+                          }}
+                          className="cursor-pointer border border-gray-300 mr-2 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                        >
+                          수정
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsDel(true)
+                            setTargetDel(item.id)
+                          }}
+                          className="cursor-pointer border border-gray-300 py-2 px-8 text-center text-xs leading-tight transition-colors duration-150 ease-in-out hover:border-gray-500 rounded-lg"
+                        >
+                          삭제
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+      )}
+
       {comment.length === 0 && (
-        <div className="mx-auto my-8 flex rounded-xl border border-gray-100 p-4 text-left text-gray-600 shadow-lg sm:p-8">
-          첫 댓글을 달아주세요
+        <div className="px-5">
+          <p className="mx-auto my-8 flex rounded-xl border border-gray-300 p-4 text-left text-gray-600 shadow-lg sm:p-8">
+            첫 댓글을 달아주세요
+          </p>
         </div>
       )}
       {isDel && (

@@ -110,122 +110,119 @@ export default function RecipeDetailUser() {
   return (
     <>
       {thisInfo && (
-        <div className="relative h-full">
-          <article className="detail-wrap py-5 relative">
-            <h3 className="text-center text-4xl mb-5">{thisInfo.postTitle}</h3>
-            <section className="detail-info w-full">
-              <div className="detail-top flex justify-center mb-5">
+        <article>
+          <section className="text-gray-600 body-font overflow-hidden">
+            <div className="px-5 py-24 mx-auto">
+              <div className="lg:w-4/5 mx-auto flex flex-wrap">
                 <Image
-                  src={thisInfo.postImageUrl}
-                  alt={thisInfo.postTitle}
+                  alt="ecommerce"
+                  className="lg:w-1/2 w-full lg:h-[350px] lg:mb-0 mb-10 object-fill object-center rounded-xl"
+                  src={thisInfo.postImageUrl || ''}
                   width={300}
                   height={300}
-                  className="rounded-2xl"
                 />
-              </div>
-              <div className="detail-bottom">
-                <ul className="flex justify-between w-[70%] mx-auto mb-3">
-                  {thisInfoCook?.map((cook) => {
-                    const refKey: keyof PostingDetail = cook.title
-                    const cookTitle = thisInfo[refKey] as string
-                    return (
-                      <li
-                        key={cook.title}
-                        className="flex flex-col items-center"
-                      >
-                        <Image
-                          src={cook.imgUrl}
-                          alt={cook.title}
-                          width={50}
-                          height={50}
-                        />
-                        <span>{cookTitle}</span>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            </section>
-            <section className="detail-step w-full">
-              <div className="p-2 border-y border-[#000]">
-                <h4 className="text-2xl mb-3">내용</h4>
-                <p className="overflow-wrap break-words">
-                  {thisInfo.postContent}
-                </p>
-              </div>
-            </section>
-            <section>
-              <Comment userId={id} thisId={thisId} />
-            </section>
-
-            <aside className="absolute py-5 top-0 right-0 w-1/12">
-              <ul className="flex flex-col items-center">
-                <li className="mb-2 py-2 w-full text-center bg-gray-400 rounded-lg">
-                  <button
-                    onClick={() => {
-                      setIsModal(!isModal)
-                      setOrDelMod('mod')
-                    }}
-                    type="button"
-                    className="block w-full"
-                  >
-                    게시물 수정
-                  </button>
-                </li>
-                <li className="mb-2 cursor-pointer py-2 w-full text-center bg-gray-400 rounded-lg">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsModal(!isModal)
-                      setOrDelMod('del')
-                    }}
-                    className="block w-full"
-                  >
-                    게시물 삭제
-                  </button>
-                </li>
-                <li
-                  onClick={() => likeHandler()}
-                  className="flex mb-2 py-2 w-full bg-gray-400 items-center justify-center rounded-lg cursor-pointer"
-                >
-                  <Image
-                    src={like ? '/svg/heart-fill.svg' : '/svg/heart.svg'}
-                    alt="좋아요"
-                    width={20}
-                    height={15}
-                  />
-                  {thisInfo.postLikeCount}
-                </li>
-              </ul>
-            </aside>
-          </article>
-
-          {isModal && (
-            <div className="bg-slate-800 bg-opacity-50 fixed flex justify-center items-center top-0 right-0 bottom-0 left-0">
-              <div className="bg-white px-16 py-14 rounded-md text-center">
-                <p className="text-xl mb-4 font-bold text-slate-500">
-                  비밀번호를 입력해주세요.
-                </p>
-                <input
-                  type="text"
-                  onChange={(e) => setPostPw(e.target.value)}
-                  className="block mb-4"
-                />
-                <button
-                  onClick={() => setIsModal(!isModal)}
-                  className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => submitHandler()}
-                  className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
-                >
-                  Ok
-                </button>
+                <div className="lg:w-1/2 w-full lg:pl-10 lg:pt-6 mb-6 lg:mb-0 flex flex-col justify-between">
+                  <h4 className="text-gray-900 text-3xl title-font font-medium mb-4">
+                    {thisInfo.recipe.title}
+                  </h4>
+                  <div className="detail-bottom">
+                    <ul className="flex justify-between w-[70%] mx-auto mb-4">
+                      {thisInfoCook?.map((cook) => {
+                        const refKey: keyof PostingDetail = cook.title
+                        const cookTitle = thisInfo[refKey] as string
+                        return (
+                          <li
+                            key={cook.title}
+                            className="flex flex-col items-center"
+                          >
+                            <Image
+                              src={cook.imgUrl}
+                              alt={cook.title}
+                              width={50}
+                              height={50}
+                            />
+                            <span>{cookTitle}</span>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                  <div className="flex items-center py-2 text-end border-y border-black">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsModal(!isModal)
+                        setOrDelMod('mod')
+                      }}
+                      className="title-font font-medium text-2xl text-[#11B981] hover:text-[#214D33]"
+                    >
+                      게시물 수정
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsModal(!isModal)
+                        setOrDelMod('del')
+                      }}
+                      className="flex items-center bg-gray-200 ml-auto border-0 py-2 px-6 focus:outline-none rounded"
+                    >
+                      게시물 삭제
+                    </button>
+                    <button
+                      onClick={() => likeHandler()}
+                      className="w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center ml-4 rounded"
+                    >
+                      <Image
+                        src={like ? '/svg/heart-fill.svg' : '/svg/heart.svg'}
+                        alt="좋아요"
+                        width={20}
+                        height={15}
+                      />
+                      {thisInfo.postLikeCount}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
+          </section>
+          <section className="mb-5 px-5">
+            <div className="p-2 border min-h-60 bg-white">
+              <h5 className="text-2xl mb-3">내용</h5>
+              <p className="overflow-wrap break-words">
+                {thisInfo.postContent}
+              </p>
+            </div>
+          </section>
+          <section>
+            <Comment userId={id} thisId={thisId} />
+          </section>
+        </article>
+      )}
+
+      {isModal && (
+        <div className="bg-slate-800 bg-opacity-50 fixed flex justify-center items-center top-0 right-0 bottom-0 left-0">
+          <div className="bg-white px-16 py-14 rounded-md text-center">
+            <p className="text-xl mb-4 font-bold text-slate-500">
+              비밀번호를 입력해주세요.
+            </p>
+            <input
+              type="text"
+              onChange={(e) => setPostPw(e.target.value)}
+              className="block mb-4"
+            />
+            <button
+              onClick={() => setIsModal(!isModal)}
+              className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => submitHandler()}
+              className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+            >
+              Ok
+            </button>
+          </div>
         </div>
       )}
     </>
