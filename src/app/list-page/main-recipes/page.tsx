@@ -1,6 +1,6 @@
 'use client'
 import { getRecipes } from '@/api/recipe-apis'
-import { RecipeFigure } from '@/components/recipeFigure'
+import { RecipeFigure } from '@/components/recipe-figure'
 import { RootState } from '@/store'
 import { Options, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'
@@ -23,15 +23,14 @@ export default function MainRecipes() {
       const thisOption: Options = {
         page: thisPage,
         size: 8,
-        sort: [''].join(''),
       }
       state.category === 'cookTitle'
         ? (thisOption.title = state.value)
         : state.category === 'cookIngredient'
           ? (thisOption.ingredients = [state.value].join(''))
           : ((thisOption.title = state.value),
-            (thisOption.ingredients = state.value))
-      const result = await getRecipes('/api/recipeV1', thisOption)
+            (thisOption.ingredients = [state.value].join('')))
+      const result = await getRecipes(thisOption)
       console.log(result)
       setRecipes(result.data.content)
       setTotalPage(result.data.totalPages)

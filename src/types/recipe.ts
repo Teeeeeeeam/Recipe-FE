@@ -78,7 +78,8 @@ export interface Options {
   [key: string]: string | string[] | number | undefined
   page: number
   size: number
-  sort: string
+  sort?: string
+  ingredients?: string
 }
 
 export interface DetailUserRecipe extends Record<string, any> {

@@ -13,6 +13,7 @@ import {
 import { Options } from '@/types/recipe'
 import { LoginInfo } from '@/store/user-info-slice'
 
+// 로그인 한 유저 정보 확인
 interface CheckUser {
   payload: {
     success: boolean
@@ -28,66 +29,42 @@ export async function checkUser(apiPath: string) {
   return payload
 }
 
-interface SuccessFetch {
-  status: number
-  headers: RawAxiosResponseHeaders | AxiosResponseHeaders
-  payload: {
-    data: string
-    message: string
-    success: boolean
-  }
-}
-export async function checkExpireToken() {
-  const options = {
-    method: 'POST',
-    url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh-token/validate`,
-  }
-  const result: SuccessFetch = await requester(options)
-  return result
-}
-
 // 레시피 like
-interface LikeOptions {
-  memberId: string
-  recipeId?: number
-  postId?: number
-}
 interface Like {
   payload: {
     message: string
     success: boolean
   }
 }
-export async function checkLikesForRecipe(apiPath: string, params: number) {
+export async function checkLikesForRecipe(recipeId: number) {
   const { payload }: Like = await requester({
     method: 'GET',
-    url: `${apiPath}/${params}`,
+    url: `/api/user/recipe/${recipeId}/like/check`,
   })
   return payload
 }
-export async function doLikeForRecipe(apiPath: string, params: LikeOptions) {
+export async function doLikeForRecipe(req: { recipeId: number }) {
   const { payload }: Like = await requester({
     method: 'POST',
-    url: apiPath,
-    data: params,
+    url: '/api/user/recipe/like',
+    data: req,
   })
   return payload
 }
 
 // 게시글 like
-export async function checkLikesForPosting(apiPath: string, id: string) {
+export async function checkLikesForPosting(postId: number) {
   const { payload }: Like = await requester({
     method: 'GET',
-    url: apiPath,
-    params: { postId: id },
+    url: `/api/user/posts/${postId}/like/check`,
   })
   return payload
 }
-export async function doLikeForPosting(apiPath: string, params: LikeOptions) {
+export async function doLikeForPosting(req: { postId: number }) {
   const { payload }: Like = await requester({
     method: 'POST',
-    url: apiPath,
-    data: params,
+    url: `/api/user/posts/like`,
+    data: req,
   })
   return payload
 }

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getHomePosting, getHomeRecipe } from '@/api/recipe-apis'
-import { RecipeFigure, UserPostingFigure } from '@/components/recipeFigure'
+import { RecipeFigure, UserPostingFigure } from '@/components/recipe-figure'
 import { PostingFigure, Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'
@@ -26,14 +26,12 @@ export default function Home() {
     getData()
   }, [])
   async function getData() {
-    const options = {
-      page: 0,
+    const option = {
       size: 3,
-      sort: [''].join(),
     }
     try {
-      const result = await getHomeRecipe(`/api/main/recipe`)
-      const result_posting = await getHomePosting(`/api/posts`, options)
+      const result = await getHomeRecipe()
+      const result_posting = await getHomePosting(option)
       setRecipes(result.data.recipe)
       setUserPosting(result_posting.data.posts)
     } catch (error) {

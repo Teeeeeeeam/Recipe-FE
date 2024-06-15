@@ -32,14 +32,8 @@ export default function RecipeDetailUser() {
 
   async function getDataLike() {
     try {
-      const result = await getUserPostingDetail(
-        '/api/user/posts/',
-        String(thisId),
-      )
-      const resultLike = await checkLikesForPosting(
-        '/api/likeCheck',
-        String(thisId),
-      )
+      const result = await getUserPostingDetail(thisId)
+      const resultLike = await checkLikesForPosting(thisId)
       const createThree = (str1: string, str2: string, str3: string) => {
         return {
           title: str1,
@@ -69,20 +63,13 @@ export default function RecipeDetailUser() {
   }
 
   async function likeHandler() {
-    const userId = userInfo.id
     try {
-      if (userId) {
-        const option = {
-          memberId: userId,
-          postId: thisId,
-        }
-        await doLikeForPosting('/api/user/postLike', option)
-        const result = await checkLikesForPosting(
-          '/api/likeCheck',
-          String(thisId),
-        )
-        setLike(result.success)
+      const option = {
+        postId: thisId,
       }
+      await doLikeForPosting(option)
+      const result = await checkLikesForPosting(thisId)
+      setLike(result.success)
     } catch (error) {
       console.log(error)
     }
@@ -90,18 +77,20 @@ export default function RecipeDetailUser() {
 
   async function submitHandler() {
     try {
-      const body = {
-        password: postPw,
-        postId: thisInfo?.id,
-      }
-      await verifyPw('/api/valid/posts', body)
-      if (orDelMod === 'mod') {
-        dispatch(recipeId(thisInfo?.id))
-        window.location.href = '/list-page/user-recipes/modification'
-      }
-      if (orDelMod === 'del') {
-        const resultDel = await postUserDel('/api/user/posts', thisId)
-        window.location.href = '/list-page/user-recipes'
+      if (thisInfo) {
+        const option = {
+          password: postPw,
+          postId: thisInfo.id,
+        }
+        await verifyPw(option)
+        if (orDelMod === 'mod') {
+          dispatch(recipeId(thisInfo.id))
+          window.location.href = '/list-page/user-recipes/modification'
+        }
+        if (orDelMod === 'del') {
+          await postUserDel(thisId)
+          window.location.href = '/list-page/user-recipes'
+        }
       }
     } catch (error) {
       console.log(error)

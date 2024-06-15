@@ -1,7 +1,7 @@
 'use client'
 import { getUserPosting } from '@/api/recipe-apis'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { UserPostingFigure } from '@/components/recipeFigure'
+import { UserPostingFigure } from '@/components/recipe-figure'
 import { PostingFigure } from '@/types/recipe'
 
 export default function UserRecipes() {
@@ -17,9 +17,11 @@ export default function UserRecipes() {
 
   async function getData(isInit: boolean) {
     try {
-      const result = await getUserPosting(
-        `/api/posts?size=8${isInit === false && lastId ? `&post-id=${lastId}` : ''}`,
-      )
+      const option = {
+        size: 8,
+        postId: lastId || '',
+      }
+      const result = await getUserPosting(option)
       // lastId
       const dataLastId = String(
         result.data.posts[result.data.posts.length - 1]?.id,
