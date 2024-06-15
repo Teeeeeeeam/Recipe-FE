@@ -76,7 +76,7 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/vie-my-bookmark"
+                    href="/my-page/success/view-my-bookmark"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     즐겨찾기

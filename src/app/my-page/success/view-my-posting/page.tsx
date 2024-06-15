@@ -49,7 +49,7 @@ export default function ViewMyPosting() {
 
   async function deletePosting(thisId: number) {
     try {
-      await postUserDel('/api/user/posts', thisId)
+      await postUserDel(thisId)
       setMount(!mount)
     } catch (error) {
       console.log(error)
