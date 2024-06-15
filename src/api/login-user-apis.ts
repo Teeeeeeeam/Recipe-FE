@@ -1,4 +1,3 @@
-import axios, { AxiosResponseHeaders, RawAxiosResponseHeaders } from 'axios'
 import requester from '.'
 import {
   EmailOption,
@@ -161,11 +160,14 @@ interface InquiryLikePosting {
     }
   }
 }
-export async function inquiryLikePosting(apiPath: string, option: Options) {
+export async function inquiryLikePosting(params: {
+  size: number
+  lastId: number | null
+}) {
   const { payload }: InquiryLikePosting = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: `/api/user/info/posts/likes`,
+    params,
   })
   return payload
 }
@@ -181,11 +183,14 @@ interface InquiryLikeRecipe {
     }
   }
 }
-export async function inquiryLikeRecipe(apiPath: string, option: Options) {
+export async function inquiryLikeRecipe(params: {
+  size: number
+  lastId: number | null
+}) {
   const { payload }: InquiryLikeRecipe = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: `/api/user/info/recipe/likes`,
+    params,
   })
   return payload
 }
