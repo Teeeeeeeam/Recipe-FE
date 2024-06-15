@@ -40,23 +40,26 @@ export default function Write() {
   const imgRef = useRef<HTMLInputElement>(null)
   const state = useSelector((state: RootState) => state.writeRecipe)
   const userInfo = useSelector((state: RootState) => state.userInfo)
+
   function submitHandler(e: any) {
     e.preventDefault()
     const accessToken = getLocalStorage('accessToken')
-    const postData = {
-      postTitle: thisTitle,
-      postContent: thisCont,
-      postCookingTime: `${thisTime}분`,
-      postCookingLevel: thisLevel,
-      postServing: `${thisPeople}인분`,
-      memberId: userInfo.id,
-      recipe_id: state.id,
-      postPassword: thisPw,
-    }
-    const postFile = file
     async function postRecipeData() {
       try {
-        await postUserWrite('/api/user/posts', postData, postFile)
+        const option = {
+          writeReq: {
+            postTitle: thisTitle,
+            postContent: thisCont,
+            postCookingTime: `${thisTime}분`,
+            postCookingLevel: thisLevel,
+            postServing: `${thisPeople}인분`,
+            memberId: Number(userInfo.id),
+            recipe_id: Number(state.id),
+            postPassword: thisPw,
+          },
+          writeFile: file!,
+        }
+        await postUserWrite(option)
         window.location.href = `/list-page/main-recipes/${state.id}`
       } catch (error) {
         console.log(error)

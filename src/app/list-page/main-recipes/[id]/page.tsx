@@ -30,15 +30,14 @@ export default function RecipeDetailMain() {
 
   useEffect(() => {
     getData()
+    if (accessToken) {
+      getLike()
+    }
   }, [like, bookmark])
 
   async function getData() {
     try {
-      const resultData = await getRecipeDetail(`/api/recipe/`, thisId)
-      const resultLike = await checkLikesForRecipe(
-        '/api/recipe/like/check',
-        thisId,
-      )
+      const resultData = await getRecipeDetail(thisId)
       const resultBookmark = await checkBookmark('/api/check/bookmarks', thisId)
       const createThree = (str1: string, str2: string) => {
         return {
@@ -54,8 +53,16 @@ export default function RecipeDetailMain() {
       ]
       setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
-      setLike(resultLike.success)
       setBookmark(resultBookmark.success)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function getLike() {
+    try {
+      const resultLike = await checkLikesForRecipe(thisId)
+      setLike(resultLike.success)
     } catch (error) {
       console.log(error)
     }
@@ -63,18 +70,13 @@ export default function RecipeDetailMain() {
 
   async function likeHandler() {
     const userId = userInfo.id
-
     try {
       if (userId) {
         const option = {
-          memberId: userId,
           recipeId: thisId,
         }
-        await doLikeForRecipe('/api/user/recipe/like', option)
-        const result = await checkLikesForRecipe(
-          '/api/recipe/like/check',
-          thisId,
-        )
+        await doLikeForRecipe(option)
+        const result = await checkLikesForRecipe(thisId)
         setLike(result.success)
       }
     } catch (error) {

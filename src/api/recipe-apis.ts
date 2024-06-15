@@ -17,10 +17,10 @@ interface HomeRecipe {
     data: { recipe: Recipe[] }
   }
 }
-export async function getHomeRecipe(apiPath: string) {
+export async function getHomeRecipe() {
   const { payload }: HomeRecipe = await requester({
     method: 'GET',
-    url: apiPath,
+    url: '/api/main/recipe',
   })
   return payload
 }
@@ -36,11 +36,11 @@ interface HomePosting {
     }
   }
 }
-export async function getHomePosting(apiPath: string, option: Options) {
+export async function getHomePosting(params: { size: number }) {
   const { payload }: HomePosting = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: '/api/posts',
+    params,
   })
   return payload
 }
@@ -65,11 +65,11 @@ interface RecipesSearch {
     }
   }
 }
-export async function getRecipes(apiPath: string, option: Options) {
+export async function getRecipes(params: Options) {
   const { payload }: RecipesSearch = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: '/api/recipeV1',
+    params,
   })
   return payload
 }
@@ -82,10 +82,10 @@ interface RecipeDetail extends Record<string, any> {
     data: DetailRecipe
   }
 }
-export async function getRecipeDetail(apiPath: string, option: number) {
+export async function getRecipeDetail(id: number) {
   const { payload }: RecipeDetail = await requester({
     method: 'GET',
-    url: `${apiPath}${option}`,
+    url: `/api/recipe/${id}`,
   })
   return payload
 }
@@ -101,10 +101,11 @@ interface UserPosting {
     }
   }
 }
-export async function getUserPosting(apiPath: string) {
+export async function getUserPosting(params: any) {
   const { payload }: UserPosting = await requester({
     method: 'GET',
-    url: apiPath,
+    url: '/api/posts',
+    params,
   })
   return payload
 }
@@ -117,52 +118,67 @@ interface UserPostingDetail {
     data: Posting
   }
 }
-export async function getUserPostingDetail(apiPath: string, option: string) {
+export async function getUserPostingDetail(postId: number) {
   const { payload }: UserPostingDetail = await requester({
     method: 'GET',
-    url: `${apiPath}${option}`,
+    url: `/api/user/posts/${postId}`,
   })
   return payload
 }
 
 // 게시글 작성
-export async function postUserWrite(apiPath: string, data: any, image: any) {
+interface UserAddPostRequest {
+  writeReq: {
+    postTitle: string
+    postContent: string
+    postCookingTime: string
+    postCookingLevel: string
+    postServing: string
+    memberId: number
+    recipe_id: number
+    postPassword: string
+  }
+  writeFile: File
+}
+export async function postUserWrite(req: UserAddPostRequest) {
   const formData = new FormData()
-  formData.append('userAddPostRequest', JSON.stringify(data))
-  formData.append('file', image)
+  formData.append('userAddPostRequest', JSON.stringify(req.writeReq))
+  formData.append('file', req.writeFile)
 
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
+    url: '/api/user/posts',
     data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   })
   return payload
 }
 
 // 게시글 수정
-export interface UpdateData {
-  postContent: string
-  postTitle: string
-  postServing: string
-  postCookingTime: string
-  postCookingLevel: string
-  postPassword: string
+export interface UserUpdateRequest {
+  modReq: {
+    postContent: string
+    postTitle: string
+    postServing: string
+    postCookingTime: string
+    postCookingLevel: string
+    postPassword: string
+  }
+  modFile: File | null
 }
-export async function postUserMod(
-  apiPath: string,
-  data: UpdateData,
-  img: File | null,
-) {
+export async function postUserMod(postId: number, req: UserUpdateRequest) {
   const formData = new FormData()
-  if (img === null) {
-    formData.append('userUpdateRequest', JSON.stringify(data))
+  if (req.modFile === null) {
+    formData.append('userUpdateRequest', JSON.stringify(req.modReq))
   } else {
-    formData.append('userUpdateRequest', JSON.stringify(data))
-    formData.append('file', img)
+    formData.append('userUpdateRequest', JSON.stringify(req.modReq))
+    formData.append('file', req.modFile)
   }
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
+    url: `/api/user/update/posts/${postId}`,
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -172,20 +188,20 @@ export async function postUserMod(
 }
 
 // 게시글 삭제
-export async function postUserDel(apiPath: string, option: number) {
+export async function postUserDel(postId: number) {
   const { payload } = await requester({
-    method: 'Delete',
-    url: `${apiPath}/${option}`,
+    method: 'DELETE',
+    url: `/api/user/posts/${postId}`,
   })
   return payload
 }
 
 // 게시글 관련 비밀번호 검증
-export async function verifyPw(apiPath: string, option: any) {
+export async function verifyPw(req: { password: string; postId: number }) {
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
-    data: option,
+    url: `/api/valid/posts`,
+    data: req,
   })
   return payload
 }
@@ -222,53 +238,55 @@ interface GetComment {
     }
   }
 }
-export async function getComment(apiPath: string, option: any) {
+export async function getComment(params: Options) {
   const { payload }: GetComment = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: '/api/comments',
+    params,
   })
   return payload
 }
 
 // 게시글 댓글 작성
-interface PostCommentOptions {
+interface CommentPostRequest {
   commentContent: string
-  memberId: string
-  postId: string | number
+  memberId: number
+  postId: number
 }
-export async function postComment(apiPath: string, option: PostCommentOptions) {
+export async function postComment(req: CommentPostRequest) {
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
-    data: option,
+    url: '/api/user/comments',
+    data: req,
   })
   return payload
 }
 
 // 게시글 댓글 수정
-export async function modComment(apiPath: string, option: any) {
+interface CommentModRequest {
+  commentContent: string
+  memberId: number
+  commentId: number
+}
+export async function modComment(req: CommentModRequest) {
   const { payload } = await requester({
     method: 'PUT',
-    url: apiPath,
-    data: option,
+    url: '/api/user/comments',
+    data: req,
   })
   return payload
 }
 
 // 게시글 댓글 삭제
-interface deleteCommentOptions {
-  memberId: string | number
+interface CommentDelRequest {
+  memberId: number
   commentId: number
 }
-export async function deleteComment(
-  apiPath: string,
-  option: deleteCommentOptions,
-) {
+export async function deleteComment(req: CommentDelRequest) {
   const { payload } = await requester({
     method: 'Delete',
-    url: apiPath,
-    data: option,
+    url: '/api/user/comments',
+    data: req,
   })
   return payload
 }

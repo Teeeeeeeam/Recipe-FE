@@ -33,7 +33,7 @@ export function Comment({ thisId, userId }: PropsType) {
         sort: [''].join(''),
         posts: thisId,
       }
-      const result = await getComment('/api/comments', option)
+      const result = await getComment(option)
       setComment(result.data.content)
     } catch (error) {
       console.log(error)
@@ -43,12 +43,12 @@ export function Comment({ thisId, userId }: PropsType) {
   async function postHandler() {
     try {
       if (userId && thisId && content.length > 1) {
-        const options = {
+        const option = {
           commentContent: content,
-          memberId: userId,
+          memberId: Number(userId),
           postId: thisId,
         }
-        await postComment('/api/user/comments', options)
+        await postComment(option)
         setContent('')
         setMount(!mount)
       }
@@ -61,11 +61,11 @@ export function Comment({ thisId, userId }: PropsType) {
     try {
       const options = {
         commentContent: saveComment[itemId] || '',
-        memberId: userId,
+        memberId: Number(userId),
         commentId: itemId,
       }
       if ((saveComment[itemId] || '').length > 0) {
-        await modComment('/api/user/comments', options)
+        await modComment(options)
         setIsMod((prev) => ({ ...prev, [itemId]: false }))
         setSaveComment((prev) => ({ ...prev, [itemId]: '' }))
         setMount(!mount)
@@ -81,10 +81,10 @@ export function Comment({ thisId, userId }: PropsType) {
     try {
       if (userId && targetDel) {
         const options = {
-          memberId: userId,
+          memberId: Number(userId),
           commentId: targetDel,
         }
-        await deleteComment('/api/user/comments', options)
+        await deleteComment(options)
         setIsDel(false)
         setTargetDel(null)
         setMount(!mount)

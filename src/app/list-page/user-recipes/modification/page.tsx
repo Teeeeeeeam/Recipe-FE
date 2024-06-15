@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Image from 'next/image'
 import {
-  UpdateData,
+  UserUpdateRequest,
   getUserPostingDetail,
   postUserMod,
 } from '@/api/recipe-apis'
@@ -49,36 +49,36 @@ export default function Mod() {
 
   async function getData() {
     try {
-      const thisId = String(postIdForMod)
-      const result = await getUserPostingDetail('/api/user/posts/', thisId)
-      const fitData = result.data.post
-      fitData.postServing = fitData.postServing.replace('인분', '')
-      fitData.postCookingTime = fitData.postCookingTime.replace('분', '')
-      setModData(fitData)
+      if (postIdForMod) {
+        const result = await getUserPostingDetail(postIdForMod)
+        const fitData = result.data.post
+        fitData.postServing = fitData.postServing.replace('인분', '')
+        fitData.postCookingTime = fitData.postCookingTime.replace('분', '')
+        setModData(fitData)
+      }
     } catch (error) {
       console.log(error)
     }
   }
-  console.log(modData)
 
   async function submitHandler(e: any) {
     e.preventDefault()
     try {
-      const updatePostDto: UpdateData = {
-        postContent: thisCont,
-        postTitle: thisTitle,
-        postServing: `${thisPeople}인분`,
-        postCookingTime: `${thisTime}분`,
-        postCookingLevel: thisLevel,
-        postPassword: thisPw,
+      if (postIdForMod) {
+        const option: UserUpdateRequest = {
+          modReq: {
+            postContent: thisCont,
+            postTitle: thisTitle,
+            postServing: `${thisPeople}인분`,
+            postCookingTime: `${thisTime}분`,
+            postCookingLevel: thisLevel,
+            postPassword: thisPw,
+          },
+          modFile: file,
+        }
+        await postUserMod(postIdForMod, option)
+        window.location.href = '/list-page/user-recipes'
       }
-      const postFile = file
-      await postUserMod(
-        `/api/user/update/posts/${postIdForMod}`,
-        updatePostDto,
-        postFile,
-      )
-      window.location.href = '/list-page/user-recipes'
     } catch (error) {
       console.log(error)
     }
