@@ -44,7 +44,7 @@ export default function MypageNav() {
               <ul>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/userInfo"
+                    href="/my-page/success/user-info"
                     className="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500"
                   >
                     회원정보
@@ -52,7 +52,7 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/viewMyPosting"
+                    href="/my-page/success/view-my-posting"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     작성한 글
@@ -60,7 +60,7 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/viewRecipeLikes"
+                    href="/my-page/success/view-recipe-likes"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     레시피 좋아요
@@ -68,7 +68,7 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/viewPostingLikes"
+                    href="/my-page/success/view-posting-likes"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     게시글 좋아요
@@ -76,7 +76,7 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
-                    href="/my-page/success/viewMyBookmark"
+                    href="/my-page/success/vie-my-bookmark"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     즐겨찾기
