@@ -140,8 +140,8 @@ export default function Header() {
   }, [dispatch, visitedInfo])
 
   return (
-    <header className="w-full fixed text-gray-600 body-font z-50 ">
-      <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between bg-[#214D33]">
+    <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
+      <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between border-b ">
         <Link
           href="/"
           className="flex title-font font-medium items-center text-gray-900"
@@ -151,7 +151,7 @@ export default function Header() {
         {isSession && <NotifyRecent eventCount={eventCount} />}
         {isSession ? (
           <div className="min-w-[150px] flex items-center justify-between">
-            <p className="text-gray-300">
+            <p className="text-black">
               <Link
                 href={state.roles === 'ROLE_ADMIN' ? '/admin' : '/my-page'}
                 className="w-full"

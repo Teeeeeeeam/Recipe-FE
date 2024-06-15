@@ -1,4 +1,4 @@
-import MyPageNav from '../../../components/layout/myPageNav'
+import MyPageNav from '../../../components/layout/my-page-sidebar'
 
 export default function MyPageLayout({
   children,
