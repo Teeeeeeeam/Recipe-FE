@@ -27,7 +27,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className={inter.className}>
         <ReduxProvider>
           <Header />
-          <div className="flex bg-green-50 pt-[72px] min-h-screen">
+          <div className="flex bg-[#EDF1F5] pt-[72px] min-h-screen">
             <div className="grow shrink w-full max-w-[1440px] mx-auto my-0">
               {children}
             </div>
