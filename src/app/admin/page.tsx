@@ -113,7 +113,7 @@ const Admin = () => {
       })
       .filter((label) => label !== '')
 
-    const data = visitData.map((el) => el.count).reverse()
+    const data = visitData.map((el) => el.count)
 
     setVisitData({
       labels,
