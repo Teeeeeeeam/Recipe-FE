@@ -49,7 +49,7 @@ export interface Posts {
 export interface PostList {
   id: number
   postTitle: string
-  create_at: string
+  createdAt: string
   postImageUrl: string
   member: { nickName: string; loginId: string }
   recipe: { id: number; title: string }
@@ -57,13 +57,13 @@ export interface PostList {
 
 export interface Comment {
   id: number
-  comment_content: string
+  commentContent: string
   member: {
     nickname: string
     loginId: string
     username: string
   }
-  create_at: string
+  createdAt: string
 }
 export interface Comments extends Response {
   data: {
@@ -90,8 +90,8 @@ export interface NoticeInfo {
   id: number
   noticeTitle: string
   noticeContent: string
-  created_at: string
-  img_url: string
+  createdAt: string
+  imgUrl: string
   member: {
     id: number
     nickname: string
@@ -138,8 +138,8 @@ export interface QuestionInfo {
   questionType: 'ACCOUNT_INQUIRY' | 'GENERAL_INQUIRY'
   title: string
   status: 'PENDING' | 'COMPLETED'
-  create_at: string
-  img_url: string
+  createdAt: string
+  imgUrl: string
   member: {
     id: number
     loginId: string
@@ -157,7 +157,7 @@ export interface QuestionDetail {
   question_content: string
   status: 'PENDING' | 'COMPLETED'
   answerType: string
-  create_at: string
+  createdAt: string
   answer_email: string
   member?: { id: number; nickname: string; loginId: string }
 }

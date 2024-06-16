@@ -18,14 +18,21 @@ import {
 import requester from './index'
 import { Response } from '@/types/auth'
 
-export const getRecipe = async (
+export const getRecipes = async (
   lastId: number | null,
   ingredients: string | null,
   title: string | null,
 ) => {
+  const params = new URLSearchParams({
+    ...(ingredients && { ingredients }),
+    ...(title && { title }),
+    ...(lastId && { lastId: String(lastId) }),
+    size: '10',
+  }).toString()
+
   const { payload } = await requester<Recipe>({
     method: 'get',
-    url: `/api/admin/recipe?${ingredients ? `ingredients=${ingredients}` : ''}${title ? `&title=${title}` : ''}${lastId !== null ? `&lastId=${lastId}` : ''}&size=10`,
+    url: `/api/admin/recipes?${params}`,
   })
   return payload.data
 }
@@ -63,7 +70,7 @@ export const postRecipe = async (
 
   const { payload } = await requester<Response>({
     method: 'post',
-    url: '/api/admin/save/recipe',
+    url: '/api/admin/save/recipes',
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -115,10 +122,10 @@ export const updateRecipe = async (
   return payload
 }
 
-export const deleteRecipe = async (ids: number[]) => {
+export const deleteRecipe = async (recipeIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/recipe/ids=${ids}`,
+    url: `/api/admin/recipes/recipeIds=${recipeIds}`,
   })
   return payload
 }
@@ -130,39 +137,39 @@ export const getPosts = async (
   postTitle: string | null,
 ) => {
   const params = new URLSearchParams({
-    ...(loginId && { 'login-id': loginId }),
-    ...(recipeTitle && { 'recipe-title': recipeTitle }),
-    ...(postTitle && { 'post-title': postTitle }),
-    ...(postId !== null && { 'post-id': String(postId) }),
+    ...(loginId && { loginId }),
+    ...(recipeTitle && { recipeTitle }),
+    ...(postTitle && { postTitle }),
+    ...(postId !== null && { postId: String(postId) }),
     size: '10',
   })
   const { payload } = await requester<{ data: Posts }>({
     method: 'get',
-    url: `/api/search?${params.toString()}`,
+    url: `/api/admin/posts/search?${params.toString()}`,
   })
   return payload.data
 }
 
-export const deletePosts = async (ids: number[]) => {
+export const deletePosts = async (postIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/posts/?ids=${ids}`,
+    url: `/api/admin/posts/?postIds=${postIds}`,
   })
   return payload
 }
 
-export const getComments = async (id: number, lastId: number | null) => {
+export const getComments = async (postId: number, lastId: number | null) => {
   const { payload } = await requester<Comments>({
     method: 'get',
-    url: `/api/admin/posts/comments?post-id=${id}${lastId ? `&last-id=${lastId}` : ''}&size=10`,
+    url: `/api/admin/posts/${postId}/comments?${lastId ? `&lastId=${lastId}` : ''}&size=10`,
   })
   return payload.data
 }
 
-export const deleteComments = async (ids: number[]) => {
+export const deleteComments = async (commentIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/posts/comments?ids=${ids}`,
+    url: `/api/admin/posts/comments?commentIds=${commentIds}`,
   })
   return payload
 }
@@ -172,35 +179,44 @@ export const getMembers = async (
   username: string | null,
   email: string | null,
   nickname: string | null,
-  memberId: number | null,
+  lastId: number | null,
 ) => {
+  const params = new URLSearchParams({
+    ...(lastId && { lastId: String(lastId) }),
+    ...(loginId && { loginId }),
+    ...(username && { username }),
+    ...(email && { email }),
+    ...(nickname && { nickname }),
+    size: '10',
+  }).toString()
+
   const { payload } = await requester<Members>({
     method: 'get',
-    url: `/api/admin/members/search?member-id=${memberId ? memberId : ''}${loginId ? `&login-id=${loginId}` : ''}${username ? `&username=${username}` : ''}${email ? `&email=${email}` : ''}${username ? `&username=${username}` : ''}${nickname ? `&nickname=${nickname}` : ''}&size=10`,
+    url: `/api/admin/members/search?${params}`,
   })
   return payload.data
 }
 
-export const deleteMembers = async (ids: number[]) => {
+export const deleteMembers = async (memberIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/members?ids=${ids}`,
+    url: `/api/admin/members?memberIds=${memberIds}`,
   })
   return payload
 }
 
-export const getNotice = async (id: number | null) => {
+export const getNotice = async (lastId: number | null) => {
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/notices?${id ? `last-id=${id}` : ''}&size=10`,
+    url: `/api/notices?${lastId ? `lastId=${lastId}` : ''}&size=10`,
   })
   return payload.data
 }
 
-export const getNoticeDetail = async (id: number) => {
+export const getNoticeDetail = async (noticeId: number) => {
   const { payload } = await requester<{ data: NoticeInfo }>({
     method: 'get',
-    url: `/api/notice/${id}`,
+    url: `/api/notices/${noticeId}`,
   })
   return payload.data
 }
@@ -235,7 +251,7 @@ export const postNotice = async (
 export const updateNotice = async (
   title: string,
   content: string,
-  id: number,
+  noticeId: number,
   file: File | null,
 ) => {
   const formData = new FormData()
@@ -249,7 +265,7 @@ export const updateNotice = async (
   )
   const { payload } = await requester<Response>({
     method: 'put',
-    url: `/api/admin/notices/${id}`,
+    url: `/api/admin/notices/${noticeId}`,
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -258,10 +274,10 @@ export const updateNotice = async (
   return payload
 }
 
-export const deleteNotice = async (ids: number[]) => {
+export const deleteNotice = async (noticeIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/notices?ids=${ids}`,
+    url: `/api/admin/notices?noticeIds=${noticeIds}`,
   })
   return payload
 }
@@ -343,7 +359,7 @@ export const getQuestions = async (
   questionStatus: string | null,
 ) => {
   const params = new URLSearchParams({
-    ...(lastId ? { 'last-id': String(lastId) } : {}),
+    ...(lastId ? { lastId: String(lastId) } : {}),
     ...(questionsType ? { 'question-type': questionsType } : {}),
     ...(questionStatus ? { question_status: questionStatus } : {}),
     size: '10',
@@ -398,10 +414,10 @@ export const getBlackList = async (
   return payload.data
 }
 
-export const deleteBlackList = async (ids: number[]) => {
+export const deleteBlackList = async (blacklistIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/blacklist?ids=${ids}`,
+    url: `/api/admin/blacklist?blacklistIds=${blacklistIds}`,
   })
   return payload
 }
