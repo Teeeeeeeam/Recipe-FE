@@ -179,10 +179,10 @@ export const getMembers = async (
   username: string | null,
   email: string | null,
   nickname: string | null,
-  lastId: number | null,
+  memberId: number | null,
 ) => {
   const params = new URLSearchParams({
-    ...(lastId && { lastId: String(lastId) }),
+    ...(memberId && { memberId: String(memberId) }),
     ...(loginId && { loginId }),
     ...(username && { username }),
     ...(email && { email }),
@@ -360,8 +360,8 @@ export const getQuestions = async (
 ) => {
   const params = new URLSearchParams({
     ...(lastId ? { lastId: String(lastId) } : {}),
-    ...(questionsType ? { 'question-type': questionsType } : {}),
-    ...(questionStatus ? { question_status: questionStatus } : {}),
+    ...(questionsType ? { questionsType } : {}),
+    ...(questionStatus ? { questionStatus } : {}),
     size: '10',
   }).toString()
 
@@ -381,16 +381,16 @@ export const getQuestionsDetail = async (id: number) => {
 }
 
 export const postAnswer = async (
-  id: number,
+  questionId: number,
   title: string,
   content: string,
 ) => {
   const { payload } = await requester<Response>({
     method: 'post',
-    url: `/api/admin/questions/${id}/answers`,
+    url: `/api/admin/questions/${questionId}/answers`,
     data: {
-      answer_title: title,
-      answer_content: content,
+      answerTitle: title,
+      answerContent: content,
       questionStatus: 'COMPLETED',
     },
   })

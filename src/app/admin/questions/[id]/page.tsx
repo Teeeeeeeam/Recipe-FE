@@ -4,6 +4,7 @@ import { QuestionDetail } from '@/types/admin'
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import AnswerModal from './answer-modal'
+import Image from 'next/image'
 
 const QuestionsDetail = () => {
   const [questionInfo, setQuestionInfo] = useState<QuestionDetail | null>(null)
@@ -39,15 +40,15 @@ const QuestionsDetail = () => {
                 {questionInfo.answerType === 'EMAIL' ? '이메일' : '없음'}
               </span>
             </div>
-            {questionInfo.answer_email && (
+            {questionInfo.answerEmail && (
               <div className="flex justify-between items-center pb-1 border-b">
                 <span className="font-bold">이메일</span>
-                <span>{questionInfo.answer_email}</span>
+                <span>{questionInfo.answerEmail}</span>
               </div>
             )}
             <div className="flex justify-between items-center pb-1 border-b">
               <span className="font-bold">문의 날짜</span>
-              <span>{questionInfo.create_at.slice(0, 10)}</span>
+              <span>{questionInfo.createdAt.slice(0, 10)}</span>
             </div>
             <div className="flex justify-between items-center pb-1 border-b">
               <span className="font-bold">문의 유형</span>
@@ -75,8 +76,16 @@ const QuestionsDetail = () => {
             </div>
             <div className="flex flex-col space-y-2 pb-1 border-b">
               <span className="font-bold ">내용</span>
-              <span>{questionInfo.question_content}</span>
+              <span>{questionInfo.questionContent}</span>
             </div>
+            {questionInfo.imgUrl && (
+              <Image
+                src={questionInfo.imgUrl}
+                alt="img"
+                width={40}
+                height={40}
+              />
+            )}
           </div>
         </div>
       )}

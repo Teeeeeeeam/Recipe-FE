@@ -34,7 +34,6 @@ const ModifyRecipe = () => {
       setCookTime(res.recipe.cookingTime)
       setPeople(res.recipe.people)
       setCookStep([...res.cookStep])
-      console.log(res)
     }
 
     getData()
@@ -96,7 +95,7 @@ const ModifyRecipe = () => {
       router.push('/admin/recipe')
     }
   }
-  console.log(cookStep)
+
   return (
     <div className="space-y-10">
       <div className="flex justify-between text-center gap-x-2 text-white">

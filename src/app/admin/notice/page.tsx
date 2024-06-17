@@ -19,7 +19,6 @@ const Notice = () => {
     if (!hasMore) return
     try {
       const res = await getNotice(lastId)
-
       const newNotices = res.notice
       setNotices((prev) => [...prev, ...newNotices])
       setHasMore(res.nextPage)
@@ -30,13 +29,7 @@ const Notice = () => {
   }, [hasMore, lastId])
 
   const lastElementRef = useInfiniteScroll(fetchGetNotice, hasMore)
-  // const handleDeleteClick = async (id: number) => {
-  //   if (confirm('해당 공지사항을 삭제하시겠습니까?')) {
-  //     const res = await deleteNotice(id)
-  //     alert('해당 공지사항이 삭제되었습니다.')
-  //     location.reload()
-  //   }
-  // }
+
   const {
     deleteList,
     selectAll,
@@ -126,7 +119,7 @@ const Notice = () => {
                   <li>{el.noticeTitle}</li>
                 </Link>
                 <li>{el.member.nickname}</li>
-                <li>{el.created_at.slice(0, 10)}</li>
+                <li>{el.createdAt}</li>
                 <li>
                   <button className="hover:text-green-150">
                     <Link href={`/admin/notice/modify/${el.id}`}>수정</Link>

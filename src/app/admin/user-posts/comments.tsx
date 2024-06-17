@@ -95,8 +95,8 @@ const Comments = ({ id }: { id: number }) => {
                   />
                 </li>
                 <li>{`${el.member.nickname}(${el.member.loginId})`}</li>
-                <li>{el.comment_content}</li>
-                <li>{el.create_at.slice(0, 10)}</li>
+                <li>{el.commentContent}</li>
+                <li>{el.createdAt}</li>
                 <li>
                   <button onClick={() => handleDeleteCommentClick(el.id)}>
                     삭제

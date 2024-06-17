@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteRecipe, getRecipe } from '@/api/admin-apis'
+import { deleteRecipe, getRecipes } from '@/api/admin-apis'
 import AdminInput from '@/components/common/admin-input'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { RecipeDtoList } from '@/types/admin'
@@ -25,10 +25,10 @@ const AdminRecipe = ({
   const { ingredients, title } = searchParams
   const router = useRouter()
 
-  const getRecipes = useCallback(async () => {
+  const fetchGetRecipes = useCallback(async () => {
     if (!hasMore) return
     try {
-      const res = await getRecipe(lastId, ingredients ?? null, title ?? null)
+      const res = await getRecipes(lastId, ingredients ?? null, title ?? null)
       const newRecipes = res.recipeDtoList
       setLastId(newRecipes[newRecipes.length - 1].id)
       setRecipes((prev) => [...prev, ...newRecipes])
@@ -38,7 +38,7 @@ const AdminRecipe = ({
     }
   }, [lastId, hasMore, searchParams])
 
-  const lastElementRef = useInfiniteScroll(getRecipes, hasMore)
+  const lastElementRef = useInfiniteScroll(fetchGetRecipes, hasMore)
   const handleSearchSubmit = () => {
     const query =
       filter === '재료' ? ['ingredients', searchInput] : ['title', searchInput]
@@ -46,7 +46,7 @@ const AdminRecipe = ({
     const newUrl = `/admin/recipe?${queryString}`
     window.location.href = newUrl
     setRecipes([])
-    getRecipes()
+    fetchGetRecipes()
   }
 
   useEffect(() => {

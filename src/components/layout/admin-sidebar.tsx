@@ -37,8 +37,8 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
           회원 게시글
         </AdminButton>
       </Link>
-      <Link href="/admin/recipe" className="w-full">
-        <AdminButton id="recipe" segment={segment}>
+      <Link href="/admin/recipes" className="w-full">
+        <AdminButton id="recipes" segment={segment}>
           레시피
         </AdminButton>
       </Link>

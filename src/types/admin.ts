@@ -44,9 +44,9 @@ export interface NewCookStep {
 }
 export interface Posts {
   nextPage: boolean
-  posts: PostList[]
+  posts: PostInfo[]
 }
-export interface PostList {
+export interface PostInfo {
   id: number
   postTitle: string
   createdAt: string
@@ -81,7 +81,7 @@ export interface MemberInfo {
 
 export interface Members extends Response {
   data: {
-    memberInfos: MemberInfo[]
+    memberInfoes: MemberInfo[]
     nextPage: boolean
   }
 }
@@ -154,18 +154,19 @@ export interface Questions {
 export interface QuestionDetail {
   questionType: 'ACCOUNT_INQUIRY' | 'GENERAL_INQUIRY'
   title: string
-  question_content: string
+  questionContent: string
   status: 'PENDING' | 'COMPLETED'
+  imgUrl: string
   answerType: string
   createdAt: string
-  answer_email: string
+  answerEmail: string
   member?: { id: number; nickname: string; loginId: string }
 }
 
 export interface BlackListInfo {
   id: number
   email: string
-  black_check: boolean
+  blackCheck: boolean
 }
 
 export interface BlackList {

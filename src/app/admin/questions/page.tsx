@@ -91,7 +91,7 @@ const Question = () => {
                   <li>{el.title}</li>
                 </Link>
                 <li>{el.member.loginId}</li>
-                <li>{el.create_at.slice(0, 10)}</li>
+                <li>{el.createdAt}</li>
                 <li>
                   {el.questionType === 'ACCOUNT_INQUIRY' ? '계정' : '일반'}
                 </li>
