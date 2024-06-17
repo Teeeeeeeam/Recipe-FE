@@ -35,6 +35,7 @@ const Join = () => {
 
   const handleJoinClick = async () => {
     try {
+      const code = Number(certificationNumber)
       const res = await postJoin(
         username,
         nickname,
@@ -42,8 +43,9 @@ const Join = () => {
         verifyPassword,
         id,
         email,
-        certificationNumber,
+        code,
       )
+
       if (confirm('회원가입이 완료되었습니다. 로그인을 진행해주세요')) {
         router.push('/user/login')
       }
@@ -125,40 +127,38 @@ const Join = () => {
 
   const handleNicknameValidationClick = async () => {
     try {
-      const res = await postJoinNicknameValidation(nickname)
-      if (res) {
-        alert('사용 가능한 닉네임 입니다.')
-      } else if (!res) {
-        alert('사용 불가능한 닉네임 입니다.')
-      }
+      await postJoinNicknameValidation(nickname)
+      alert('사용 가능한 닉네임 입니다.')
     } catch (error) {
-      console.log(error)
+      alert('사용 불가능한 닉네임 입니다.')
     }
   }
 
   const handleEmailVerificationClick = async () => {
-    const validation = await postJoinEmailValidation(email)
-    if (validation.duplicateEmail && validation.useEmail) {
-      await postJoinEmailAuthentication(email)
-      alert('인증번호가 해당 이메일로 발송되었습니다.')
-    } else if (!validation.duplicateEmail && validation.useEmail) {
-      alert('이미 등록된 이메일 입니다.')
-    } else {
+    try {
+      const res = await postJoinEmailValidation(email)
+      if (res.success) {
+        await postJoinEmailAuthentication(email)
+        alert('인증번호가 해당 이메일로 발송되었습니다.')
+      }
+    } catch (err) {
+      alert('사용 불가능한 이메일 입니다.')
       setValidations({
         ...validations,
-        email: '올바른 이메일 형식을 입력해주세요.',
+        email: '올바른 이메일을 입력해주세요.',
       })
     }
   }
 
   const handleEmailAuthenticationCheckClick = async () => {
     try {
-      const isVerified = await postJoinEmailAuthenticationCheck(
-        email,
-        certificationNumber,
-      )
-      if (isVerified) {
+      const code = Number(certificationNumber)
+      const isVerified = await postJoinEmailAuthenticationCheck(email, code)
+
+      if (isVerified.isVerifyCode) {
         alert('인증이 완료 되었습니다.')
+      } else {
+        alert('인증시간이 만료되었습니다.')
       }
     } catch (err) {
       alert('인증번호를 확인해주세요.')
@@ -231,7 +231,7 @@ const Join = () => {
             type="text"
             id="nickname"
             name="닉네임"
-            placeholder="4~10자 한글, 대소문자 영어"
+            placeholder="4~12자 한글, 대소문자 영어"
             state={nickname}
             setState={setNickname}
             validation={validations.nickname}

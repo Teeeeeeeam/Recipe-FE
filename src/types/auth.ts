@@ -32,10 +32,6 @@ export interface RefreshToken extends Response {
   data: string
 }
 
-export interface JoinNicknameValidation extends Response {
-  data: boolean
-}
-
 export interface JoinEmailValidation extends Response {
   data: {
     duplicateEmail: boolean
@@ -61,13 +57,5 @@ export interface SearchErrorMessage extends Response {
     username: string
     code: string
     email: string
-  }
-}
-
-export interface SearchPassword extends Response {
-  data: {
-    token: string
-    '회원 정보': boolean
-    '이메일 인증': boolean
   }
 }

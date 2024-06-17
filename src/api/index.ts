@@ -5,10 +5,7 @@ import {
 } from '@/lib/local-storage'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { postRefreshToken } from './auth-apis'
-import { store } from '@/store'
-import { resetState } from '@/store/user-info-slice'
 
-// const { dispatch } = store
 const TEN_MINUTE = 60000
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -55,17 +52,13 @@ const createAxiosResponseInterceptor = () => {
       axiosInstance.interceptors.response.eject(interceptor)
       try {
         const newAccessToken = await postRefreshToken()
-        console.log('리프레시')
-
         setLocalStorage('accessToken', newAccessToken)
         setLocalStorage('expiry', Date.now() + TEN_MINUTE)
         config.headers['Authorization'] = `Bearer ${newAccessToken}`
 
         return axiosInstance(config)
       } catch (err) {
-        console.log('리프레시 실패')
         removeLocalStorage('accessToken')
-        // dispatch(resetState())
         window.location.href = '/user/login'
         return Promise.reject(err)
       } finally {
@@ -77,53 +70,3 @@ const createAxiosResponseInterceptor = () => {
 createAxiosResponseInterceptor()
 
 export default requester
-
-// export const getAccessToken = async () => {
-//   try {
-//     const accessToken = await postRefreshToken()
-//     setLocalStorage('accessToken', accessToken)
-//     return accessToken
-//   } catch (error) {
-//     removeLocalStorage('accessToken')
-//     // 다른 요청 있을 때 수정 해야됨
-//     window.location.href = '/user/login'
-//   }
-// }
-
-// if ((status === 401 || status === 405) && !config._retry) {
-//   config._retry = true
-//   axios.interceptors.response.eject(interceptor)
-//   try {
-// if (accessToken) {
-// const newAccessToken = await postRefreshToken()
-// if (newAccessToken) {
-//   setLocalStorage('accessToken', newAccessToken)
-//   error.config.headers['Authorization'] = `Bearer ${newAccessToken}`
-//   createAxiosResponseInterceptor()
-//   return axiosInstance(config)
-//     }
-// }
-//   } catch (refreshError) {
-//     removeLocalStorage('accessToken')
-//     window.location.href = '/user/login'
-//     return Promise.reject(refreshError)
-//   }
-// }
-
-// return Promise.reject(error)
-
-// return axiosInstance(error.config)
-// return axiosInstance
-// .post('/api/auth/refresh-token/validate')
-// .then((res) => {
-//   console.log(res)
-//   setLocalStorage('accessToken', res.data)
-//   error.res.config.headers['Authorization'] = `Bearer ${res.data}`
-//   return axios(error.res.config)
-// })
-// .catch((err) => {
-// removeLocalStorage('accessToken')
-// window.location.href = '/user/login'
-// return Promise.reject(err)
-// })
-// .finally(createAxiosResponseInterceptor)

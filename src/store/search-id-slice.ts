@@ -8,14 +8,14 @@ import { AxiosError } from 'axios'
 interface Attributes {
   username: string
   email: string
-  authentication: string
+  code: number
 }
 export const fetchData = createAsyncThunk(
   'data/fetchData',
   async (userData: Attributes, { rejectWithValue }) => {
     try {
-      const { username, email, authentication } = userData
-      const res = await postSearchLoginId(username, email, authentication)
+      const { username, email, code } = userData
+      const res = await postSearchLoginId(username, email, code)
       return res
     } catch (err: any) {
       const axiosError = err as AxiosError

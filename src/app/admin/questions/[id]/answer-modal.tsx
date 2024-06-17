@@ -19,7 +19,6 @@ const AnswerModal = ({ id, onClose }: AnswerModalProps) => {
     }
     if (confirm('답변을 등록하시겠습니까?')) {
       const res = await postAnswer(Number(id), title, content)
-      console.log(res)
       alert('답변이 등록되었습니다.')
       router.push('/admin/questions')
     }
