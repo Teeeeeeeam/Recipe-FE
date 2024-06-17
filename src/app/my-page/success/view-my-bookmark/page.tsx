@@ -57,7 +57,7 @@ export default function ViewBookmark() {
           memberId: userInfo.id,
           recipeId: thisId,
         }
-        await doBookmark('/api/user/recipe', options)
+        await doBookmark(options)
         setMount(!mount)
       }
     } catch (error) {
