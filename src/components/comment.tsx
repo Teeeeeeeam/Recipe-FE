@@ -31,7 +31,7 @@ export function Comment({ thisId, userId }: PropsType) {
         page: 0,
         size: 100,
         sort: [''].join(''),
-        posts: thisId,
+        postId: thisId,
       }
       const result = await getComment(option)
       setComment(result.data.content)
@@ -45,7 +45,6 @@ export function Comment({ thisId, userId }: PropsType) {
       if (userId && thisId && content.length > 1) {
         const option = {
           commentContent: content,
-          memberId: Number(userId),
           postId: thisId,
         }
         await postComment(option)
@@ -61,7 +60,6 @@ export function Comment({ thisId, userId }: PropsType) {
     try {
       const options = {
         commentContent: saveComment[itemId] || '',
-        memberId: Number(userId),
         commentId: itemId,
       }
       if ((saveComment[itemId] || '').length > 0) {
@@ -81,7 +79,6 @@ export function Comment({ thisId, userId }: PropsType) {
     try {
       if (userId && targetDel) {
         const options = {
-          memberId: Number(userId),
           commentId: targetDel,
         }
         await deleteComment(options)
@@ -127,9 +124,9 @@ export function Comment({ thisId, userId }: PropsType) {
       {comment.length > 0 && (
         <div className="px-5">
           {comment.map((item) => {
-            const thisDate = item.create_at.slice(
+            const thisDate = item.createdAt.slice(
               0,
-              item.create_at.indexOf('T'),
+              item.createdAt.indexOf('T'),
             )
             return (
               <div
@@ -153,7 +150,7 @@ export function Comment({ thisId, userId }: PropsType) {
                       className="w-full px-2 rounded-md"
                     ></textarea>
                   ) : (
-                    <p className="text-sm">{item.comment_content}</p>
+                    <p className="text-sm">{item.commentContent}</p>
                   )}
 
                   <div className="mt-5 flex items-center justify-end text-gray-600">
@@ -182,10 +179,10 @@ export function Comment({ thisId, userId }: PropsType) {
                           type="button"
                           onClick={() => {
                             setIsMod((prev) => ({ ...prev, [item.id]: true }))
-                            if (!saveComment[item.id] && item.comment_content) {
+                            if (!saveComment[item.id] && item.commentContent) {
                               setSaveComment((prev) => ({
                                 ...prev,
-                                [item.id]: item.comment_content,
+                                [item.id]: item.commentContent,
                               }))
                             }
                           }}

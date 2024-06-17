@@ -93,7 +93,7 @@ export default function RecipeDetailUser() {
         }
       }
     } catch (error) {
-      console.log(error)
+      console.log('비밀번호검증' + error)
     }
   }
   return (

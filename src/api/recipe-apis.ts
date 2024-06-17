@@ -51,24 +51,16 @@ interface RecipesSearch {
     success: boolean
     message: string
     data: {
-      content: Recipe[]
-      empty: boolean
-      first: boolean
-      last: boolean
-      number: number
-      numberOfElements: number
-      pageable: any
-      size: number
-      sort: any
+      recipes: Recipe[] | []
       totlaElements: number
-      totalPages: number
+      totalPage: number
     }
   }
 }
 export async function getRecipes(params: Options) {
   const { payload }: RecipesSearch = await requester({
     method: 'GET',
-    url: '/api/recipeV1',
+    url: '/api/recipe/normal',
     params,
   })
   return payload
@@ -82,10 +74,10 @@ interface RecipeDetail extends Record<string, any> {
     data: DetailRecipe
   }
 }
-export async function getRecipeDetail(id: number) {
+export async function getRecipeDetail(recipeId: number) {
   const { payload }: RecipeDetail = await requester({
     method: 'GET',
-    url: `/api/recipe/${id}`,
+    url: `/api/recipe/${recipeId}`,
   })
   return payload
 }
@@ -134,8 +126,7 @@ interface UserAddPostRequest {
     postCookingTime: string
     postCookingLevel: string
     postServing: string
-    memberId: number
-    recipe_id: number
+    recipeId: number
     postPassword: string
   }
   writeFile: File
@@ -200,7 +191,7 @@ export async function postUserDel(postId: number) {
 export async function verifyPw(req: { password: string; postId: number }) {
   const { payload } = await requester({
     method: 'POST',
-    url: `/api/valid/posts`,
+    url: `/api/user/valid/posts`,
     data: req,
   })
   return payload
@@ -250,7 +241,6 @@ export async function getComment(params: Options) {
 // 게시글 댓글 작성
 interface CommentPostRequest {
   commentContent: string
-  memberId: number
   postId: number
 }
 export async function postComment(req: CommentPostRequest) {
@@ -265,7 +255,6 @@ export async function postComment(req: CommentPostRequest) {
 // 게시글 댓글 수정
 interface CommentModRequest {
   commentContent: string
-  memberId: number
   commentId: number
 }
 export async function modComment(req: CommentModRequest) {
@@ -279,7 +268,6 @@ export async function modComment(req: CommentModRequest) {
 
 // 게시글 댓글 삭제
 interface CommentDelRequest {
-  memberId: number
   commentId: number
 }
 export async function deleteComment(req: CommentDelRequest) {

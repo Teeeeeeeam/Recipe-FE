@@ -1,21 +1,18 @@
 'use client'
 import { inquiryPosting } from '@/api/login-user-apis'
 import { postUserDel } from '@/api/recipe-apis'
-import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { MyPostings } from '@/types/user'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
 
 export default function ViewMyPosting() {
   const [posting, setPosting] = useState<MyPostings[] | []>([])
   const [next, setNext] = useState<boolean>(false)
-  const [lastId, setLastId] = useState<string | undefined>(undefined)
+  const [lastId, setLastId] = useState<number | null>(null)
   const [mount, setMount] = useState<boolean>(false)
 
-  const state = useSelector((state: RootState) => state.userInfo)
   const dispatch = useDispatch()
   const loader = useRef(null)
 
@@ -25,13 +22,10 @@ export default function ViewMyPosting() {
 
   async function getInquiryPosting(isInit: boolean) {
     try {
-      const result = await inquiryPosting(
-        `/api/user/info/${state.loginId}/posts?size=10${isInit === false && lastId ? `&last-id=${lastId}` : ''}`,
-      )
-      // lastId
-      const dataLastId = String(
-        result.data.content[result.data.content.length - 1]?.id,
-      )
+      const option = {
+        size: 10,
+      }
+      const result = await inquiryPosting(option, lastId)
       if (isInit) {
         setPosting(result.data.content)
       } else {
@@ -40,7 +34,11 @@ export default function ViewMyPosting() {
           return [...prev, ...newData]
         })
       }
-      setLastId(dataLastId)
+      if (result.data.content.length > 0) {
+        const dataLastId =
+          result.data.content[result.data.content.length - 1]?.id
+        setLastId(dataLastId)
+      }
       setNext(result.data.nextPage)
     } catch (error) {
       console.log(error)
@@ -50,7 +48,7 @@ export default function ViewMyPosting() {
   async function deletePosting(thisId: number) {
     try {
       await postUserDel(thisId)
-      setMount(!mount)
+      setMount((prev) => !prev)
     } catch (error) {
       console.log(error)
     }

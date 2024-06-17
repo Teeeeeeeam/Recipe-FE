@@ -54,7 +54,7 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
   return (
     <>
       {recipes?.map((item) => {
-        const createDate = item.create_at.slice(0, item.create_at.indexOf('T'))
+        const createDate = item.createdAt.slice(0, item.createdAt.indexOf('T'))
         return (
           <figure
             key={item.id}

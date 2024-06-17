@@ -8,16 +8,14 @@ export interface Recipe extends Record<string, string | number> {
   people: string
   title: string
 }
-export interface DetailRecipe
-  extends Record<string, string[] | CookStep[] | Recipe> {
-  cookStep: CookStep[]
+export interface DetailRecipe {
+  cookSteps: CookStep[]
   ingredients: string[]
   recipe: Recipe
 }
 export type CookStep = {
-  [key: string]: string
-  cook_step_id: string
-  cook_steps: string
+  cookStepId: string
+  cookSteps: string
 }
 export interface ThreeCookInfo {
   title: string
@@ -33,9 +31,9 @@ export interface Posting
 }
 export interface Comments {
   id: number
-  comment_content: string
+  commentContent: string
   nickName: string
-  create_at: string
+  createdAt: string
 }
 export interface PostingDetail {
   [key: string]: string | number | PostingDetailMember | PostingDetailRecipe
@@ -61,7 +59,7 @@ export interface PostingDetailRecipe {
 
 //
 export interface PostingFigure {
-  create_at: string
+  createdAt: string
   id: number
   member: PostingMember
   postImageUrl: string
@@ -80,18 +78,7 @@ export interface Options {
   size: number
   sort?: string
   ingredients?: string
-}
-
-export interface DetailUserRecipe extends Record<string, any> {
-  create_at: string
-  member: { [nickname: string]: string }
-  postContent: string
-  postCookingLevel: string
-  psotCookingTime: string
-  postImageUrl: string
-  postLikeCount: number
-  postServing: string
-  postTitle: string
+  postId?: number
 }
 
 // 수정페이지 렌더링용 초기 데이터

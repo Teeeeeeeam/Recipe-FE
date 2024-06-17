@@ -21,6 +21,7 @@ export default function RecipeDetailMain() {
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
   const [like, setLike] = useState<boolean>(false)
   const [bookmark, setBookmark] = useState<boolean>(false)
+  console.log(thisInfo)
 
   const params = useParams()
   const thisId = Number(params.id)
@@ -38,7 +39,7 @@ export default function RecipeDetailMain() {
   async function getData() {
     try {
       const resultData = await getRecipeDetail(thisId)
-      const resultBookmark = await checkBookmark('/api/check/bookmarks', thisId)
+      const resultBookmark = await checkBookmark(thisId)
       const createThree = (str1: string, str2: string) => {
         return {
           title: str1,
@@ -86,14 +87,11 @@ export default function RecipeDetailMain() {
 
   async function bookmarkHandler() {
     try {
-      if (userInfo.id) {
-        const options = {
-          memberId: userInfo.id,
-          recipeId: thisId,
-        }
-        const result = await doBookmark('/api/user/recipe', options)
-        setBookmark(result.data['즐겨 찾기 상태'])
+      const options = {
+        recipeId: thisId,
       }
+      const result = await doBookmark(options)
+      setBookmark(result.success)
     } catch (error) {
       console.log(error)
     }
@@ -201,14 +199,14 @@ export default function RecipeDetailMain() {
           <section>
             <div className="flex flex-wrap flex-col px-3 py-2 border-t border-[#000]">
               <h4 className="text-2xl mb-3">조리순서</h4>
-              {thisInfo.cookStep.map((step, index) => {
+              {thisInfo.cookSteps.map((step, index) => {
                 return (
-                  <p key={step.cook_step_id} className="relative pl-5 mb-3">
+                  <p key={step.cookStepId} className="relative pl-5 mb-3">
                     <span className="absolute inline-block left-0">
                       {index + 1}.
                     </span>
                     &nbsp;
-                    {step.cook_steps}
+                    {step.cookSteps}
                   </p>
                 )
               })}

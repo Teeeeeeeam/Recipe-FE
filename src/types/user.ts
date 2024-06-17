@@ -44,5 +44,17 @@ export interface EmailOption {
 }
 export interface verifyEmailOption {
   email: string
-  code: string
+  code: number
+}
+
+// 문의사항
+export interface MyQuestion {
+  id: number
+  questionType: string
+  status: string
+  title: string
+  member: {
+    id: number
+    loginId: string
+  }
 }

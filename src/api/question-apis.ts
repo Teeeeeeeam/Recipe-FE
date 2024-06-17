@@ -3,20 +3,20 @@ import requester from '.'
 interface QuestionOption {
   questionType: string
   title: string
-  question_content: string
+  questionContent: string
   answer: string
-  answer_email: string
+  answerEmail: string
 }
 export async function sendQuestion(
   apiPath: string,
-  option: QuestionOption,
+  req: QuestionOption,
   img: File | null,
 ) {
   const formData = new FormData()
   if (img === null) {
-    formData.append('questionRequest', JSON.stringify(option))
+    formData.append('questionRequest', JSON.stringify(req))
   } else {
-    formData.append('questionRequest', JSON.stringify(option))
+    formData.append('questionRequest', JSON.stringify(req))
     formData.append('file', img)
   }
   const { payload } = await requester({

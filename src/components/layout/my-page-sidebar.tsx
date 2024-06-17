@@ -84,6 +84,14 @@ export default function MypageNav() {
                 </li>
                 <li className="hover:bg-gray-100">
                   <Link
+                    href="/my-page/success/answer"
+                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                  >
+                    문의사항
+                  </Link>
+                </li>
+                <li className="hover:bg-gray-100">
+                  <Link
                     href="/my-page/success/withdrawal"
                     className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
                   >
