@@ -26,7 +26,7 @@ const BlackListItem = ({
       <li>{item.id}</li>
       <li className="text-sm font-semibold">{item.email}</li>
       <li className="text-sm text-gray-600">
-        {item.black_check ? '차단' : '임시 해제'}
+        {item.blackCheck ? '차단' : '임시 해제'}
       </li>
       <li>
         <button

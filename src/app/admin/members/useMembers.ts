@@ -28,7 +28,7 @@ const useMembers = (searchParams: SearchParams) => {
         lastId,
       )
 
-      const newMembers = res.memberInfos
+      const newMembers = res.memberInfoes
       if (newMembers) {
         setMembers((prev) => [...prev, ...newMembers])
         setLastId(newMembers[newMembers.length - 1].id)

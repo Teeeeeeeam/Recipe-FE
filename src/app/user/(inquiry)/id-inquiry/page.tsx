@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react'
 const IdInquiry = () => {
   const [username, setUsername] = useState('')
   const [email, setEamil] = useState('')
-  const [authentication, setAuthentication] = useState('')
+  const [code, setCode] = useState('')
 
   const dispatch = useAppDispatch()
   const { data, error } = useAppSelector((state) => state.searchIdData)
@@ -29,7 +29,7 @@ const IdInquiry = () => {
   }, [data, error])
 
   const handleSearchIdSubmit = () => {
-    dispatch(fetchData({ username, email, authentication }))
+    dispatch(fetchData({ username, email, code: Number(code) }))
   }
 
   return (
@@ -72,14 +72,12 @@ const IdInquiry = () => {
           <AuthInput
             type="text"
             placeholder="인증번호 입력"
-            state={authentication}
-            setState={setAuthentication}
+            state={code}
+            setState={setCode}
           />
           <AuthButton
             type="button"
-            onClick={() =>
-              handleAuthenticationCheckClick(email, authentication)
-            }
+            onClick={() => handleAuthenticationCheckClick(email, code)}
           >
             확인
           </AuthButton>

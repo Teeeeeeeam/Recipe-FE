@@ -1,6 +1,6 @@
 'use client'
 
-import { getNoticeDetail, postNotice } from '@/api/admin-apis'
+import { getNoticeDetail, postNotice, updateNotice } from '@/api/admin-apis'
 import RecipeFormInput from '@/components/common/recipe-form-input'
 import { useAppSelector } from '@/store'
 import Image from 'next/image'
@@ -23,7 +23,6 @@ const ModifyNotice = () => {
 
   const fetchGetNoticeDetail = async () => {
     const res = await getNoticeDetail(Number(noticeId))
-    console.log(res)
     setTitle(res.noticeTitle)
     setContent(res.noticeContent)
   }
@@ -47,18 +46,17 @@ const ModifyNotice = () => {
     }
   }
 
-  const handlePostNoticeSubmit = async () => {
-    const id = Number(userInfo.id)
-    if (file) {
-      if (confirm('공지사항을 등록하시겠습니까?')) {
-        const res = await postNotice(title, content, id, file)
-        router.push('/admin/notice')
-      }
+  const handleUpdateNoticeSubmit = async () => {
+    const id = Number(noticeId)
+    if (confirm('공지사항을 수정하시겠습니까?')) {
+      const res = await updateNotice(title, content, id, file ?? null)
+      alert('공지사항이 수정되었습니다.')
+      router.push('/admin/notice')
     }
   }
 
   return (
-    <form className="text-white" onSubmit={() => handlePostNoticeSubmit()}>
+    <form className="text-white">
       <RecipeFormInput
         value={title}
         onChange={setTitle}
@@ -94,8 +92,12 @@ const ModifyNotice = () => {
         />
       </div>
       <div className="flex mt-4 justify-center w-full">
-        <button type="submit" className="px-4 py-2 bg-green-100 rounded-md">
-          공지사항 등록
+        <button
+          type="button"
+          className="px-4 py-2 bg-green-100 rounded-md"
+          onClick={handleUpdateNoticeSubmit}
+        >
+          공지사항 수정
         </button>
       </div>
     </form>

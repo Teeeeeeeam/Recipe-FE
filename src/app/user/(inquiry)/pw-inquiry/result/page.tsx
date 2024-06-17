@@ -7,7 +7,7 @@ import regExp from '@/lib/regexp'
 import handleInputBlur from '@/lib/validation-check'
 import { useAppSelector } from '@/store'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const PwInquiryResult = () => {
   const [password, setPassword] = useState('')
@@ -20,19 +20,11 @@ const PwInquiryResult = () => {
   const data = useAppSelector((state) => state.searchPwData)
   const router = useRouter()
 
-  useEffect(() => {
-    if (data.token) {
-      console.log(data)
-    } else {
-      alert('잘못된 접근입니다.')
-      router.push('/user/pw-inquiry')
-    }
-  }, [])
-
   const handlePasswordSubmit = async () => {
     try {
-      if (data.token && data.loginId) {
-        await updatePassword(data.token, data.loginId, password, verifyPassword)
+      if (data.loginId) {
+        await updatePassword(data.loginId, password, verifyPassword)
+
         if (confirm('비밀번호 재설정이 완료되었습니다.')) {
           router.push('/user/login')
         }

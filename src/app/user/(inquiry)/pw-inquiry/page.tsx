@@ -6,36 +6,36 @@ import {
   handleEmailVerificationClick,
   handleAuthenticationCheckClick,
 } from '@/lib/email-authentication'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { getPwInfo } from '@/store/search-password-slice'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAppDispatch } from '@/store'
+import { getPwInfo } from '@/store/search-password-slice'
 
 const PwInquiry = () => {
   const [username, setUsername] = useState('')
   const [id, setId] = useState('')
   const [email, setEamil] = useState('')
-  const [authentication, setAuthentication] = useState('')
+  const [code, setCode] = useState('')
 
   const dispatch = useAppDispatch()
-  const data = useAppSelector((state) => state.searchPwData)
-
   const router = useRouter()
 
   const handleSearchPasswordSubmit = async () => {
-    try {
-      const res = await postSearchPassword(username, id, email, authentication)
-      if (res.token && res.token.length > 0) {
-        const pwInfo = { ...res, loginId: id }
-        dispatch(getPwInfo(pwInfo))
-        router.push('/user/pw-inquiry/result')
-      } else if (res['회원 정보'] === false && res['이메일 인증'] === true) {
+    if (!code || !username || !id || !email) {
+      alert('입력란을 모두 입력해주세요')
+    } else {
+      try {
+        const res = await postSearchPassword(username, id, email, Number(code))
+        if (res.success) {
+          dispatch(getPwInfo({ loginId: id }))
+          router.push('/user/pw-inquiry/result')
+        }
+      } catch (err) {
         alert('등록된 아이디가 없습니다.')
       }
-    } catch (err) {
-      alert('입력란을 모두 입력해주세요')
     }
   }
+
   return (
     <form
       className="mt-2 space-y-2"
@@ -80,19 +80,17 @@ const PwInquiry = () => {
         </div>
       </div>
       <div>
-        <label className="label-text">이메일</label>
+        <label className="label-text">인증번호</label>
         <div className="grid grid-cols-[4fr_1fr] gap-x-2">
           <AuthInput
             type="text"
             placeholder="인증번호 입력"
-            state={authentication}
-            setState={setAuthentication}
+            state={code}
+            setState={setCode}
           />
           <AuthButton
             type="button"
-            onClick={() =>
-              handleAuthenticationCheckClick(email, authentication)
-            }
+            onClick={() => handleAuthenticationCheckClick(email, code)}
           >
             확인
           </AuthButton>

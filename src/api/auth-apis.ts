@@ -1,13 +1,10 @@
 import {
   JoinEmailAuthentication,
-  JoinEmailValidation,
   Join,
   Login,
-  JoinNicknameValidation,
   RefreshToken,
   Response,
   SearchLoginId,
-  SearchPassword,
   LoginInfo,
 } from '@/types/auth'
 import requester from './index'
@@ -60,18 +57,19 @@ export const postJoin = async (
   passwordRe: string,
   loginId: string,
   email: string,
-  code: string,
+  code: number,
 ) => {
   const { payload } = await requester<Join>({
     method: 'post',
-    url: `/api/join?code=${code}`,
+    url: `/api/join`,
     data: {
       username,
       nickname,
-      password,
-      passwordRe,
       loginId,
       email,
+      password,
+      passwordRe,
+      code,
     },
   })
   return payload
@@ -87,21 +85,21 @@ export const postJoinIdValidation = async (loginId: string) => {
 }
 
 export const postJoinNicknameValidation = async (nickname: string) => {
-  const { payload } = await requester<JoinNicknameValidation>({
+  const { payload } = await requester<Response>({
     method: 'post',
     url: `/api/join/nickname/validation`,
     data: { nickname },
   })
-  return payload.data
+  return payload
 }
 
 export const postJoinEmailValidation = async (email: string) => {
-  const { payload } = await requester<JoinEmailValidation>({
+  const { payload } = await requester<Response>({
     method: 'post',
     url: '/api/join/email/validation',
     data: { email },
   })
-  return payload.data
+  return payload
 }
 
 export const postJoinEmailAuthentication = async (email: string) => {
@@ -114,30 +112,33 @@ export const postJoinEmailAuthentication = async (email: string) => {
 
 export const postJoinEmailAuthenticationCheck = async (
   email: string,
-  code: string,
+  code: number,
 ) => {
   const { payload } = await requester<JoinEmailAuthentication>({
     method: 'post',
-    url: `/api/join/email-confirmation/verify?email=${email}&code=${code}`,
+    url: `/api/join/email-confirmation/verify`,
+    data: { email, code },
   })
   return payload.data
 }
 
-export const postSearchEmailAuthentication = async (email: string) => {
+export const postEmailAuthentication = async (email: string) => {
+  removeLocalStorage('accessToken')
   const { payload } = await requester<Response>({
     method: 'post',
-    url: `/api/search/email-confirmation/send?email=${email}`,
+    url: `/api/code/email-confirmation/send?email=${email}`,
   })
   return payload
 }
 
-export const postSearchEmailAuthenticationCheck = async (
+export const postCodeEmailAuthentication = async (
   email: string,
-  code: string,
+  code: number,
 ) => {
   const { payload } = await requester<JoinEmailAuthentication>({
     method: 'post',
-    url: `/api/join/email-confirmation/verify?email=${email}&code=${code}`,
+    url: `/api/code/email-confirmation/verify`,
+    data: { email, code },
   })
   return payload.data
 }
@@ -145,7 +146,7 @@ export const postSearchEmailAuthenticationCheck = async (
 export const postSearchLoginId = async (
   username: string,
   email: string,
-  code: string,
+  code: number,
 ) => {
   const { payload } = await requester<SearchLoginId>({
     method: 'post',
@@ -159,25 +160,24 @@ export const postSearchPassword = async (
   username: string,
   loginId: string,
   email: string,
-  code: string,
+  code: number,
 ) => {
-  const { payload } = await requester<SearchPassword>({
+  const { payload } = await requester<Response>({
     method: 'post',
     url: '/api/search/password',
     data: { username, loginId, email, code },
   })
-  return payload.data
+  return payload
 }
 
 export const updatePassword = async (
-  token: string,
   loginId: string,
   password: string,
   passwordRe: string,
 ) => {
   const { payload } = await requester<Response>({
     method: 'put',
-    url: `/api/password/update?id=${token}`,
+    url: `/api/password/update`,
     data: { loginId, password, passwordRe },
   })
   return payload

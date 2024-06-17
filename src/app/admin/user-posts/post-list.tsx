@@ -1,81 +1,98 @@
-'use client'
-
-import { deletePosts, deleteRecipe } from '@/api/admin-apis'
-import { PostList } from '@/types/admin'
+import Image from 'next/image'
+import useCheckbox from '@/hooks/use-check-box'
+import { PostInfo } from '@/types/admin'
+import { deletePosts } from '@/api/admin-apis'
 import Link from 'next/link'
-import { useState, forwardRef } from 'react'
 import Comments from './comments'
 
 interface PostListProps {
-  posts: PostList[]
-  deleteList: number[]
-  handleCheckboxChange: (postId: number) => void
+  posts: PostInfo[]
+  lastElementRef: React.RefObject<HTMLDivElement>
+  activeCommentId: number | null
+  handleGetCommentClick: (id: number) => void
 }
 
-const PostList = forwardRef<HTMLDivElement, PostListProps>(
-  ({ posts, deleteList, handleCheckboxChange }, ref) => {
-    const [activeCommentId, setActiveCommentId] = useState<number | null>(null)
+const PostList = ({
+  posts,
+  lastElementRef,
+  activeCommentId,
+  handleGetCommentClick,
+}: PostListProps) => {
+  const {
+    deleteList,
+    selectAll,
+    handleCheckboxChange,
+    handleDeleteClick,
+    handleSelectAll,
+    handleAllDeleteClick,
+  } = useCheckbox()
 
-    const handleGetCommentClick = (id: number) => {
-      if (activeCommentId) {
-        setActiveCommentId(null)
-      } else {
-        setActiveCommentId((prevId) => (prevId === id ? null : id))
-      }
-    }
-
-    const handleDeletePostsClick = async (id: number) => {
-      if (confirm('해당 요리글을 삭제하시겠습니까?')) {
-        try {
-          await deletePosts([id])
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
-
-    return (
-      <div className="flex flex-col space-y-2 mt-2">
-        {posts &&
-          posts.map((el) => (
-            <div key={el.id}>
-              <ul className="relative grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100">
-                <li>
-                  <input
-                    type="checkbox"
-                    checked={deleteList.includes(el.id)}
-                    onChange={() => handleCheckboxChange(el.id)}
-                    className="cursor-pointer"
-                  />
-                </li>
-                <li>{el.id}</li>
-                <Link href={`/list-page/user-recipes/${el.id}`}>
-                  <li className="cursor-pointer hover:text-green-150">
-                    {el.postTitle}
-                  </li>
-                </Link>
-                <li>{el.member.loginId}</li>
-                <Link href={`/list-page/main-recipes/${el.recipe.id}`}>
-                  <li className="hover:text-green-150">{el.recipe.title}</li>
-                </Link>
-                <li>{el.create_at.slice(0, 10)}</li>
-                <li className="space-x-1">
-                  <button onClick={() => handleGetCommentClick(el.id)}>
-                    댓글
-                  </button>
-                  <span>/</span>
-                  <button onClick={() => handleDeletePostsClick(el.id)}>
-                    삭제
-                  </button>
-                </li>
-              </ul>
-              {activeCommentId === el.id && <Comments id={el.id} />}
-            </div>
-          ))}
-        <div ref={ref}></div>
-      </div>
-    )
-  },
-)
+  return (
+    <div className="bg-navy-50 p-2 text-white rounded-md space-y-2">
+      <ul className="grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] text-[12px] lg:text-[16px] text-center bg-navy-100 py-4 rounded-t-md">
+        <li className="flex justify-center items-center">
+          <div className="relative flex">
+            <input
+              type="checkbox"
+              checked={selectAll}
+              onChange={() => handleSelectAll(posts.map((el) => el.id))}
+              className="cursor-pointer w-5 h-5"
+            />
+            <Image
+              src={`/svg/trash.svg`}
+              alt="delete-icon"
+              width={0}
+              height={0}
+              className="w-5 h-5 absolute top-1/2 -translate-y-1/2 left-5 cursor-pointer"
+              onClick={() => handleAllDeleteClick(deleteList, deletePosts)}
+            />
+          </div>
+        </li>
+        <li>요리글 번호</li>
+        <li>요리글 제목</li>
+        <li>작성자</li>
+        <li>레시피 제목</li>
+        <li>작성일</li>
+        <li>기능</li>
+      </ul>
+      {posts.map((post) => (
+        <div key={post.id}>
+          <ul className="relative grid grid-cols-[1fr_2fr_2fr_1fr_2fr_2fr_2fr] items-center text-[12px] lg:text-[16px] text-center py-4 bg-navy-100">
+            <li>
+              <input
+                type="checkbox"
+                checked={deleteList.includes(post.id)}
+                onChange={() => handleCheckboxChange(post.id)}
+                className="cursor-pointer w-5 h-5"
+              />
+            </li>
+            <li>{post.id}</li>
+            <Link href={`/list-page/user-recipes/${post.id}`}>
+              <li className="cursor-pointer hover:text-green-150">
+                {post.postTitle}
+              </li>
+            </Link>
+            <li>{post.member.loginId}</li>
+            <Link href={`/list-page/main-recipes/${post.recipe.id}`}>
+              <li className="hover:text-green-150">{post.recipe.title}</li>
+            </Link>
+            <li>{post.createdAt}</li>
+            <li className="space-x-1">
+              <button onClick={() => handleGetCommentClick(post.id)}>
+                댓글
+              </button>
+              <span>/</span>
+              <button onClick={() => handleDeleteClick(post.id, deletePosts)}>
+                삭제
+              </button>
+            </li>
+          </ul>
+          {activeCommentId === post.id && <Comments id={post.id} />}
+        </div>
+      ))}
+      <div ref={lastElementRef} />
+    </div>
+  )
+}
 
 export default PostList

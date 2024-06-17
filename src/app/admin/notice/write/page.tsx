@@ -38,6 +38,7 @@ const WriteNotice = () => {
     const id = Number(userInfo.id)
     if (confirm('공지사항을 등록하시겠습니까?')) {
       const res = await postNotice(title, content, id, file ?? null)
+      alert('공지사항이 등록되었습니다.')
       router.push('/admin/notice')
     }
   }
