@@ -57,11 +57,11 @@ export default function UserInfo() {
   async function submitUpdate() {
     try {
       if (isModNickName) {
-        const options = {
+        const option = {
           loginId: state.loginId,
           nickName: modNickName,
         }
-        await updateNickName('/api/user/info/update/nickname', options)
+        await updateNickName('/api/user/info/update/nickname', option)
       }
       if (isModEmail && isVerify) {
         const options = {
@@ -82,7 +82,10 @@ export default function UserInfo() {
 
   async function sendingEmail() {
     try {
-      await sendEmail('/api/search/email-confirmation/send', modEmail)
+      const option = {
+        email: modEmail,
+      }
+      await sendEmail(option)
       setIsSendEmail(true)
     } catch (error) {
       console.log(error)
@@ -90,11 +93,11 @@ export default function UserInfo() {
   }
   async function verifyCode() {
     try {
-      const options = {
+      const option = {
         email: modEmail,
-        code: code,
+        code: Number(code),
       }
-      await confirmCode('/api/search/email-confirmation/check', options)
+      await confirmCode(option)
       setIsVerify(true)
     } catch (error) {
       console.log(error)

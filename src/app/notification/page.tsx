@@ -1,19 +1,16 @@
 'use client'
 import { deleteNotify, inquiryNotify } from '@/api/notify-apis'
-import { RootState } from '@/store'
 import { Notification } from '@/types/notify'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 
-export default function ViewRecipeLikes() {
-  const [likeData, setLikeData] = useState<Notification[] | []>([])
+export default function Notification() {
+  const [notify, setNotify] = useState<Notification[] | []>([])
   const [check, setCheck] = useState<string[] | []>([])
   const [next, setNext] = useState<boolean>(false)
-  const [lastId, setLastId] = useState<string | undefined>(undefined)
+  const [lastId, setLastId] = useState<number | null>(null)
   const [mount, setMount] = useState<boolean>(false)
 
-  const userInfo = useSelector((state: RootState) => state.userInfo)
   const loader = useRef(null)
 
   useEffect(() => {
@@ -22,28 +19,23 @@ export default function ViewRecipeLikes() {
 
   async function getInquiryNotification(isInit: boolean) {
     try {
-      const options = {
-        page: 0,
-        size: 5,
-        sort: [''].join(),
+      const option = {
+        size: 10,
       }
-      const result = await inquiryNotify(
-        `/api/user/info/notification?${isInit === false && lastId ? `&last-id=${lastId}` : ''}`,
-        options,
-      )
-      // lastId
-      const dataLastId = String(
-        result.data.notification[result.data.notification.length - 1].id,
-      )
+      const result = await inquiryNotify(option, lastId)
       if (isInit) {
-        setLikeData(result.data.notification)
+        setNotify(result.data.notification)
       } else {
-        setLikeData((prev) => {
+        setNotify((prev) => {
           const newData = result.data.notification
           return [...prev, ...newData]
         })
       }
-      setLastId(dataLastId)
+      if (result.data.notification.length > 0) {
+        const dataLastId =
+          result.data.notification[result.data.notification.length - 1].id
+        setLastId(dataLastId)
+      }
       setNext(result.data.hasNext)
     } catch (error) {
       console.log(error)
@@ -56,8 +48,9 @@ export default function ViewRecipeLikes() {
   ) {
     try {
       const delData = group ? thisIds : check
-      await deleteNotify('/api/user/user/notification', delData)
-      setMount(!mount)
+      await deleteNotify(delData)
+      setLastId(null)
+      setMount((prev) => !prev)
     } catch (error) {
       console.log(error)
     }
@@ -73,7 +66,7 @@ export default function ViewRecipeLikes() {
         }
       }
     },
-    [likeData],
+    [notify],
   )
   // Intersection Observer 설정
   useEffect(() => {
@@ -98,41 +91,48 @@ export default function ViewRecipeLikes() {
         >
           일괄삭제
         </button>
-        <ul>
-          {likeData.map((item) => {
-            return (
-              <li key={item.id} className="border px-5 mb-3">
-                <ul className="flex justify-between grid-cols-3">
-                  <li className="py-3">
-                    <input
-                      type="checkbox"
-                      onChange={(e) =>
-                        e.target.checked
-                          ? setCheck((prevs) => [...prevs, String(item.id)])
-                          : setCheck((prevs) =>
-                              prevs.filter((prev) => prev !== String(item.id)),
-                            )
-                      }
-                    />
-                  </li>
-                  <li className="py-3">
-                    <Link href="">{item.content}</Link>
-                  </li>
-                  <li className="py-3">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        deleteNotificationHandler(true, String(item.id))
-                      }
-                    >
-                      삭제
-                    </button>
-                  </li>
-                </ul>
-              </li>
-            )
-          })}
-        </ul>
+        {notify.length >= 1 ? (
+          <ul>
+            {notify.map((item) => {
+              return (
+                <li key={item.id} className="border px-5 mb-3">
+                  <ul className="flex justify-between grid-cols-3">
+                    <li className="py-3">
+                      <input
+                        type="checkbox"
+                        onChange={(e) =>
+                          e.target.checked
+                            ? setCheck((prevs) => [...prevs, String(item.id)])
+                            : setCheck((prevs) =>
+                                prevs.filter(
+                                  (prev) => prev !== String(item.id),
+                                ),
+                              )
+                        }
+                      />
+                    </li>
+                    <li className="py-3">
+                      <Link href={item.url}>{item.content}</Link>
+                    </li>
+                    <li className="py-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          deleteNotificationHandler(true, String(item.id))
+                        }
+                      >
+                        삭제
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          '데이터가 없습니다.'
+        )}
+
         <div ref={loader} />
       </div>
     </div>

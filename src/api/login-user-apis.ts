@@ -5,6 +5,7 @@ import {
   MyLikesPosting,
   MyLikesRecipe,
   MyPostings,
+  MyQuestion,
   NickNameOption,
   UserInfo,
   verifyEmailOption,
@@ -69,36 +70,29 @@ export async function doLikeForPosting(req: { postId: number }) {
 }
 
 // 레시피 즐겨찾기
-interface DoBookmarkOption {
-  memberId: string
-  recipeId: number
-}
 interface InquiryBookmark {
   payload: {
-    message: string
     success: boolean
+    message: string
   }
 }
 interface DoBookmark {
   payload: {
-    message: string
     success: boolean
-    data: {
-      ['즐겨 찾기 상태']: boolean
-    }
+    message: string
   }
 }
-export async function checkBookmark(apiPath: string, params: number) {
+export async function checkBookmark(recipeId: number) {
   const { payload }: InquiryBookmark = await requester({
     method: 'GET',
-    url: `${apiPath}?recipe-id=${params}`,
+    url: `/api/user/recipe/${recipeId}/bookmarks/check`,
   })
   return payload
 }
-export async function doBookmark(apiPath: string, option: DoBookmarkOption) {
+export async function doBookmark(option: { recipeId: number }) {
   const { payload }: DoBookmark = await requester({
     method: 'POST',
-    url: apiPath,
+    url: '/api/user/recipe',
     data: option,
   })
   return payload
@@ -141,10 +135,14 @@ interface InquiryPosting {
     }
   }
 }
-export async function inquiryPosting(apiPath: string) {
+export async function inquiryPosting(
+  params: { size: number },
+  lastId: number | null,
+) {
   const { payload }: InquiryPosting = await requester({
     method: 'GET',
-    url: apiPath,
+    url: `/api/user/info/posts${lastId ? `?lastId=${lastId}` : ''}`,
+    params,
   })
   return payload
 }
@@ -235,20 +233,20 @@ export async function updateEmail(apiPath: string, option: EmailOption) {
   return payload
 }
 // 마이페이지 - 이메일 검증 코드 보내기
-export async function sendEmail(apiPath: string, option: string) {
+export async function sendEmail(params: { email: string }) {
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
-    params: { email: option },
+    url: '/api/code/email-confirmation/send',
+    params,
   })
   return payload
 }
 // 마이페이지 - 이메일 코드 검증
-export async function confirmCode(apiPath: string, option: verifyEmailOption) {
+export async function confirmCode(req: verifyEmailOption) {
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
-    params: { email: option.email, code: option.code },
+    url: '/api/code/email-confirmation/verify',
+    data: req,
   })
   return payload
 }

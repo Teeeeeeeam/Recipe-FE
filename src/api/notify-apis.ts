@@ -13,11 +13,14 @@ interface InquiryNotify {
     }
   }
 }
-export async function inquiryNotify(apiPath: string, option: Options) {
+export async function inquiryNotify(
+  params: { size: number },
+  lastId: number | null,
+) {
   const { payload }: InquiryNotify = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: `/api/user/info/notification${lastId ? `?lastId=${lastId}` : ''}`,
+    params,
   })
   return payload
 }
@@ -41,13 +44,13 @@ export async function inquiryNotifyRecent(apiPath: string) {
 }
 
 // 알림 삭제
-export async function deleteNotify(apiPath: string, option: string | string[]) {
+export async function deleteNotify(notificationIds: string | string[]) {
   // 일괄 삭제
-  if (Array.isArray(option)) {
+  if (Array.isArray(notificationIds)) {
     const { payload } = await requester({
       method: 'DELETE',
-      url: apiPath,
-      params: { ids: option },
+      url: '/api/user/user/notification',
+      params: { notificationIds },
       paramsSerializer: (paramObj) => {
         const params = new URLSearchParams()
         for (let key in paramObj) {
@@ -62,8 +65,8 @@ export async function deleteNotify(apiPath: string, option: string | string[]) {
     // 단일 삭제
     const { payload } = await requester({
       method: 'DELETE',
-      url: apiPath,
-      params: { ids: option },
+      url: '/api/user/user/notification',
+      params: { notificationIds },
     })
     return payload
   }

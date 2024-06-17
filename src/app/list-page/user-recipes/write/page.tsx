@@ -7,26 +7,6 @@ import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-export interface FormData {
-  [key: string]: PostDataType | string
-}
-interface UserType {
-  id: number | undefined
-  loginId: string | undefined
-  nickName: string | undefined
-  loginType: string | undefined
-}
-interface PostDataType {
-  postTitle: string
-  postContent: string
-  postCookingTime: string
-  postCookingLevel: string
-  postServing: string
-  memberId: number | undefined
-  recipe_id: any
-  postPassword: string
-}
-
 export default function Write() {
   const [thisTitle, setThisTitle] = useState<string>('')
   const [thisImage, setThisImage] = useState<string>('')
@@ -39,7 +19,6 @@ export default function Write() {
 
   const imgRef = useRef<HTMLInputElement>(null)
   const state = useSelector((state: RootState) => state.writeRecipe)
-  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   function submitHandler(e: any) {
     e.preventDefault()
@@ -53,8 +32,7 @@ export default function Write() {
             postCookingTime: `${thisTime}분`,
             postCookingLevel: thisLevel,
             postServing: `${thisPeople}인분`,
-            memberId: Number(userInfo.id),
-            recipe_id: Number(state.id),
+            recipeId: Number(state.id),
             postPassword: thisPw,
           },
           writeFile: file!,

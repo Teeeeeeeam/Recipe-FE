@@ -17,15 +17,25 @@ export default function Question() {
 
   const imgRef = useRef<HTMLInputElement>(null)
 
+  function resetForm() {
+    setVariety('')
+    setTitle('')
+    setContent('')
+    setEmail('')
+    setThisImage('')
+    setFile(null)
+    setAgreeEmail(false)
+  }
+
   async function submitHandler() {
     try {
       const req = {
         questionType:
           variety === 'account' ? 'ACCOUNT_INQUIRY' : 'GENERAL_INQUIRY',
         title,
-        question_content: content,
+        questionContent: content,
         answer: variety === 'account' || agreeEmail ? 'EMAIL' : 'NONE',
-        answer_email: email,
+        answerEmail: email,
       }
       const postFile = file
       if (variety === 'general') {
@@ -35,17 +45,17 @@ export default function Question() {
         await sendQuestion('/api/question', req, postFile)
       }
       setIsClick(false)
-      setVariety('')
-      setTitle('')
-      setContent('')
-      setEmail('')
-      setThisImage('')
-      setFile(null)
-      setAgreeEmail(false)
+      resetForm()
     } catch (error) {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    if (!isClick) {
+      resetForm()
+    }
+  }, [isClick])
 
   function uploadImg() {
     if (imgRef.current && imgRef.current.files) {
