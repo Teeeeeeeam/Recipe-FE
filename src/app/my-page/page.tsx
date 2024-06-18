@@ -1,35 +1,60 @@
 'use client'
 
 import { enterMyPage } from '@/api/login-user-apis'
+import { getLocalStorage, setLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
+import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export default function MyPage() {
   const [pw, setPw] = useState<string>('')
+
   const loginState = useSelector((state: RootState) => state.userInfo)
   const route = useRouter()
-  const { loginType } = loginState
-  if (loginType && loginType !== 'normal') {
-    window.location.href = '/my-page/success'
+  const { loginId, loginType } = loginState
+
+  useEffect(() => {
+    if (loginType && loginType !== 'normal') {
+      window.location.href = '/my-page/success'
+    }
+    const now = new Date()
+    const isExpiry = getLocalStorage('expiryMypage')
+    if (isExpiry && now.getTime() < isExpiry) {
+      route.push('/my-page/success')
+    }
+  }, [])
+
+  function setAccessMypage() {
+    const timeEnter = new Date()
+    const timeExpiry = new Date(timeEnter.getTime() + 15 * 60 * 1000)
+    setLocalStorage('expiryMypage', Number(timeExpiry))
   }
 
   async function getAccessRights(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
-    const userData = {
-      password: pw,
-      loginId: loginState?.loginId,
-      loginType: loginState?.loginType,
-    }
     try {
-      await enterMyPage('/api/user/info/valid', userData)
-      // window.location.href = '/my-page/userInfo'
-      route.push('/my-page/success')
+      if (loginId && loginType) {
+        const userData = {
+          password: pw,
+          loginId: loginState?.loginId,
+          loginType: loginState?.loginType,
+        }
+        await enterMyPage(userData)
+        setAccessMypage()
+        route.push('/my-page/success')
+      }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 400) {
+          alert('비밀번호가 일치하지 않습니다.')
+        }
+      }
     }
   }
+
   return (
     <>
       {loginType === 'normal' && (

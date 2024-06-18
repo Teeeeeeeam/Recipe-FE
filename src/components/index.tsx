@@ -55,6 +55,7 @@ export default function Header() {
         await postLogout(memberId)
         setIsSession(false)
         removeLocalStorage('accessToken')
+        removeLocalStorage('expiryMypage')
         dispatch(resetState())
         window.location.href = '/'
       }
