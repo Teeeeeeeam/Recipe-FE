@@ -30,7 +30,7 @@ export default function Header() {
 
   async function inquiryUser() {
     try {
-      const result = await checkUser('/api/userinfo')
+      const result = await checkUser()
       dispatch(getLoginInfo(result.data))
       setIsSession(true)
     } catch (error) {
