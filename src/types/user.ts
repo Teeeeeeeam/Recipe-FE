@@ -33,14 +33,11 @@ export interface MyBookmark {
 
 // 유저 정보 변경 axios put option ts
 export interface NickNameOption {
-  loginId: string | null
   nickName: string | null
 }
 export interface EmailOption {
   email: string
   code: string
-  loginId: string | null
-  loginType: string | null
 }
 export interface verifyEmailOption {
   email: string

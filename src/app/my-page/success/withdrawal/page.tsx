@@ -4,6 +4,7 @@ import { doWidthdrawalUser } from '@/api/login-user-apis'
 import { removeLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
 import { getLoginInfo } from '@/store/user-info-slice'
+import axios from 'axios'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -27,23 +28,27 @@ export default function Withdrawal() {
         nickName: null,
         roles: null,
       }
-      if (loginId && loginType === 'normal') {
-        const options = {
-          loginId,
+      if (loginType === 'normal') {
+        const option = {
           checkBox: agree,
         }
-        await doWidthdrawalUser('/api/user/info/disconnect', options)
+        await doWidthdrawalUser(option)
         alert('회원탈퇴가 완료됐습니다.')
         removeLocalStorage('accessToken')
         dispatch(getLoginInfo(nullState))
         window.location.href = '/'
-      } else if (loginId && loginType !== 'normal') {
+      } else if (loginType !== 'normal') {
         window.location.href =
-          `${process.env.NEXT_PUBLIC_API_URL}/api/oauth2/social/unlink?social-id=` +
+          `${process.env.NEXT_PUBLIC_API_URL}/api/oauth2/social/unlink?type=` +
           `${loginType === 'kakao' ? 'kakao' : loginType === 'naver' ? 'naver' : ''}`
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 401) {
+          alert('일반 사용자만 가능합니다.')
+        }
+      }
     }
   }
   return (
