@@ -111,12 +111,12 @@ export default function Home() {
         </div>
         <form
           onSubmit={(e) => submitHandler(e)}
-          className="relative flex w-1/2 flex-col justify-between rounded-lg border p-2 sm:flex-row sm:items-center sm:p-0 mx-auto bg-white"
+          className="mx-2 my-10 rounded-xl border bg-white px-4 py-8"
         >
-          <div className="flex">
-            <label className="h-14 rounded-md bg-gray-200" htmlFor="category">
+          <div className="mb-2 flex items-center">
+            <div className="mr-1 w-full flex items-center">
               <select
-                className="bg-transparent px-6 py-4 outline-none"
+                className="bg-transparent mr-1 px-6 py-3 outline-none border rounded-lg"
                 name="category"
                 id="category"
                 onChange={(e) => setInputCategory(e.target.value)}
@@ -125,51 +125,53 @@ export default function Home() {
                 <option value="cookTitle">요리명</option>
                 <option value="cookIngredient">재료명</option>
               </select>
-            </label>
-            <input
-              type="name"
-              name="search"
-              onChange={(e) => {
-                setInputValue(e.target.value)
-              }}
-              value={inputValue}
-              className="ml-1 h-14 w-full cursor-text rounded-md border py-4 pl-6 outline-none sm:border-0 sm:pr-40 sm:pl-12 focus:ring"
-              placeholder="검색어를 입력해주세요"
-            />
+              <input
+                type="text"
+                onChange={(e) => {
+                  setInputValue(e.target.value)
+                }}
+                value={inputValue}
+                className="placeholder:text-gray-400 h-12 w-full rounded-md px-4 font-medium focus:outline-none"
+                placeholder="검색어를 입력해주세요"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={(e) => submitClick(e)}
+              className="shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-[#78D8B6] text-white hover:bg-[#68c9a7]"
+            >
+              검색
+            </button>
           </div>
-          <button
-            type="button"
-            className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-md bg-emerald-500 px-10 text-center align-middle text-base font-medium normal-case text-white outline-none sm:absolute sm:right-0 sm:mt-0 sm:mr-1 sm:w-32"
-            onClick={(e) => submitClick(e)}
-          >
-            Search
-          </button>
+          {inputCategory === 'cookIngredient' && (
+            <>
+              {ingredients.length < 1 && (
+                <p className="text-center text-sm font-medium text-gray-400">
+                  검색어를 입력 후 엔터를 누르면 여기에 표시됩니다. &#40;최대
+                  5개&#41;
+                </p>
+              )}
+              <div className="space-x-1 flex flex-wrap w-full justify-center">
+                {ingredients?.map((ingredient) => {
+                  return (
+                    <p
+                      key={ingredient}
+                      className="text-sm font-medium text-gray-400"
+                    >
+                      {ingredient}
+                      <span
+                        className="ml-1 text-gray-300 cursor-pointer hover:text-red-600"
+                        onClick={() => deleteIngredient(ingredient)}
+                      >
+                        X
+                      </span>
+                    </p>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </form>
-        <div>
-          <ul className="flex items-center justify-center">
-            {ingredients?.map((ingredient) => {
-              return (
-                <li
-                  key={ingredient}
-                  className="flex flex-wrap mr-2 mt-3 text-gray-300"
-                >
-                  {ingredient}
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => deleteIngredient(ingredient)}
-                  >
-                    <Image
-                      src="/svg/close.svg"
-                      alt={`${ingredient} 삭제`}
-                      width={25}
-                      height={25}
-                    />
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
         <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
           <RecipeFigure recipes={recipes} />
         </div>

@@ -6,6 +6,7 @@ import {
   postComment,
 } from '@/api/recipe-apis'
 import { Comments } from '@/types/recipe'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 
 interface PropsType {
@@ -71,7 +72,12 @@ export function Comment({ thisId, userId }: PropsType) {
         alert('댓글은 1자 이상 부탁드려요')
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 403) {
+          alert('작성자가 일치하지 않습니다.')
+        }
+      }
     }
   }
 
@@ -87,7 +93,12 @@ export function Comment({ thisId, userId }: PropsType) {
         setMount(!mount)
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 403) {
+          alert('작성자가 일치하지 않습니다.')
+        }
+      }
     }
   }
 

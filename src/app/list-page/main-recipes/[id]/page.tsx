@@ -21,7 +21,6 @@ export default function RecipeDetailMain() {
   const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
   const [like, setLike] = useState<boolean>(false)
   const [bookmark, setBookmark] = useState<boolean>(false)
-  console.log(thisInfo)
 
   const params = useParams()
   const thisId = Number(params.id)

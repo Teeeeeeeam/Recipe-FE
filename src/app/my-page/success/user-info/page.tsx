@@ -7,7 +7,6 @@ import {
   updateNickName,
   confirmCode,
 } from '@/api/login-user-apis'
-import { getLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
 import { UserInfo } from '@/types/user'
 import axios from 'axios'
@@ -45,12 +44,15 @@ export default function UserInfo() {
   async function getInquiryUserInfo() {
     const userId = state.loginId
     try {
-      if (userId) {
-        const result = await inquiryUser('/api/user/info/', userId)
-        setUserInfo(result.data)
-      }
+      const result = await inquiryUser()
+      setUserInfo(result.data)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 400) {
+          alert('사용자를 찾을 수 없습니다.')
+        }
+      }
     }
   }
 
@@ -58,25 +60,29 @@ export default function UserInfo() {
     try {
       if (isModNickName) {
         const option = {
-          loginId: state.loginId,
           nickName: modNickName,
         }
-        await updateNickName('/api/user/info/update/nickname', option)
+        await updateNickName(option)
       }
       if (isModEmail && isVerify) {
-        const options = {
+        const option = {
           email: modEmail,
           code: code,
-          loginId: state.loginId,
-          loginType: state.loginType,
         }
-        await updateEmail('/api/user/info/update/email', options)
+        await updateEmail(option)
       }
       setToggle(false)
       setMount(!mount)
     } catch (error) {
-      console.log(error)
-      // 401 error 시 my-page의 비밀번호 검증으로 redirect
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (isModNickName && errorCode === 400) {
+          alert('사용자를 찾을 수 없습니다.')
+        }
+        if (isModEmail && errorCode === 401) {
+          alert('일반 사용자만 가능합니다.')
+        }
+      }
     }
   }
 

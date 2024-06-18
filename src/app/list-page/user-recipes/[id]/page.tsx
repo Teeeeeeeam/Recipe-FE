@@ -6,6 +6,7 @@ import { Comment } from '@/components/comment'
 import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { PostingDetail, ThreeCookInfo } from '@/types/recipe'
+import axios from 'axios'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -93,7 +94,14 @@ export default function RecipeDetailUser() {
         }
       }
     } catch (error) {
-      console.log('비밀번호검증' + error)
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.status
+        if (errorCode === 401) {
+          alert('비밀번호가 일치하지 않습니다.')
+        } else if (errorCode === 403) {
+          alert('작성자가 아닙니다.')
+        }
+      }
     }
   }
   return (

@@ -10,7 +10,6 @@ import {
   UserInfo,
   verifyEmailOption,
 } from '@/types/user'
-import { Options } from '@/types/recipe'
 import { LoginInfo } from '@/store/user-info-slice'
 
 // 로그인 한 유저 정보 확인
@@ -21,10 +20,10 @@ interface CheckUser {
     data: LoginInfo
   }
 }
-export async function checkUser(apiPath: string) {
+export async function checkUser() {
   const { payload }: CheckUser = await requester({
     method: 'POST',
-    url: apiPath,
+    url: '/api/userinfo',
   })
   return payload
 }
@@ -99,10 +98,14 @@ export async function doBookmark(option: { recipeId: number }) {
 }
 
 // 마이페이지 로그인 검증
-export async function enterMyPage(apiPath: string, option: any) {
+export async function enterMyPage(option: {
+  password: string
+  loginId: string | null
+  loginType: string | null
+}) {
   const { payload } = await requester({
     method: 'POST',
-    url: apiPath,
+    url: '/api/user/info/valid',
     data: option,
   })
   return payload
@@ -116,10 +119,10 @@ interface InquiryUser {
     data: UserInfo
   }
 }
-export async function inquiryUser(apiPath: string, option: string) {
+export async function inquiryUser() {
   const { payload }: InquiryUser = await requester({
     method: 'GET',
-    url: `${apiPath}${option}`,
+    url: `/api/user/info`,
   })
   return payload
 }
@@ -199,36 +202,39 @@ interface InquiryBookmarkMyPage {
     success: boolean
     message: string
     data: {
-      bookmark_list: MyBookmark[] | []
-      hasNext: boolean
+      bookmarkList: MyBookmark[] | []
+      nextPage: boolean
     }
   }
 }
-export async function inquiryBookmark(apiPath: string, option: Options) {
+export async function inquiryBookmark(
+  req: { size: number },
+  lastId: number | null,
+) {
   const { payload }: InquiryBookmarkMyPage = await requester({
     method: 'GET',
-    url: apiPath,
-    params: option,
+    url: `/api/user/info/bookmark${lastId ? `?lastId=${lastId}` : ''}`,
+    params: req,
   })
   return payload
 }
 
 // 마이페이지 - 닉네임 수정
-export async function updateNickName(apiPath: string, option: NickNameOption) {
+export async function updateNickName(req: NickNameOption) {
   const { payload } = await requester({
     method: 'PUT',
-    url: apiPath,
-    data: option,
+    url: '/api/user/info/update/nickname',
+    data: req,
   })
   return payload
 }
 
 // 마이페이지 - 이메일 수정
-export async function updateEmail(apiPath: string, option: EmailOption) {
+export async function updateEmail(req: EmailOption) {
   const { payload } = await requester({
     method: 'PUT',
-    url: apiPath,
-    data: option,
+    url: '/api/user/info/update/email',
+    data: req,
   })
   return payload
 }
@@ -251,28 +257,15 @@ export async function confirmCode(req: verifyEmailOption) {
   return payload
 }
 
-// 마이페이지 - 게시글 (무한스크롤)
-export async function postingAll(apiPath: string) {
-  const { payload } = await requester({
-    method: 'POST',
-    url: apiPath,
-  })
-  return payload
-}
-
 // 마이페이지 - 회원 탈퇴
 interface WidthdrawalOption {
-  loginId: string
   checkBox: boolean
 }
-export async function doWidthdrawalUser(
-  apiPath: string,
-  option: WidthdrawalOption,
-) {
+export async function doWidthdrawalUser(req: WidthdrawalOption) {
   const { payload } = await requester({
     method: 'DELETE',
-    url: apiPath,
-    data: option,
+    url: '/api/user/info/disconnect',
+    data: req,
   })
   return payload
 }

@@ -31,7 +31,6 @@ export default function MainRecipes() {
           : ((thisOption.title = state.value),
             (thisOption.ingredients = [state.value].join('')))
       const result = await getRecipes(thisOption)
-      console.log(result)
       setRecipes(result.data.recipes)
       setTotalPage(result.data.totalPage)
     } catch (error) {

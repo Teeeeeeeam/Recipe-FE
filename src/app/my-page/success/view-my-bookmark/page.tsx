@@ -7,9 +7,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 export default function ViewBookmark() {
-  const [likeData, setLikeData] = useState<MyBookmark[] | []>([])
+  const [bookmarkData, setBookmarkData] = useState<MyBookmark[] | []>([])
   const [next, setNext] = useState<boolean>(false)
-  const [lastId, setLastId] = useState<string | undefined>(undefined)
+  const [lastId, setLastId] = useState<number | null>(null)
   const [mount, setMount] = useState<boolean>(false)
 
   const userInfo = useSelector((state: RootState) => state.userInfo)
@@ -18,33 +18,27 @@ export default function ViewBookmark() {
   useEffect(() => {
     getInquiryLikePosting(true)
   }, [mount])
-  console.log(likeData)
+
   async function getInquiryLikePosting(isInit: boolean) {
     try {
-      const options = {
-        page: 0,
+      const option = {
         size: 5,
-        sort: [''].join(),
       }
-      const result = await inquiryBookmark(
-        `/api/user/info/bookmark?${isInit === false && lastId ? `&last-id=${lastId}` : ''}`,
-        options,
-      )
-      console.log(result)
-      // lastId
-      const dataLastId = String(
-        result.data.bookmark_list[result.data.bookmark_list.length - 1]?.id,
-      )
+      const result = await inquiryBookmark(option, lastId)
       if (isInit) {
-        setLikeData(result.data.bookmark_list)
+        setBookmarkData(result.data.bookmarkList)
       } else {
-        setLikeData((prev) => {
-          const newData = result.data.bookmark_list
+        setBookmarkData((prev) => {
+          const newData = result.data.bookmarkList
           return [...prev, ...newData]
         })
       }
-      setLastId(dataLastId)
-      setNext(result.data.hasNext)
+      if (result.data.bookmarkList.length > 0) {
+        const dataLastId =
+          result.data.bookmarkList[result.data.bookmarkList.length - 1]?.id
+        setLastId(dataLastId)
+      }
+      setNext(result.data.nextPage)
     } catch (error) {
       console.log(error)
     }
@@ -75,7 +69,7 @@ export default function ViewBookmark() {
         }
       }
     },
-    [likeData],
+    [bookmarkData],
   )
   // Intersection Observer 설정
   useEffect(() => {
@@ -94,30 +88,35 @@ export default function ViewBookmark() {
   return (
     <div className="w-full">
       <div className="h-[80vh] overflow-y-scroll border px-5">
-        <ul>
-          {likeData.map((item, index) => {
-            return (
-              <li key={item.id} className="border px-5 mb-3">
-                <ul className="flex justify-between grid-cols-3">
-                  <li className="py-3">{index + 1}</li>
-                  <li className="py-3">
-                    <Link href={`/list-page/user-recipes/${item.id}`}>
-                      {item.title}
-                    </Link>
-                  </li>
-                  <li className="py-3">
-                    <button
-                      type="button"
-                      onClick={() => cancelBookmark(item.id)}
-                    >
-                      취소
-                    </button>
-                  </li>
-                </ul>
-              </li>
-            )
-          })}
-        </ul>
+        {bookmarkData.length > 0 ? (
+          <ul>
+            {bookmarkData.map((item, index) => {
+              return (
+                <li key={item.id} className="border px-5 mb-3">
+                  <ul className="flex justify-between grid-cols-3">
+                    <li className="py-3">{index + 1}</li>
+                    <li className="py-3">
+                      <Link href={`/list-page/user-recipes/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </li>
+                    <li className="py-3">
+                      <button
+                        type="button"
+                        onClick={() => cancelBookmark(item.id)}
+                      >
+                        취소
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          '데이터가 없습니다.'
+        )}
+
         <div ref={loader} />
       </div>
     </div>

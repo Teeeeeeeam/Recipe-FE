@@ -30,7 +30,7 @@ export default function Header() {
 
   async function inquiryUser() {
     try {
-      const result = await checkUser('/api/userinfo')
+      const result = await checkUser()
       dispatch(getLoginInfo(result.data))
       setIsSession(true)
     } catch (error) {
@@ -55,6 +55,7 @@ export default function Header() {
         await postLogout(memberId)
         setIsSession(false)
         removeLocalStorage('accessToken')
+        removeLocalStorage('expiryMypage')
         dispatch(resetState())
         window.location.href = '/'
       }
