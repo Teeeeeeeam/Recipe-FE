@@ -18,8 +18,6 @@ export interface Response {
 // 마이페이지 - 로그인 검증
 export interface EnterMyPageReq {
   password: string
-  loginId: string | null
-  loginType: string | null
 }
 
 // 마이페이지 - 북마크 조회

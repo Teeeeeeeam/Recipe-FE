@@ -82,7 +82,7 @@ export async function doBookmark(req: { recipeId: number }) {
 }
 
 // 마이페이지 로그인 검증
-export async function enterMyPage(req: EnterMyPageReq) {
+export async function enterMyPage(req: EnterMyPageReq | {}) {
   const { payload } = await requester<Response>({
     method: 'POST',
     url: '/api/user/info/valid',
