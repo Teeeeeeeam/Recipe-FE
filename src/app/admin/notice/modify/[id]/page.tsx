@@ -1,6 +1,6 @@
 'use client'
 
-import { getNoticeDetail, postNotice, updateNotice } from '@/api/admin-apis'
+import { getNoticeDetail, updateNotice } from '@/api/admin-apis'
 import RecipeFormInput from '@/components/common/recipe-form-input'
 import { useAppSelector } from '@/store'
 import Image from 'next/image'
