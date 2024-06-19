@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import useMembers from './useMembers'
+import useMembers from './use-members'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import MemberFilter from './member-filter'
 import MemberList from './member-list'
