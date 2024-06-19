@@ -1,13 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface SearchType {
-  category: string | undefined
-  value: string | string[] | undefined
+  category: string | null
+  value: string | string[] | null
 }
 
 const initialState: SearchType = {
-  category: undefined,
-  value: undefined,
+  category: null,
+  value: null,
 }
 
 const searchRecipeSlice = createSlice({
