@@ -1,9 +1,10 @@
 'use client'
+
 import { getRecipeDetail } from '@/api/recipe-apis'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { DetailRecipe, ThreeCookInfo } from '@/types/recipe'
+import { RecipeDetail, ThreeCookInfo } from '@/types/recipe'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { postWriteState } from '@/store/write-userRecipe-slice'
@@ -17,8 +18,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 
 export default function RecipeDetailMain() {
-  const [thisInfo, setThisInfo] = useState<DetailRecipe>()
-  const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
+  const [thisInfo, setThisInfo] = useState<RecipeDetail>()
+  const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>([])
   const [like, setLike] = useState<boolean>(false)
   const [bookmark, setBookmark] = useState<boolean>(false)
 
@@ -39,17 +40,21 @@ export default function RecipeDetailMain() {
     try {
       const resultData = await getRecipeDetail(thisId)
       const resultBookmark = await checkBookmark(thisId)
-      const createThree = (str1: string, str2: string) => {
+      const createThree = (title: string, data: string, img: string) => {
         return {
-          title: str1,
-          data: resultData.data.recipe[str1],
-          imgUrl: `/svg/${str2}.svg`,
+          title,
+          data,
+          imgUrl: `/svg/${img}.svg`,
         }
       }
       const resultCook: ThreeCookInfo[] = [
-        createThree('people', 'people'),
-        createThree('cookingTime', 'timer'),
-        createThree('cookingLevel', 'stars'),
+        createThree('people', resultData.data.recipe.people, 'people'),
+        createThree('cookingTime', resultData.data.recipe.cookingTime, 'timer'),
+        createThree(
+          'cookingLevel',
+          resultData.data.recipe.cookingLevel,
+          'stars',
+        ),
       ]
       setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
@@ -141,7 +146,7 @@ export default function RecipeDetailMain() {
                               width={50}
                               height={50}
                             />
-                            <span>{thisInfo.recipe[cook.title]}</span>
+                            <span>{cook.data}</span>
                           </li>
                         )
                       })}

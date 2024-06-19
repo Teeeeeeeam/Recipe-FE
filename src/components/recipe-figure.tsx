@@ -13,7 +13,7 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
         return (
           <figure
             key={item.id}
-            className="rounded-lg border border-[#C6C6C6] shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
+            className="rounded-lg border max-h-[400px] border-[#C6C6C6] shadow-md max-w-xs md:max-w-none overflow-hidden py-3"
           >
             <Image
               src={item.imageUrl}

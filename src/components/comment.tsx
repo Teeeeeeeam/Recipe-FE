@@ -1,9 +1,9 @@
 'use client'
 import {
-  deleteComment,
   getComment,
-  modComment,
-  postComment,
+  commentDel,
+  commentMod,
+  commentWrite,
 } from '@/api/recipe-apis'
 import { Comments } from '@/types/recipe'
 import axios from 'axios'
@@ -32,9 +32,8 @@ export function Comment({ thisId, userId }: PropsType) {
         page: 0,
         size: 100,
         sort: [''].join(''),
-        postId: thisId,
       }
-      const result = await getComment(option)
+      const result = await getComment(option, thisId)
       setComment(result.data.content)
     } catch (error) {
       console.log(error)
@@ -48,7 +47,7 @@ export function Comment({ thisId, userId }: PropsType) {
           commentContent: content,
           postId: thisId,
         }
-        await postComment(option)
+        await commentWrite(option)
         setContent('')
         setMount(!mount)
       }
@@ -64,7 +63,7 @@ export function Comment({ thisId, userId }: PropsType) {
         commentId: itemId,
       }
       if ((saveComment[itemId] || '').length > 0) {
-        await modComment(options)
+        await commentMod(options)
         setIsMod((prev) => ({ ...prev, [itemId]: false }))
         setSaveComment((prev) => ({ ...prev, [itemId]: '' }))
         setMount(!mount)
@@ -87,7 +86,7 @@ export function Comment({ thisId, userId }: PropsType) {
         const options = {
           commentId: targetDel,
         }
-        await deleteComment(options)
+        await commentDel(options)
         setIsDel(false)
         setTargetDel(null)
         setMount(!mount)

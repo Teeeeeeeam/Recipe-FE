@@ -1,5 +1,27 @@
-// general ts
-export interface Recipe extends Record<string, string | number> {
+// 레시피 및 게시글 figure
+export interface PostingFigure {
+  createdAt: string
+  id: number
+  member: PostingMember
+  postImageUrl: string
+  postTitle: string
+  recipe: PostingDetailRecipe
+}
+interface PostingMember {
+  nickname: string
+  loginId: string
+}
+
+// 레시피 검색 req (+[redux] search-recipe-slice)
+export interface Option {
+  page: number
+  size: number
+  title?: string
+  ingredients?: string
+}
+
+// 레시피 - 일반 정보
+export interface Recipe {
   id: number
   likeCount: number
   cookingLevel: string
@@ -7,8 +29,11 @@ export interface Recipe extends Record<string, string | number> {
   imageUrl: string
   people: string
   title: string
+  createAt?: string
 }
-export interface DetailRecipe {
+
+// 레시피 - 상세 정보
+export interface RecipeDetail {
   cookSteps: CookStep[]
   ingredients: string[]
   recipe: Recipe
@@ -17,26 +42,16 @@ export type CookStep = {
   cookStepId: string
   cookSteps: string
 }
+
+// 레시피 및 게시글 - 상세 정보 (인분, 시간, 난이도)
 export interface ThreeCookInfo {
   title: string
   imgUrl: string
-  data: string | number | PostingDetailMember | PostingDetailRecipe
+  data: string
 }
 
-// for userPostingDetail
-export interface Posting
-  extends Record<string, Comments[] | [] | PostingDetail> {
-  comments: Comments[] | []
-  post: PostingDetail
-}
-export interface Comments {
-  id: number
-  commentContent: string
-  nickName: string
-  createdAt: string
-}
+// 게시글 - 상세정보
 export interface PostingDetail {
-  [key: string]: string | number | PostingDetailMember | PostingDetailRecipe
   create_at: string
   id: number
   postContent: string
@@ -57,28 +72,12 @@ export interface PostingDetailRecipe {
   title: string
 }
 
-//
-export interface PostingFigure {
-  createdAt: string
+// 게시글 - 댓글
+export interface Comments {
   id: number
-  member: PostingMember
-  postImageUrl: string
-  postTitle: string
-  recipe: PostingDetailRecipe
-}
-interface PostingMember {
-  nickname: string
-  loginId: string
-}
-
-// api ts
-export interface Options {
-  [key: string]: string | string[] | number | undefined
-  page: number
-  size: number
-  sort?: string
-  ingredients?: string
-  postId?: number
+  commentContent: string
+  nickName: string
+  createdAt: string
 }
 
 // 수정페이지 렌더링용 초기 데이터

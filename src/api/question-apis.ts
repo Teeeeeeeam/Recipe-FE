@@ -1,15 +1,9 @@
+import { Response, SendQuestionReq } from '@/types/question-api-type'
 import requester from '.'
 
-interface QuestionOption {
-  questionType: string
-  title: string
-  questionContent: string
-  answer: string
-  answerEmail: string
-}
 export async function sendQuestion(
-  apiPath: string,
-  req: QuestionOption,
+  url: string,
+  req: SendQuestionReq,
   img: File | null,
 ) {
   const formData = new FormData()
@@ -19,9 +13,9 @@ export async function sendQuestion(
     formData.append('questionRequest', JSON.stringify(req))
     formData.append('file', img)
   }
-  const { payload } = await requester({
+  const { payload } = await requester<Response>({
     method: 'POST',
-    url: apiPath,
+    url,
     data: formData,
     headers: {
       'Content-Type': 'multipart/form-data',

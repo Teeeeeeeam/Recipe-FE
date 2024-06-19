@@ -1,4 +1,3 @@
-import { Options } from '@/types/recipe'
 import requester from '.'
 import { Notification } from '@/types/notify'
 

@@ -16,7 +16,7 @@ export default function Withdrawal() {
 
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const { loginId, loginType } = userInfo
+  const { loginType } = userInfo
 
   async function withdrawalHandler() {
     try {

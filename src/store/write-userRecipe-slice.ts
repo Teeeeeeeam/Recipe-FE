@@ -1,18 +1,25 @@
 import { Recipe } from '@/types/recipe'
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-interface InitType {
-  [key: string]: string | number | undefined
+interface Init {
+  id: number | null
+  likeCount: number | null
+  cookingLevel: string | null
+  cookingTime: string | null
+  imageUrl: string | null
+  people: string | null
+  title: string | null
+  createAt?: string | null
 }
 
-const initialState: InitType = {
-  id: undefined,
-  likeCount: undefined,
-  cookingLevel: undefined,
-  cookingTime: undefined,
-  imageUrl: undefined,
-  people: undefined,
-  title: undefined,
+const initialState: Init = {
+  id: null,
+  likeCount: null,
+  cookingLevel: null,
+  cookingTime: null,
+  imageUrl: null,
+  people: null,
+  title: null,
 }
 
 const writeRecipeSlice = createSlice({

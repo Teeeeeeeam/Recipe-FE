@@ -39,7 +39,7 @@ export default function Home() {
     }
   }
 
-  function submitHandler(e: any): void {
+  function enterHandler(e: any): void {
     e.preventDefault()
     if (inputCategory !== 'cookIngredient') {
       const newState = { category: inputCategory, value: inputValue }
@@ -48,21 +48,26 @@ export default function Home() {
     }
     if (inputCategory === 'cookIngredient') {
       if (inputValue && ingredients.length < 5) {
-        ingredients.includes(inputValue)
-          ? null
-          : setIngredients([...ingredients, inputValue])
+        !ingredients.includes(inputValue) &&
+          setIngredients([...ingredients, inputValue])
         setInputValue('')
       }
     }
   }
 
-  function submitClick(e: any): void {
+  function clickButtonHandler(e: any): void {
     if (inputCategory === 'cookIngredient') {
-      const newState = { category: inputCategory, value: ingredients }
-      dispatch(postSearchState(newState))
+      if (ingredients.length >= 1) {
+        const newState = { category: inputCategory, value: ingredients }
+        dispatch(postSearchState(newState))
+      } else {
+        const formattedInputArray = [inputValue]
+        const newState = { category: inputCategory, value: formattedInputArray }
+        dispatch(postSearchState(newState))
+      }
       router.push('/list-page/main-recipes')
     } else {
-      submitHandler(e)
+      enterHandler(e)
     }
   }
 
@@ -99,8 +104,8 @@ export default function Home() {
             onClick={() =>
               dispatch(
                 postSearchState({
-                  category: undefined,
-                  value: undefined,
+                  category: null,
+                  value: null,
                 }),
               )
             }
@@ -110,7 +115,7 @@ export default function Home() {
           </h3>
         </div>
         <form
-          onSubmit={(e) => submitHandler(e)}
+          onSubmit={(e) => enterHandler(e)}
           className="mx-2 my-10 rounded-xl border bg-white px-4 py-8"
         >
           <div className="mb-2 flex items-center">
@@ -137,7 +142,7 @@ export default function Home() {
             </div>
             <button
               type="button"
-              onClick={(e) => submitClick(e)}
+              onClick={(e) => clickButtonHandler(e)}
               className="shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-[#78D8B6] text-white hover:bg-[#68c9a7]"
             >
               검색
