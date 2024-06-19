@@ -17,7 +17,8 @@ export default function MyPage() {
 
   useEffect(() => {
     if (loginType && loginType !== 'normal') {
-      window.location.href = '/my-page/success'
+      getAccessRightsSocial()
+      route.push('/my-page/success')
     }
     const now = new Date()
     const isExpiry = getLocalStorage('expiryMypage')
@@ -52,6 +53,14 @@ export default function MyPage() {
           alert('비밀번호가 일치하지 않습니다.')
         }
       }
+    }
+  }
+  async function getAccessRightsSocial() {
+    try {
+      const result = await enterMyPage({})
+      console.log(result)
+    } catch (error) {
+      console.log(error)
     }
   }
 

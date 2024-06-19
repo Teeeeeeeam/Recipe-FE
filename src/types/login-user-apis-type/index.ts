@@ -5,6 +5,7 @@ import {
   MyPostings,
   MyQuestion,
   UserInfo,
+  QuestionDetail,
 } from '../user'
 
 export interface Response {
@@ -17,8 +18,6 @@ export interface Response {
 // 마이페이지 - 로그인 검증
 export interface EnterMyPageReq {
   password: string
-  loginId: string | null
-  loginType: string | null
 }
 
 // 마이페이지 - 북마크 조회
@@ -122,9 +121,14 @@ export interface InquiryBookmarkMyPage extends Response {
 }
 
 // 마이페이지 - 문의사항 전체 조회
-export interface Inquiryquestion {
+export interface InquiryQuestion extends Response {
   data: {
     nextPage: boolean
     questions: MyQuestion[]
   }
+}
+
+// 마이페이지 - 문의사항 상세조회
+export interface InquiryQuestionDetail extends Response {
+  data: QuestionDetail
 }

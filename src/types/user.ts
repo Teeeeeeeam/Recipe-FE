@@ -44,7 +44,7 @@ export interface verifyEmailOption {
   code: number
 }
 
-// 마이페이지 - 문의사항
+// 마이페이지 - 문의사항 전체조회
 export interface MyQuestion {
   id: number
   questionType: string
@@ -53,5 +53,26 @@ export interface MyQuestion {
   member: {
     id: number
     loginId: string
+  }
+}
+
+// 마이페이지 - 문의사항 상세조회
+export interface QuestionDetail {
+  id: number
+  title: string
+  questionContent: string
+  status: string
+  createdAt: string
+  answeredAt: string
+  imgUrl: string
+  member: {
+    id: number
+    loginId: string
+  }
+  answer: {
+    id: number
+    answerTitle: string
+    answerContent: string
+    answerAdminNickname: string
   }
 }

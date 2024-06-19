@@ -12,12 +12,13 @@ import {
   InquiryPosting,
   InquiryPostingParams,
   InquiryUser,
-  Inquiryquestion,
+  InquiryQuestion,
   Response,
   SendEmailParams,
   UpdateEmailReq,
   UpdateNickNameReq,
   WidthdrawalReq,
+  InquiryQuestionDetail,
 } from '@/types/login-user-apis-type'
 
 // 마이페이지 - 로그인 한 유저 정보 확인
@@ -81,7 +82,7 @@ export async function doBookmark(req: { recipeId: number }) {
 }
 
 // 마이페이지 로그인 검증
-export async function enterMyPage(req: EnterMyPageReq) {
+export async function enterMyPage(req: EnterMyPageReq | {}) {
   const { payload } = await requester<Response>({
     method: 'POST',
     url: '/api/user/info/valid',
@@ -189,6 +190,57 @@ export async function doWidthdrawalUser(req: WidthdrawalReq) {
     method: 'DELETE',
     url: '/api/user/info/disconnect',
     data: req,
+  })
+  return payload
+}
+
+// 마이페이지 - 문의사항 전체 조회
+export async function inquiryQuestion(
+  params: any,
+  lastId: number | null,
+  type: string,
+) {
+  const { payload } = await requester<InquiryQuestion>({
+    method: 'GET',
+    url: `/api/user/questions?question-type=${type}${lastId ? `&last-id=${lastId}` : ''}`,
+    params,
+  })
+  return payload
+}
+
+// 마이페이지 - 문의사항 삭제
+export async function deleteQuestion(questionIds: number | number[]) {
+  if (Array.isArray(questionIds)) {
+    const { payload } = await requester<Response>({
+      method: 'DELETE',
+      url: '/api/user/questions',
+      params: { questionIds },
+      paramsSerializer: (paramObj) => {
+        const params = new URLSearchParams()
+        for (let key in paramObj) {
+          const value: string[] = paramObj[key]
+          value.forEach((val) => params.append(key, val))
+        }
+        return params.toString()
+      },
+    })
+    return payload
+  } else {
+    // 단일 삭제
+    const { payload } = await requester<Response>({
+      method: 'DELETE',
+      url: '/api/user/questions',
+      params: { questionIds },
+    })
+    return payload
+  }
+}
+
+// 문의사항 상세조회
+export async function inquiryQuestionDetail(questionId: number) {
+  const { payload } = await requester<InquiryQuestionDetail>({
+    method: 'GET',
+    url: `/api/user/question/${questionId}`,
   })
   return payload
 }
