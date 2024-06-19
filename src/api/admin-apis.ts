@@ -37,7 +37,7 @@ export const getRecipes = async (
   return payload.data
 }
 
-export const getDetailRecipe = async (id: string) => {
+export const getRecipeDetail = async (id: string) => {
   const { payload } = await requester<RecipeForm>({
     method: 'get',
     url: `/api/recipe/${id}`,
@@ -224,17 +224,15 @@ export const getNoticeDetail = async (noticeId: number) => {
 export const postNotice = async (
   title: string,
   content: string,
-  id: number,
   file: File | null,
 ) => {
   const formData = new FormData()
   file && formData.append('file', file)
   formData.append(
-    'adminAddNoticeDto',
+    'adminAddRequest',
     JSON.stringify({
       noticeTitle: title,
       noticeContent: content,
-      memberId: id,
     }),
   )
   const { payload } = await requester<Response>({
@@ -355,12 +353,12 @@ export const getMemberCount = async () => {
 
 export const getQuestions = async (
   lastId: number | null,
-  questionsType: string | null,
+  questionType: string | null,
   questionStatus: string | null,
 ) => {
   const params = new URLSearchParams({
     ...(lastId ? { lastId: String(lastId) } : {}),
-    ...(questionsType ? { questionsType } : {}),
+    ...(questionType ? { questionType } : {}),
     ...(questionStatus ? { questionStatus } : {}),
     size: '10',
   }).toString()

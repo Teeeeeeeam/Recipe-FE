@@ -18,6 +18,7 @@ export interface RecipeDtoList {
   people: string | null
   cookingTime: string
   likeCount: number
+  createdAt: string
 }
 
 export interface RecipeForm extends Response {
@@ -32,12 +33,12 @@ export interface RecipeForm extends Response {
       likeCount: number
     }
     ingredients: string[]
-    cookStep: CookStep[]
+    cookSteps: CookStep[]
   }
 }
 export interface CookStep {
-  cook_step_id: string
-  cook_steps: string
+  cookStepId: string
+  cookSteps: string
 }
 export interface NewCookStep {
   newCookSteps: string

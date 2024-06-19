@@ -24,7 +24,7 @@ export const postLogout = async (id: string) => {
   const { payload } = await requester<Response>({
     method: 'post',
     url: 'api/logout',
-    data: { 'member-id': id },
+    data: { memberId: Number(id) },
   })
   return payload
 }
