@@ -4,11 +4,7 @@ import { RootState } from '@/store'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Image from 'next/image'
-import {
-  UserUpdateRequest,
-  getUserPostingDetail,
-  postUserMod,
-} from '@/api/recipe-apis'
+import { getPostingDetail, postingMod } from '@/api/recipe-apis'
 import { useRouter } from 'next/navigation'
 import { ModData } from '@/types/recipe'
 
@@ -50,7 +46,7 @@ export default function Mod() {
   async function getData() {
     try {
       if (postIdForMod) {
-        const result = await getUserPostingDetail(postIdForMod)
+        const result = await getPostingDetail(postIdForMod)
         const fitData = result.data.post
         fitData.postServing = fitData.postServing.replace('인분', '')
         fitData.postCookingTime = fitData.postCookingTime.replace('분', '')
@@ -65,7 +61,7 @@ export default function Mod() {
     e.preventDefault()
     try {
       if (postIdForMod) {
-        const option: UserUpdateRequest = {
+        const option = {
           modReq: {
             postContent: thisCont,
             postTitle: thisTitle,
@@ -76,7 +72,7 @@ export default function Mod() {
           },
           modFile: file,
         }
-        await postUserMod(postIdForMod, option)
+        await postingMod(postIdForMod, option)
         window.location.href = '/list-page/user-recipes'
       }
     } catch (error) {

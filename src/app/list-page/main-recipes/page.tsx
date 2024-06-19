@@ -1,8 +1,9 @@
 'use client'
-import { getRecipes } from '@/api/recipe-apis'
+
+import { getRecipeList } from '@/api/recipe-apis'
 import { RecipeFigure } from '@/components/recipe-figure'
 import { RootState } from '@/store'
-import { Options, Recipe } from '@/types/recipe'
+import { Option, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -20,17 +21,19 @@ export default function MainRecipes() {
 
   async function getData() {
     try {
-      const thisOption: Options = {
+      const option: Option = {
         page: thisPage,
         size: 8,
       }
-      state.category === 'cookTitle'
-        ? (thisOption.title = state.value)
-        : state.category === 'cookIngredient'
-          ? (thisOption.ingredients = [state.value].join(''))
-          : ((thisOption.title = state.value),
-            (thisOption.ingredients = [state.value].join('')))
-      const result = await getRecipes(thisOption)
+      if (state.category === 'cookTitle' && typeof state.value === 'string') {
+        option.title = state.value
+      } else if (state.category === 'cookIngredient') {
+        option.ingredients = [state.value].join('')
+      } else if (state.category === 'All' && typeof state.value === 'string') {
+        option.title = state.value
+        option.ingredients = [state.value].join('')
+      }
+      const result = await getRecipeList(option)
       setRecipes(result.data.recipes)
       setTotalPage(result.data.totalPage)
     } catch (error) {
@@ -51,15 +54,19 @@ export default function MainRecipes() {
     }
   }
   return (
-    <div className="">
-      <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
+    <div>
+      <div className=" min-h-screen p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
         <RecipeFigure recipes={recipes} />
       </div>
-      <div className="flex justify-center">
+      <div className="w-full flex justify-center space-x-2 py-2">
+        <button
+          type="button"
+          onClick={(e) => handlerPage(e, 'prev')}
+          className="flex items-center space-x-1 font-medium hover:text-blue-600"
+        >
+          prev
+        </button>
         <form onSubmit={(e) => handlerPage(e, 'jump', inputValue)}>
-          <button type="button" onClick={(e) => handlerPage(e, 'prev')}>
-            prev
-          </button>
           <input
             type="text"
             name="pageNum"
@@ -67,10 +74,14 @@ export default function MainRecipes() {
             placeholder={String(thisPage + 1)}
           />
           <span>of {totalPage}</span>
-          <button type="button" onClick={(e) => handlerPage(e, 'next')}>
-            next
-          </button>
         </form>
+        <button
+          type="button"
+          onClick={(e) => handlerPage(e, 'next')}
+          className="flex items-center space-x-1 font-medium hover:text-blue-600"
+        >
+          next
+        </button>
       </div>
     </div>
   )

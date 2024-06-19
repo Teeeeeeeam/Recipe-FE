@@ -1,7 +1,11 @@
 'use client'
 
 import { checkLikesForPosting, doLikeForPosting } from '@/api/login-user-apis'
-import { getUserPostingDetail, postUserDel, verifyPw } from '@/api/recipe-apis'
+import {
+  getPostingDetail,
+  postUserDel,
+  postingVerifyPassword,
+} from '@/api/recipe-apis'
 import { Comment } from '@/components/comment'
 import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
@@ -15,7 +19,7 @@ import { useDispatch } from 'react-redux'
 
 export default function RecipeDetailUser() {
   const [thisInfo, setThisInfo] = useState<PostingDetail>()
-  const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>()
+  const [thisInfoCook, setThisInfoCook] = useState<ThreeCookInfo[]>([])
   const [like, setLike] = useState<boolean>(false)
   const [isModal, setIsModal] = useState<boolean>(false)
   const [orDelMod, setOrDelMod] = useState<string>('')
@@ -33,13 +37,13 @@ export default function RecipeDetailUser() {
 
   async function getDataLike() {
     try {
-      const result = await getUserPostingDetail(thisId)
+      const result = await getPostingDetail(thisId)
       const resultLike = await checkLikesForPosting(thisId)
-      const createThree = (str1: string, str2: string, str3: string) => {
+      const createThree = (title: string, data: string, img: string) => {
         return {
-          title: str1,
-          data: result.data.post[str2],
-          imgUrl: `/svg/${str3}.svg`,
+          title,
+          data,
+          imgUrl: `/svg/${img}.svg`,
         }
       }
       const resultCook: ThreeCookInfo[] = [
@@ -83,7 +87,7 @@ export default function RecipeDetailUser() {
           password: postPw,
           postId: thisInfo.id,
         }
-        await verifyPw(option)
+        await postingVerifyPassword(option)
         if (orDelMod === 'mod') {
           dispatch(recipeId(thisInfo.id))
           window.location.href = '/list-page/user-recipes/modification'
@@ -125,8 +129,6 @@ export default function RecipeDetailUser() {
                   <div className="detail-bottom">
                     <ul className="flex justify-between w-[70%] mx-auto mb-4">
                       {thisInfoCook?.map((cook) => {
-                        const refKey: keyof PostingDetail = cook.title
-                        const cookTitle = thisInfo[refKey] as string
                         return (
                           <li
                             key={cook.title}
@@ -138,7 +140,7 @@ export default function RecipeDetailUser() {
                               width={50}
                               height={50}
                             />
-                            <span>{cookTitle}</span>
+                            <span>{cook.data}</span>
                           </li>
                         )
                       })}

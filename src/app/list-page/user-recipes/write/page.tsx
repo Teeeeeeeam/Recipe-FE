@@ -1,6 +1,6 @@
 'use client'
 
-import { postUserWrite } from '@/api/recipe-apis'
+import { postingWrite } from '@/api/recipe-apis'
 import { getLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
 import Image from 'next/image'
@@ -37,7 +37,7 @@ export default function Write() {
           },
           writeFile: file!,
         }
-        await postUserWrite(option)
+        await postingWrite(option)
         window.location.href = `/list-page/main-recipes/${state.id}`
       } catch (error) {
         console.log(error)

@@ -1,5 +1,6 @@
 'use client'
-import { getUserPosting } from '@/api/recipe-apis'
+
+import { getPostingList } from '@/api/recipe-apis'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { UserPostingFigure } from '@/components/recipe-figure'
 import { PostingFigure } from '@/types/recipe'
@@ -7,7 +8,7 @@ import { PostingFigure } from '@/types/recipe'
 export default function UserRecipes() {
   const [posting, setPosting] = useState<PostingFigure[]>([])
   const [next, setNext] = useState<boolean>(false)
-  const [lastId, setLastId] = useState<string | undefined>(undefined)
+  const [lastId, setLastId] = useState<number | null>(null)
 
   const loader = useRef(null)
 
@@ -19,14 +20,8 @@ export default function UserRecipes() {
     try {
       const option = {
         size: 8,
-        postId: lastId || '',
       }
-      const result = await getUserPosting(option)
-      // lastId
-      const dataLastId = String(
-        result.data.posts[result.data.posts.length - 1]?.id,
-      )
-
+      const result = await getPostingList(option, lastId)
       if (isInit) {
         setPosting(result.data.posts)
       } else {
@@ -35,7 +30,10 @@ export default function UserRecipes() {
           return [...prev, ...newData]
         })
       }
-      setLastId(dataLastId)
+      if (result.data.posts.length > 0) {
+        const dataLastId = result.data.posts[result.data.posts.length - 1]?.id
+        setLastId(dataLastId)
+      }
       setNext(result.data.nextPage)
     } catch (error) {
       console.log(error)
