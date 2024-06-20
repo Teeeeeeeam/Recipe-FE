@@ -2,7 +2,6 @@
 
 import { postNotice } from '@/api/admin-apis'
 import RecipeFormInput from '@/components/common/recipe-form-input'
-import { useAppSelector } from '@/store'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useRef } from 'react'
@@ -14,8 +13,6 @@ const WriteNotice = () => {
   const [file, setFile] = useState<File | null>(null)
   const [imgFile, setImgFile] = useState('')
   const imgRef = useRef<HTMLInputElement>(null)
-
-  const userInfo = useAppSelector((state) => state.userInfo)
 
   const router = useRouter()
   const previewImg = () => {
@@ -35,9 +32,8 @@ const WriteNotice = () => {
   }
 
   const handlePostNoticeSubmit = async () => {
-    const id = Number(userInfo.id)
     if (confirm('공지사항을 등록하시겠습니까?')) {
-      const res = await postNotice(title, content, id, file ?? null)
+      const res = await postNotice(title, content, file ?? null)
       alert('공지사항이 등록되었습니다.')
       router.push('/admin/notice')
     }
