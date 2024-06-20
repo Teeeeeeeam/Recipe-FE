@@ -48,8 +48,8 @@ const PwInquiryResult = () => {
           id="password"
           name="비밀번호"
           placeholder="8~16자 대문자, 특수문자 포함"
-          state={password}
-          setState={setPassword}
+          value={password}
+          setValue={setPassword}
           validation={validations.password}
           onBlur={(e) =>
             handleInputBlur(e, password, setValidations, regExp.regExpPassword)
@@ -60,8 +60,8 @@ const PwInquiryResult = () => {
           id="verifyPassword"
           name="비밀번호 확인"
           placeholder="비밀번호 확인"
-          state={verifyPassword}
-          setState={setVerifyPassword}
+          value={verifyPassword}
+          setValue={setVerifyPassword}
           validation={validations.verifyPassword}
           onBlur={(e) =>
             handleInputBlur(e, verifyPassword, setValidations, null, password)

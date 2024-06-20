@@ -1,9 +1,7 @@
 'use client'
 
 import { getNoticeDetail, updateNotice } from '@/api/admin-apis'
-import RecipeFormInput from '@/components/common/recipe-form-input'
-import { useAppSelector } from '@/store'
-import Image from 'next/image'
+import ImageUploader from '@/components/common/image-uploader'
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 
@@ -15,7 +13,6 @@ const ModifyNotice = () => {
   const [imgFile, setImgFile] = useState('')
   const imgRef = useRef<HTMLInputElement>(null)
 
-  const userInfo = useAppSelector((state) => state.userInfo)
   const router = useRouter()
 
   const params = useParams()
@@ -25,25 +22,15 @@ const ModifyNotice = () => {
     const res = await getNoticeDetail(Number(noticeId))
     setTitle(res.noticeTitle)
     setContent(res.noticeContent)
+    setImgFile(res.imgUrl)
   }
   useEffect(() => {
     fetchGetNoticeDetail()
   }, [])
 
-  const previewImg = () => {
-    if (imgRef.current && imgRef.current.files) {
-      const selectedFile = imgRef.current.files[0]
-      setFile(selectedFile)
-      if (selectedFile) {
-        const reader = new FileReader()
-        reader.readAsDataURL(selectedFile)
-        reader.onloadend = () => {
-          if (typeof reader.result === 'string') {
-            setImgFile(reader.result)
-          }
-        }
-      }
-    }
+  const handleFileChange = (file: File | null, imgFile: string) => {
+    setFile(file)
+    setImgFile(imgFile)
   }
 
   const handleUpdateNoticeSubmit = async () => {
@@ -56,45 +43,26 @@ const ModifyNotice = () => {
   }
 
   return (
-    <form className="text-white">
-      <RecipeFormInput
+    <form className="bg-white p-8 rounded-lg shadow-md max-w-3xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold mb-6">공지사항 수정</h2>
+      <input
+        type="text"
         value={title}
-        onChange={setTitle}
+        onChange={(e) => setTitle(e.target.value)}
         placeholder="제목을 입력하세요"
-        width="w-full"
+        className="w-full p-2 border bg-gray-100 rounded-md"
       />
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="내용을 입력하세요"
-        className="mt-4 w-full min-h-[500px] p-2 bg-green-100"
+        className="mt-4 w-full min-h-[300px] p-2 bg-gray-100 border rounded-md focus:outline-none focus:border-none focus:ring-[1.5px] focus:ring-green-100"
       />
-      <div className="mt-4 space-y-2">
-        <div className="w-[100px] py-1 text-center bg-navy-100 rounded-full text-white">
-          이미지 선택
-        </div>
-        <div className="flex items-center justify-center w-full h-[160px] bcookStep">
-          <Image
-            src={imgFile ? imgFile : `/svg/img-box.svg`}
-            alt="preview-img"
-            width={0}
-            height={0}
-            className="w-[140px] h-[140px]"
-            priority
-          />
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          ref={imgRef}
-          onChange={previewImg}
-          className="w-full"
-        />
-      </div>
+      <ImageUploader initialImgFile={imgFile} onFileChange={handleFileChange} />
       <div className="flex mt-4 justify-center w-full">
         <button
           type="button"
-          className="px-4 py-2 bg-green-100 rounded-md"
+          className="px-6 py-2 bg-blue-100 text-white rounded-md hover:bg-blue-50 transition"
           onClick={handleUpdateNoticeSubmit}
         >
           공지사항 수정

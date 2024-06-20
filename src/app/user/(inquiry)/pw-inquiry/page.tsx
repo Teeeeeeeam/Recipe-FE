@@ -49,8 +49,8 @@ const PwInquiry = () => {
         <AuthInput
           type="text"
           placeholder="이름 입력"
-          state={username}
-          setState={setUsername}
+          value={username}
+          setValue={setUsername}
         />
       </div>
       <div>
@@ -58,8 +58,8 @@ const PwInquiry = () => {
         <AuthInput
           type="text"
           placeholder="아이디 입력"
-          state={id}
-          setState={setId}
+          value={id}
+          setValue={setId}
         />
       </div>
       <div>
@@ -68,8 +68,8 @@ const PwInquiry = () => {
           <AuthInput
             type="email"
             placeholder="이메일 입력"
-            state={email}
-            setState={setEamil}
+            value={email}
+            setValue={setEamil}
           />
           <AuthButton
             type="button"
@@ -85,8 +85,8 @@ const PwInquiry = () => {
           <AuthInput
             type="text"
             placeholder="인증번호 입력"
-            state={code}
-            setState={setCode}
+            value={code}
+            setValue={setCode}
           />
           <AuthButton
             type="button"

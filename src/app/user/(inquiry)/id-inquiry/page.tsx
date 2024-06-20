@@ -45,8 +45,8 @@ const IdInquiry = () => {
         <AuthInput
           type="text"
           placeholder="이름을 입력하세요"
-          state={username}
-          setState={setUsername}
+          value={username}
+          setValue={setUsername}
         />
       </div>
       <div>
@@ -55,8 +55,8 @@ const IdInquiry = () => {
           <AuthInput
             type="email"
             placeholder="이메일"
-            state={email}
-            setState={setEamil}
+            value={email}
+            setValue={setEamil}
           />
           <AuthButton
             type="button"
@@ -72,8 +72,8 @@ const IdInquiry = () => {
           <AuthInput
             type="text"
             placeholder="인증번호 입력"
-            state={code}
-            setState={setCode}
+            value={code}
+            setValue={setCode}
           />
           <AuthButton
             type="button"

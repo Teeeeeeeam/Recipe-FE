@@ -8,11 +8,15 @@ interface AdminButtonProps {
 
 const AdminButton = ({ children, id, segment }: AdminButtonProps) => {
   return (
-    <div className="flex items-cnetr text-center  text-white w-full">
+    <div className="flex items-center text-center w-full">
       <button
         type="button"
         id={id}
-        className={`py-2 bg-green-100 w-full rounded-2xl hover:bg-green-150 ${segment === id && 'border'}`}
+        className={`py-3 px-4 w-full rounded-md transition-colors duration-200 ${
+          segment === id
+            ? 'bg-blue-500 text-white'
+            : 'bg-white text-gray-700 hover:bg-blue-100'
+        }`}
       >
         {children}
       </button>

@@ -18,13 +18,13 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
   }, [segment])
 
   return (
-    <div className="flex flex-col items-center w-[250px] p-8 space-y-2 h-full border-r-[1px] border-navy-150">
-      <h2 className="mb-2 cursor-pointer transition-transform hover:scale-110">
-        <Link href="/admin">Menu</Link>
+    <div className="flex flex-col items-center w-[250px] p-8 space-y-4 h-full bg-gray-100 border-r border-gray-200 shadow-md">
+      <h2 className="mb-6 text-2xl font-bold text-gray-800 cursor-pointer transition-transform hover:scale-110">
+        <Link href="/admin/dash-board">Menu</Link>
       </h2>
-      <Link href="/admin" className="w-full">
-        <AdminButton id="" segment={segment}>
-          통계
+      <Link href="/admin/dash-board" className="w-full">
+        <AdminButton id="dash-board" segment={segment}>
+          대시보드
         </AdminButton>
       </Link>
       <Link href="/admin/members" className="w-full">
@@ -42,8 +42,8 @@ const AdminSidebar = ({ segment }: AdminSidebarProps) => {
           레시피
         </AdminButton>
       </Link>
-      <Link href="/admin/notice" className="w-full">
-        <AdminButton id="notice" segment={segment}>
+      <Link href="/admin/notices" className="w-full">
+        <AdminButton id="notices" segment={segment}>
           공지사항
         </AdminButton>
       </Link>

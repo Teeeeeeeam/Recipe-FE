@@ -55,14 +55,14 @@ const Login = () => {
           <AuthInput
             type="text"
             placeholder="아이디"
-            state={username}
-            setState={setUsername}
+            value={username}
+            setValue={setUsername}
           />
           <AuthInput
             type="password"
             placeholder="비밀번호"
-            state={password}
-            setState={setPassword}
+            value={password}
+            setValue={setPassword}
           />
         </div>
         <button
