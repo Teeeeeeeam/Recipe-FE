@@ -48,6 +48,7 @@ export default function ViewMyPosting() {
   async function deletePosting(thisId: number) {
     try {
       await postUserDel(thisId)
+      setLastId(null)
       setMount((prev) => !prev)
     } catch (error) {
       console.log(error)
@@ -85,41 +86,51 @@ export default function ViewMyPosting() {
   }, [handleObserver])
 
   return (
-    <div className="w-full">
-      <div className="h-[80vh] overflow-y-scroll border px-5">
-        <ul>
-          {posting.map((item, index) => {
-            return (
-              <li key={item.id} className="border px-5 mb-3">
-                <ul className="flex justify-between grid-cols-3">
-                  <li className="py-3">{index + 1}</li>
-                  <li className="py-3">
-                    <Link href={`/list-page/user-recipes/${item.id}`}>
-                      {item.postTitle}
-                    </Link>
-                  </li>
-                  <li className="py-3">
-                    <button
-                      type="button"
-                      onClick={() => modPosting(item.id)}
-                      className="mr-5"
-                    >
-                      수정
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deletePosting(item.id)}
-                    >
-                      삭제
-                    </button>
-                  </li>
-                </ul>
-              </li>
-            )
-          })}
-        </ul>
-        <div ref={loader} />
+    <>
+      <h4 className="text-center text-lg mb-3">내가 작성한 글</h4>
+      <div className="h-[70vh] bg-white overflow-y-scroll">
+        <div className="rounded-lg p-4">
+          <table className="w-full border-gray-200 table-fixed">
+            <thead>
+              <tr>
+                <th className="p-2 w-[10%]">#</th>
+                <th className="p-2 w-[]">제목</th>
+                <th className="p-2 sm:w-[20%] w-[30%]">조작</th>
+              </tr>
+            </thead>
+            <tbody className="">
+              {posting.map((item, index) => {
+                return (
+                  <tr key={item.id}>
+                    <td className="px-2 py-5 text-center ">{index + 1}</td>
+                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                      <Link href={`/list-page/user-recipes/${item.id}`}>
+                        {item.postTitle}
+                      </Link>
+                    </td>
+                    <td className="px-2 py-5 text-center">
+                      <button
+                        type="button"
+                        onClick={() => modPosting(item.id)}
+                        className="mr-3"
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deletePosting(item.id)}
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <tfoot ref={loader}></tfoot>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

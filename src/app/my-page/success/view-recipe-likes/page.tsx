@@ -23,9 +23,8 @@ export default function ViewRecipeLikes() {
     try {
       const option = {
         size: 5,
-        lastId,
       }
-      const result = await inquiryLikeRecipe(option)
+      const result = await inquiryLikeRecipe(option, lastId)
       if (isInit) {
         setLikeData(result.data.content)
       } else {
@@ -87,38 +86,44 @@ export default function ViewRecipeLikes() {
   }, [handleObserver])
 
   return (
-    <div className="w-full">
-      <div className="h-[80vh] overflow-y-scroll border px-5">
-        {likeData.length > 0 ? (
-          <ul>
-            {likeData.map((item, index) => {
-              return (
-                <li key={item.like_id} className="border px-5 mb-3">
-                  <ul className="flex justify-between grid-cols-3">
-                    <li className="py-3">{index + 1}</li>
-                    <li className="py-3">
+    <>
+      <h4 className="text-center text-lg mb-3">좋아요한 레시피</h4>
+      <div className="h-[70vh] bg-white overflow-y-scroll">
+        <div className="rounded-lg p-4">
+          <table className="w-full border-gray-200 table-fixed">
+            <thead>
+              <tr>
+                <th className="p-2 w-[10%]">#</th>
+                <th className="p-2 w-[80%]">제목</th>
+                <th className="p-2 sm:w-[10%] w-[20%]">취소</th>
+              </tr>
+            </thead>
+            <tbody className="">
+              {likeData.map((item, index) => {
+                return (
+                  <tr key={item.like_id}>
+                    <td className="px-2 py-5 text-center ">{index + 1}</td>
+                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
                       <Link href={`/list-page/main-recipes/${item.content_id}`}>
                         {item.title}
                       </Link>
-                    </li>
-                    <li className="py-3">
+                    </td>
+                    <td className="px-2 py-5 text-center">
                       <button
                         type="button"
                         onClick={() => cancelLike(item.content_id)}
                       >
                         취소
                       </button>
-                    </li>
-                  </ul>
-                </li>
-              )
-            })}
-          </ul>
-        ) : (
-          '데이터가 없습니다.'
-        )}
-        <div ref={loader} />
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <tfoot ref={loader}></tfoot>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

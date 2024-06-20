@@ -1,10 +1,8 @@
 'use client'
 import { doBookmark, inquiryBookmark } from '@/api/login-user-apis'
-import { RootState } from '@/store'
 import { MyBookmark } from '@/types/user'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 
 export default function ViewBookmark() {
   const [bookmarkData, setBookmarkData] = useState<MyBookmark[] | []>([])
@@ -12,14 +10,13 @@ export default function ViewBookmark() {
   const [lastId, setLastId] = useState<number | null>(null)
   const [mount, setMount] = useState<boolean>(false)
 
-  const userInfo = useSelector((state: RootState) => state.userInfo)
   const loader = useRef(null)
 
   useEffect(() => {
-    getInquiryLikePosting(true)
+    getInquiryBookmarkPosting(true)
   }, [mount])
 
-  async function getInquiryLikePosting(isInit: boolean) {
+  async function getInquiryBookmarkPosting(isInit: boolean) {
     try {
       const option = {
         size: 5,
@@ -46,14 +43,12 @@ export default function ViewBookmark() {
 
   async function cancelBookmark(thisId: number) {
     try {
-      if (userInfo.id) {
-        const options = {
-          memberId: userInfo.id,
-          recipeId: thisId,
-        }
-        await doBookmark(options)
-        setMount(!mount)
+      const option = {
+        recipeId: thisId,
       }
+      await doBookmark(option)
+      setLastId(null)
+      setMount((prev) => !prev)
     } catch (error) {
       console.log(error)
     }
@@ -65,7 +60,7 @@ export default function ViewBookmark() {
       const target = entries[0]
       if (target.isIntersecting) {
         if (next) {
-          getInquiryLikePosting(false)
+          getInquiryBookmarkPosting(false)
         }
       }
     },
@@ -86,39 +81,44 @@ export default function ViewBookmark() {
   }, [handleObserver])
 
   return (
-    <div className="w-full">
-      <div className="h-[80vh] overflow-y-scroll border px-5">
-        {bookmarkData.length > 0 ? (
-          <ul>
-            {bookmarkData.map((item, index) => {
-              return (
-                <li key={item.id} className="border px-5 mb-3">
-                  <ul className="flex justify-between grid-cols-3">
-                    <li className="py-3">{index + 1}</li>
-                    <li className="py-3">
-                      <Link href={`/list-page/user-recipes/${item.id}`}>
+    <>
+      <h4 className="text-center text-lg mb-3">즐겨찾기</h4>
+      <div className="h-[70vh] bg-white overflow-y-scroll">
+        <div className="rounded-lg p-4">
+          <table className="w-full border-gray-200 table-fixed">
+            <thead>
+              <tr>
+                <th className="p-2 w-[10%]">#</th>
+                <th className="p-2 w-[80%]">제목</th>
+                <th className="p-2 sm:w-[10%] w-[20%]">취소</th>
+              </tr>
+            </thead>
+            <tbody className="">
+              {bookmarkData.map((item, index) => {
+                return (
+                  <tr key={item.id}>
+                    <td className="px-2 py-5 text-center ">{index + 1}</td>
+                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                      <Link href={`/list-page/main-recipes/${item.id}`}>
                         {item.title}
                       </Link>
-                    </li>
-                    <li className="py-3">
+                    </td>
+                    <td className="px-2 py-5 text-center">
                       <button
                         type="button"
                         onClick={() => cancelBookmark(item.id)}
                       >
                         취소
                       </button>
-                    </li>
-                  </ul>
-                </li>
-              )
-            })}
-          </ul>
-        ) : (
-          '데이터가 없습니다.'
-        )}
-
-        <div ref={loader} />
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <tfoot ref={loader}></tfoot>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
