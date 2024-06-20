@@ -18,12 +18,12 @@ export default function MyPage() {
   useEffect(() => {
     if (loginType && loginType !== 'normal') {
       getAccessRightsSocial()
-      route.push('/my-page/success')
+      route.push('/my-page/success/user-info')
     }
     const now = new Date()
     const isExpiry = getLocalStorage('expiryMypage')
     if (isExpiry && now.getTime() < isExpiry) {
-      route.push('/my-page/success')
+      route.push('/my-page/success/user-info')
     }
   }, [])
 
@@ -44,7 +44,7 @@ export default function MyPage() {
         }
         await enterMyPage(userData)
         setAccessMypage()
-        route.push('/my-page/success')
+        route.push('/my-page/success/user-info')
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
