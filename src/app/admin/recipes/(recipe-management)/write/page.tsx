@@ -2,7 +2,7 @@
 import useRecipeForm from '../use-recipe-form'
 import RecipeImageUploader from '../recipe-image-uploader'
 import RecipeInput from '../recipe-input'
-import RecipeSelect from '@/components/common/recipe-select'
+import RecipeSelect from '@/app/admin/recipes/(recipe-management)/recipe-select'
 import { COOK_LEVEL, COOK_TIME, PEOPLE } from '../constants'
 
 const WriteRecipe = () => {
