@@ -32,7 +32,7 @@ const Login = () => {
         dispatch(getLoginInfo(userInfo))
 
         if (userInfo.roles === 'ROLE_ADMIN') {
-          router.push('/admin')
+          router.push('/admin/dash-board')
         } else {
           router.push('/')
         }
