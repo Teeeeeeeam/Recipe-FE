@@ -15,7 +15,7 @@ const NoticeFilter = ({ searchInput, setSearchInput }: MemberFilterProps) => {
       <button
         type="button"
         className="flex justify-center items-center bg-green-150 h-full rounded-sm"
-        onClick={() => (window.location.href = '/admin/notice')}
+        onClick={() => (window.location.href = '/admin/notices')}
       >
         공지사항 목록
       </button>
@@ -31,7 +31,7 @@ const NoticeFilter = ({ searchInput, setSearchInput }: MemberFilterProps) => {
         검색
       </button>
       <Link
-        href="/admin/notice/write"
+        href="/admin/notices/write"
         className="flex items-center justify-center h-full bg-green-100 hover:bg-green-150 rounded-sm"
       >
         <button type="button">공지사항 등록</button>

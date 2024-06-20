@@ -3,6 +3,7 @@
 import { getNoticeDetail } from '@/api/admin-apis'
 import { NoticeInfo } from '@/types/admin'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
@@ -36,13 +37,15 @@ const NoticeDetail = () => {
           </div>
           <div className="mt-4">
             {noticeInfo.imgUrl && (
-              <Image
-                src={noticeInfo.imgUrl}
-                alt="notice_img"
-                width={100}
-                height={100}
-                className="my-2"
-              />
+              <Link href={noticeInfo.imgUrl} target="_black">
+                <Image
+                  src={noticeInfo.imgUrl}
+                  alt="notice_img"
+                  width={100}
+                  height={100}
+                  className="my-2"
+                />
+              </Link>
             )}
             <div>{noticeInfo.noticeContent}</div>
           </div>

@@ -63,14 +63,14 @@ const NoticeList = ({ notices, lastElementRef }: NoticeListProps) => {
                 />
               </li>
               <li>{el.id}</li>
-              <Link href={`/notice/${el.id}`}>
+              <Link href={`/notices/${el.id}`}>
                 <li>{el.noticeTitle}</li>
               </Link>
               <li>{el.member.nickname}</li>
               <li>{el.createdAt}</li>
               <li>
                 <button className="hover:text-green-150">
-                  <Link href={`/admin/notice/modify/${el.id}`}>수정</Link>
+                  <Link href={`/admin/notices/modify/${el.id}`}>수정</Link>
                 </button>
                 <span>{` / `}</span>
                 <button
