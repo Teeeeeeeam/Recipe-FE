@@ -20,11 +20,6 @@ export interface EnterMyPageReq {
   password: string
 }
 
-// 마이페이지 - 북마크 조회
-export interface InquiryBookmarkReq {
-  size: number
-}
-
 // 마이페이지 - 닉네임 수정
 export interface UpdateNickNameReq {
   nickName: string | null
@@ -54,16 +49,19 @@ export interface InquiryPostingParams {
   size: number
 }
 
+// 마이페이지 - 북마크 조회
+export interface InquiryBookmarkParams {
+  size: number
+}
+
 // 마이페이지 - 게시글 좋아요 조회
 export interface InquiryLikePostingParams {
   size: number
-  lastId: number | null
 }
 
 // 마이페이지 - 레시피 좋아요 조회
 export interface InquiryLikeRecipeParams {
   size: number
-  lastId: number | null
 }
 
 // 마이페이지 - 이메일 검증 코드 보내기

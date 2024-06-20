@@ -4,7 +4,7 @@ import {
   ConfirmCodeReq,
   EnterMyPageReq,
   InquiryBookmarkMyPage,
-  InquiryBookmarkReq,
+  InquiryBookmarkParams,
   InquiryLikePosting,
   InquiryLikePostingParams,
   InquiryLikeRecipe,
@@ -114,20 +114,26 @@ export async function inquiryPosting(
 }
 
 // 마이페이지 - 게시글 좋아요 조회
-export async function inquiryLikePosting(params: InquiryLikePostingParams) {
+export async function inquiryLikePosting(
+  params: InquiryLikePostingParams,
+  lastId: number | null,
+) {
   const { payload } = await requester<InquiryLikePosting>({
     method: 'GET',
-    url: `/api/user/info/posts/likes`,
+    url: `/api/user/info/posts/likes${lastId ? `?lastId=${lastId}` : ''}`,
     params,
   })
   return payload
 }
 
 // 마이페이지 - 레시피 좋아요 조회
-export async function inquiryLikeRecipe(params: InquiryLikeRecipeParams) {
+export async function inquiryLikeRecipe(
+  params: InquiryLikeRecipeParams,
+  lastId: number | null,
+) {
   const { payload } = await requester<InquiryLikeRecipe>({
     method: 'GET',
-    url: `/api/user/info/recipe/likes`,
+    url: `/api/user/info/recipe/likes${lastId ? `?lastId=${lastId}` : ''}`,
     params,
   })
   return payload
@@ -135,13 +141,13 @@ export async function inquiryLikeRecipe(params: InquiryLikeRecipeParams) {
 
 // 마이페이지 - 북마크 조회
 export async function inquiryBookmark(
-  req: InquiryBookmarkReq,
+  params: InquiryBookmarkParams,
   lastId: number | null,
 ) {
   const { payload } = await requester<InquiryBookmarkMyPage>({
     method: 'GET',
     url: `/api/user/info/bookmark${lastId ? `?lastId=${lastId}` : ''}`,
-    params: req,
+    params,
   })
   return payload
 }
@@ -209,7 +215,7 @@ export async function inquiryQuestion(
 }
 
 // 마이페이지 - 문의사항 삭제
-export async function deleteQuestion(questionIds: number | number[]) {
+export async function deleteQuestion(questionIds: number | number[] | null) {
   if (Array.isArray(questionIds)) {
     const { payload } = await requester<Response>({
       method: 'DELETE',
