@@ -154,7 +154,11 @@ export default function Header() {
           <div className="min-w-[150px] flex items-center justify-between">
             <p className="text-black">
               <Link
-                href={state.roles === 'ROLE_ADMIN' ? '/admin' : '/my-page'}
+                href={
+                  state.roles === 'ROLE_ADMIN'
+                    ? '/admin/dash-board'
+                    : '/my-page'
+                }
                 className="w-full"
               >
                 {state.roles === 'ROLE_ADMIN'
