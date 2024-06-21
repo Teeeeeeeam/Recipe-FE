@@ -42,7 +42,7 @@ const Members = ({
   }
 
   return (
-    <div>
+    <div className="p-4 bg-gray-100">
       <form
         onSubmit={(e) => {
           e.preventDefault()

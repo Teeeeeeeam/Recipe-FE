@@ -30,6 +30,7 @@ const config: Config = {
         blue: {
           50: '#246BEB',
           100: '#3B8AC4',
+          150: '#3278A6',
         },
       },
       backgroundImage: {
