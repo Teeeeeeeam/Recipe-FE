@@ -22,10 +22,10 @@ const MemberFilter = ({
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   return (
-    <div className="grid grid-cols-[1fr_4fr_1fr] w-full items-center text-center gap-x-2 mb-2">
+    <div className="grid grid-cols-[1fr_5fr_1fr] w-full items-center text-center gap-x-2 mb-2">
       <button
         type="button"
-        className="flex justify-center items-center bg-green-150 h-full rounded-sm"
+        className="flex justify-center items-center text-white bg-blue-100 hover:bg-blue-150 h-full rounded-sm"
         onClick={() => (window.location.href = '/admin/members')}
       >
         사용자 목록
@@ -68,7 +68,7 @@ const MemberFilter = ({
         />
       </div>
       <button
-        className="bg-green-100 h-full rounded-sm hover:bg-green-150"
+        className="text-white bg-blue-100 h-full rounded-sm hover:bg-blue-150"
         type="button"
         onClick={handleSearchSubmit}
       >

@@ -67,7 +67,7 @@ interface Counts {
 }
 const CHART_INTERVALS = ['일간', '주간', '월간']
 
-const Admin = () => {
+const DashBoard = () => {
   const [numberOfVisit, setNumberOfVisit] = useState<NumberOfVisit | null>(null)
   const [visitData, setVisitData] = useState<DailyVisitData>({
     labels: [],
@@ -121,12 +121,12 @@ const Admin = () => {
         {
           label: `${interval} 방문수`,
           data,
-          borderColor: 'rgba(75,192,192,1)',
-          backgroundColor: 'rgba(75,192,192,0.2)',
-          pointBorderColor: 'rgba(75,192,192,1)',
+          borderColor: '#3B8AC4',
+          backgroundColor: '#fff',
+          pointBorderColor: '#3B8AC4',
           pointBackgroundColor: '#fff',
-          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
+          pointHoverBackgroundColor: '#3B8AC4',
+          pointHoverBorderColor: '#000',
           pointRadius: 4,
           pointHoverRadius: 4,
           pointStyle: 'circle',
@@ -184,41 +184,43 @@ const Admin = () => {
   }
 
   return (
-    <div className="p-4">
-      <section className="grid grid-cols-3 gap-x-2 py-2">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {counts.map((el, idx) => (
           <div
             key={idx}
-            className="flex flex-col py-4 gap-y-4 items-center bg-green-150 text-white text-xl"
+            className="flex flex-col py-4 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
           >
             <div>{el.type}</div>
             <div>{el.count}</div>
           </div>
         ))}
       </section>
-      <section className="flex items-center px-4 py-4 border">
-        <div className="flex gap-x-4">
-          <div className="flex flex-col">
-            <div>오늘 방문수</div>
-            <div>{numberOfVisit?.todayVisit}</div>
+      <section className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-around">
+          <div className="flex flex-col items-center mb-4 md:mb-0">
+            <div className="text-lg font-semibold">오늘 방문수</div>
+            <div className="text-2xl">{numberOfVisit?.todayVisit}</div>
           </div>
-          <div>
-            <div>전일 방문수</div>
-            <div>{numberOfVisit?.yesterdayVisit}</div>
+          <div className="flex flex-col items-center mb-4 md:mb-0">
+            <div className="text-lg font-semibold">전일 방문수</div>
+            <div className="text-2xl">{numberOfVisit?.yesterdayVisit}</div>
           </div>
-          <div>
-            <div>누적 방문수</div>
-            <div>{numberOfVisit?.alldayVisit?.toLocaleString()}</div>
+          <div className="flex flex-col items-center">
+            <div className="text-lg font-semibold">누적 방문수</div>
+            <div className="text-2xl">
+              {numberOfVisit?.alldayVisit?.toLocaleString()}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="w-full overflow-x-auto">
-        <div className="text-right my-2">
+      <section className="bg-white p-6 rounded-lg shadow-md">
+        <div className="text-right mb-4">
           {CHART_INTERVALS.map((el, idx) => (
             <button
               key={idx}
-              className={`border px-2 py-1 ${el === interval && 'bg-green-150 text-white'}`}
+              className={`border px-3 py-1 rounded-lg mx-1 transition ${el === interval && 'bg-blue-100 text-white'}`}
               onClick={() => {
                 setInterval(el)
               }}
@@ -228,7 +230,7 @@ const Admin = () => {
           ))}
         </div>
         {visitData.labels.length > 0 && (
-          <div className="relative w-full h-[320px]">
+          <div className="relative w-full h-80">
             <Line options={options} data={visitData} />
           </div>
         )}
@@ -237,4 +239,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default DashBoard
