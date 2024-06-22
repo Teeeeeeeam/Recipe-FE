@@ -45,7 +45,7 @@ const createAxiosResponseInterceptor = () => {
         response: { status },
       } = error
 
-      if (status !== 401 && status !== 405) {
+      if (status !== 401 && status !== 403) {
         return Promise.reject(error)
       }
 

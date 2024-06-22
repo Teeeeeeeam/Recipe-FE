@@ -36,10 +36,10 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
   }
 
   return (
-    <div className="bg-white p-4 rounded shadow text-[12px] md:text-[14px]">
-      <ul className="grid grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
+    <div className="bg-white md:p-4 rounded shadow text-[12px] md:text-[14px]">
+      <ul className="grid grid-cols-[0.5fr_2fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
         <li className="flex justify-center">
-          <div className="flex items-center relative">
+          <div className="relative flex items-center">
             <input
               type="checkbox"
               checked={selectAll}
@@ -48,7 +48,7 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
             />
             <Image
               src={`/svg/down-arrow.svg`}
-              alt="delete-icon"
+              alt="arrow-icon"
               width={16}
               height={16}
               className="absolute top-[3px] left-2 ml-2 cursor-pointer"
@@ -58,7 +58,7 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
               <div className="absolute top-6 w-16 z-20 bg-white border rounded shadow-lg">
                 <button
                   type="button"
-                  className="block w-full text-center px-4 py-2 text-sm text-red-500 hover:bg-red-100 "
+                  className="block w-full text-center px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                   onClick={() =>
                     handleAllDeleteClick(deleteList, deleteMembers)
                   }
@@ -69,17 +69,17 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
             )}
           </div>
         </li>
-        <li>이름</li>
+        <li className="hidden md:block">이름</li>
         <li>닉네임</li>
         <li>아이디</li>
-        <li>이메일</li>
+        <li className="hidden md:block">이메일</li>
         <li>관리</li>
       </ul>
       <div className="divide-y">
         {members.map((el) => (
           <ul
             key={el.id}
-            className="relative grid grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+            className="relative grid grid-cols-[0.5fr_2fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
             onMouseEnter={(e) => handleMouseEnter(el)}
             onMouseLeave={handleMouseLeave}
           >
@@ -91,14 +91,14 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
                 className="cursor-pointer"
               />
             </li>
-            <li>{el.username}</li>
+            <li className="hidden md:block">{el.username}</li>
             <li>{el.nickname}</li>
             <li>
               {el.loginId.length > 16
                 ? `${el.loginId.slice(0, 16)}...`
                 : el.loginId}
             </li>
-            <li>{el.email}</li>
+            <li className="hidden md:block">{el.email}</li>
             <li>
               <button
                 onClick={() => handleDeleteClick(el.id, deleteMembers)}
@@ -108,7 +108,7 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
               </button>
             </li>
             {hoveredMember && hoveredMember.id === el.id && isModalOpen && (
-              <div className="absolute break-words bottom-[110%] left-[50%] w-[300px]  bg-white border rounded shadow-lg p-4 z-10">
+              <div className="absolute break-words top-[110%] left-[25%] max-w-[200px] md:max-w-[300px]   bg-white border rounded shadow-lg p-4 z-10">
                 <ul className="w-full list-none p-0 m-0 text-left ">
                   <li>
                     <span className="font-bold">{`이름 : `}</span>

@@ -125,7 +125,7 @@ export const updateRecipe = async (
 export const deleteRecipe = async (recipeIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/recipes/recipeIds=${recipeIds}`,
+    url: `/api/admin/recipes?recipeIds=${recipeIds}`,
   })
   return payload
 }
@@ -205,10 +205,19 @@ export const deleteMembers = async (memberIds: number[]) => {
   return payload
 }
 
-export const getNotice = async (lastId: number | null) => {
+export const getNotices = async (
+  lastId: number | null,
+  title: string | null,
+) => {
+  const params = new URLSearchParams({
+    ...(lastId && { lastId: String(lastId) }),
+    ...(title && { title }),
+    size: '10',
+  }).toString()
+
   const { payload } = await requester<Notices>({
     method: 'get',
-    url: `/api/notices?${lastId ? `lastId=${lastId}` : ''}&size=10`,
+    url: `/api/notices/search?${params}`,
   })
   return payload.data
 }

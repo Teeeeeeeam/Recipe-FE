@@ -1,17 +1,23 @@
 'use client'
-import { getNotice } from '@/api/admin-apis'
+import { getNotices } from '@/api/admin-apis'
 import { NoticeInfo } from '@/types/admin'
 import { useState, useCallback } from 'react'
 
-const useNotice = () => {
+interface SearchParams {
+  title?: string
+}
+
+const useNotice = (searchParams: SearchParams) => {
   const [notices, setNotices] = useState<NoticeInfo[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [lastId, setLastId] = useState<number | null>(null)
 
+  const { title } = searchParams
+
   const fetchNotice = useCallback(async () => {
     if (!hasMore) return
     try {
-      const res = await getNotice(lastId)
+      const res = await getNotices(lastId, title ?? null)
       const newNotices = res.notice
       if (newNotices) {
         setNotices((prev) => [...prev, ...newNotices])

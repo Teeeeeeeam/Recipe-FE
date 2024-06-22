@@ -13,14 +13,16 @@ const usePosts = (searchParams: SearchParams) => {
   const [postId, setPostId] = useState<number | null>(null)
   const [hasMore, setHasMore] = useState(true)
 
+  const { id, recipeTitle, postTitle } = searchParams
+
   const fetchPosts = useCallback(async () => {
     if (!hasMore) return
     try {
       const res = await getPosts(
         postId,
-        searchParams.id ?? null,
-        searchParams.recipeTitle ?? null,
-        searchParams.postTitle ?? null,
+        id ?? null,
+        recipeTitle ?? null,
+        postTitle ?? null,
       )
       const newPosts = res.posts
       const lastId = newPosts[newPosts.length - 1].id
