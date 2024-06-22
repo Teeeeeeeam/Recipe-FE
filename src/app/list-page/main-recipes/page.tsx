@@ -1,7 +1,7 @@
 'use client'
 
 import { getRecipeList } from '@/api/recipe-apis'
-import { RecipeFigure } from '@/components/recipe-figure'
+import { RecipeFigure } from '@/components/recipe-and-posting/recipe-figure'
 import { RootState } from '@/store'
 import { Option, Recipe } from '@/types/recipe'
 import { useEffect, useState } from 'react'

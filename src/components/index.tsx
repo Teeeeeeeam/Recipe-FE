@@ -9,7 +9,7 @@ import { isVisited } from '@/store/visited-slice'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import NotifyRecent from '@/components/notify-recent'
+import NotifyRecent from './user/notify-recent'
 
 export default function Header() {
   const [isSession, setIsSession] = useState<boolean>(false)

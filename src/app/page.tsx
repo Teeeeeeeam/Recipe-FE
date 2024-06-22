@@ -3,7 +3,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getHomePosting, getHomeRecipe } from '@/api/recipe-apis'
-import { RecipeFigure, UserPostingFigure } from '@/components/recipe-figure'
+import {
+  RecipeFigure,
+  UserPostingFigure,
+} from '@/components/recipe-and-posting/recipe-figure'
 import { PostingFigure, Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'

@@ -6,7 +6,7 @@ import {
   postUserDel,
   postingVerifyPassword,
 } from '@/api/recipe-apis'
-import { Comment } from '@/components/comment'
+import { Comment } from '@/components/recipe-and-posting/comment'
 import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { PostingDetail, ThreeCookInfo } from '@/types/recipe'
