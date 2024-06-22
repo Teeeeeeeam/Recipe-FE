@@ -76,3 +76,11 @@ export interface QuestionDetail {
     answerAdminNickname: string
   }
 }
+
+// 마이페이지 - infinite-paging [table]
+export interface DefaultData {
+  idForKey: number
+  id: number
+  title: string
+  url: string
+}

@@ -1,8 +1,10 @@
 'use client'
 import { doBookmark, inquiryBookmark } from '@/api/login-user-apis'
 import { MyBookmark } from '@/types/user'
-import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import TableHeader from '@/components/user/infinite-paging/sequence/table-header'
+import TableBody from '@/components/user/infinite-paging/sequence/table-body'
+import TableBodyNoData from '@/components/user/infinite-paging/sequence/table-body-no-data'
 
 export default function ViewBookmark() {
   const [bookmarkData, setBookmarkData] = useState<MyBookmark[] | []>([])
@@ -11,7 +13,6 @@ export default function ViewBookmark() {
   const [mount, setMount] = useState<boolean>(false)
 
   const loader = useRef(null)
-
   useEffect(() => {
     getInquiryBookmarkPosting(true)
   }, [mount])
@@ -86,35 +87,23 @@ export default function ViewBookmark() {
       <div className="h-[70vh] bg-white overflow-y-scroll">
         <div className="rounded-lg p-4">
           <table className="w-full border-gray-200 table-fixed">
-            <thead>
-              <tr>
-                <th className="p-2 w-[10%]">#</th>
-                <th className="p-2 w-[80%]">제목</th>
-                <th className="p-2 sm:w-[10%] w-[20%]">취소</th>
-              </tr>
-            </thead>
-            <tbody className="">
-              {bookmarkData.map((item, index) => {
-                return (
-                  <tr key={item.id}>
-                    <td className="px-2 py-5 text-center ">{index + 1}</td>
-                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                      <Link href={`/list-page/main-recipes/${item.id}`}>
-                        {item.title}
-                      </Link>
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => cancelBookmark(item.id)}
-                      >
-                        취소
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
+            <TableHeader
+              theadOptions={[
+                { class: 'p-2 w-[10%]', title: '#' },
+                { class: 'p-2 w-[80%]', title: '제목' },
+                { class: 'p-2 sm:w-[10%] w-[20%]', title: '취소' },
+              ]}
+            />
+            {bookmarkData.length > 0 ? (
+              <TableBody
+                ctg={1}
+                info="즐겨찾기"
+                data={bookmarkData}
+                onClick={cancelBookmark}
+              />
+            ) : (
+              <TableBodyNoData />
+            )}
             <tfoot ref={loader}></tfoot>
           </table>
         </div>
