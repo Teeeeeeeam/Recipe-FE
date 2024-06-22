@@ -144,7 +144,7 @@ export const useJoinForm = () => {
           ? '인증이 완료 되었습니다.'
           : '인증시간이 만료되었습니다.',
       )
-    } catch (err) {
+    } catch {
       alert('인증번호를 확인해주세요.')
     }
   }

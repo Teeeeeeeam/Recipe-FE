@@ -52,7 +52,7 @@ export default function Header() {
           },
         )
         eventSource.close()
-        await postLogout(memberId)
+        await postLogout()
         setIsSession(false)
         removeLocalStorage('accessToken')
         removeLocalStorage('expiryMypage')

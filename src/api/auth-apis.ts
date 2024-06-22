@@ -20,11 +20,10 @@ export const postLogin = async (id: string, password: string) => {
   return payload.data
 }
 
-export const postLogout = async (id: string) => {
+export const postLogout = async () => {
   const { payload } = await requester<Response>({
     method: 'post',
     url: 'api/logout',
-    data: { memberId: Number(id) },
   })
   return payload
 }
