@@ -2,7 +2,7 @@
 
 import { getPostingList } from '@/api/recipe-apis'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { UserPostingFigure } from '@/components/recipe-figure'
+import { UserPostingFigure } from '@/components/recipe-and-posting/recipe-figure'
 import { PostingFigure } from '@/types/recipe'
 
 export default function UserRecipes() {

@@ -3,16 +3,20 @@
 import { postingWrite } from '@/api/recipe-apis'
 import { getLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
-import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import PostingContent from '../posting-content'
+import PostingSelect from '../posting-select'
+import PostingPassword from '../posting-password'
+import PostingImageUploader from '../posting-image-uploader'
+import { POSTING_LEVEL, POSTING_PEOPLE, POSTING_TIME } from '../constants'
 
 export default function Write() {
   const [thisTitle, setThisTitle] = useState<string>('')
   const [thisImage, setThisImage] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
-  const [thisPeople, setThisPeople] = useState<number>(0)
-  const [thisTime, setThisTime] = useState<number>(0)
+  const [thisPeople, setThisPeople] = useState<string>('')
+  const [thisTime, setThisTime] = useState<string>('')
   const [thisLevel, setThisLevel] = useState<string>('')
   const [thisCont, setThisCont] = useState<string>('')
   const [thisPw, setThisPw] = useState<string>('')
@@ -29,16 +33,25 @@ export default function Write() {
           writeReq: {
             postTitle: thisTitle,
             postContent: thisCont,
-            postCookingTime: `${thisTime}분`,
+            postCookingTime: thisTime,
             postCookingLevel: thisLevel,
-            postServing: `${thisPeople}인분`,
+            postServing: thisPeople,
             recipeId: Number(state.id),
             postPassword: thisPw,
           },
           writeFile: file!,
         }
-        await postingWrite(option)
-        window.location.href = `/list-page/main-recipes/${state.id}`
+        const hasEmptyData = Object.values(option.writeReq).some(
+          (value) => value === '',
+        )
+        if (hasEmptyData) {
+          alert('양식을 모두 채워주세요')
+        } else if (option.writeFile === null) {
+          alert('이미지를 첨부해주세요')
+        } else {
+          await postingWrite(option)
+          window.location.href = `/list-page/main-recipes/${state.id}`
+        }
       } catch (error) {
         console.log(error)
       }
@@ -60,138 +73,75 @@ export default function Write() {
             setThisImage(reader.result)
           }
         }
+      } else {
+        setFile(null)
+        setThisImage('')
       }
     }
   }
 
   return (
-    <div className="space-y-10">
-      <form className="relative">
-        <fieldset className="flex justify-between text-center gap-x-2 text-white mb-5">
+    <div className="p-4 bg-gray-50 h-full">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-[5fr_1fr] justify-between items-center gap-x-4 mb-6">
           <input
-            placeholder="제목 입력"
+            placeholder="게시글 제목"
             onChange={(e) => setThisTitle(e.target.value)}
-            className="max-w-[360px] w-full py-3 pl-2 bg-green-100 rounded-md"
-            required
+            className="w-full py-3 px-4 bg-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-300"
           />
           <button
-            type="submit"
-            className="px-6 py-3 bg-green-100 hover:bg-green-150 rounded-md"
-            onClick={(e) => submitHandler(e)}
+            type="button"
+            onClick={submitHandler}
+            className="py-3 bg-blue-50 text-white rounded-md shadow-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-green-300"
           >
-            등록
+            <span>등록</span>
           </button>
-        </fieldset>
-        <fieldset className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4 mb-5">
-          <div className="space-y-2">
-            <div className="flex items-center justify-center w-full  border">
-              <Image
-                src={thisImage ? thisImage : `/svg/img-box.svg`}
-                alt="이미지 미리보기"
-                width={180}
-                height={180}
-                className="w-1/5"
-              />
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              ref={imgRef}
-              onChange={uploadImg}
-              className="w-full"
-              required
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <PostingImageUploader
+              imgFile={thisImage}
+              previewImg={uploadImg}
+              imgRef={imgRef}
+              required={true}
             />
           </div>
-          <ul className="flex flex-col items-center justify-center text-white gap-y-2">
-            <li className="flex gap-x-2">
-              <label className="w-[100px] py-1 text-center bg-green-100 rounded-full">
-                인분
-              </label>
-              <input
-                type="text"
-                onChange={(e) => {
-                  setThisPeople(Number(e.target.value))
-                }}
-                className="w-[140px] py-1 pl-4 bg-green-100 rounded-full"
-                placeholder="숫자만 입력"
-                required
-              />
-            </li>
-            <li className="flex gap-x-2">
-              <label className="w-[100px] py-1 text-center bg-green-100 rounded-full">
-                요리시간
-              </label>
-              <input
-                type="text"
-                onChange={(e) => {
-                  setThisTime(Number(e.target.value))
-                }}
-                className="w-[140px] py-1 pl-4 bg-green-100 rounded-full"
-                placeholder="숫자만 입력"
-                required
-              />
-            </li>
-            <li className="flex gap-x-2">
-              <label className="w-[100px] py-1 text-center bg-green-100 rounded-full">
-                난이도
-              </label>
-              <div className="w-[140px] flex justify-between items-center">
-                <span>상</span>
-                <input
-                  type="radio"
-                  name="level"
-                  value="상"
-                  onChange={(e) => setThisLevel(e.target.value)}
-                  className=" py-1 pl-4 bg-green-100 rounded-full"
-                  required
-                />
-                <span>중</span>
-                <input
-                  type="radio"
-                  name="level"
-                  value="중"
-                  onChange={(e) => setThisLevel(e.target.value)}
-                  className=" py-1 pl-4 bg-green-100 rounded-full"
-                  required
-                />
-                <span>하</span>
-                <input
-                  type="radio"
-                  name="level"
-                  value="초"
-                  onChange={(e) => setThisLevel(e.target.value)}
-                  className=" py-1 pl-4 bg-green-100 rounded-full"
-                  required
-                />
-              </div>
-            </li>
-            <li className="w-[250px] py-1 bg-green-100 rounded-full text-center">
-              {state ? state.title : '다시 시도해주세요'}
-            </li>
-          </ul>
-        </fieldset>
-        <fieldset className="text-center">
-          <div className="w-10/12 mx-auto">
-            <textarea
-              className="w-full h-60"
-              onChange={(e) => setThisCont(e.target.value)}
-              required
-            ></textarea>
-          </div>
-        </fieldset>
-        <fieldset>
-          <div className="w-10/12 mx-auto text-end">
-            <label>비밀번호</label>
-            <input
-              type="text"
-              onChange={(e) => setThisPw(e.target.value)}
-              className="text-center"
-              placeholder="게시글 비밀번호"
-              required
+          <div className="flex flex-col space-y-6 mb-4">
+            <PostingSelect
+              label="인분"
+              value={thisPeople}
+              onChange={(value) => setThisPeople(value)}
+              options={POSTING_PEOPLE}
+            />
+            <PostingSelect
+              label="요리시간"
+              value={thisTime}
+              onChange={(value) => setThisTime(value)}
+              options={POSTING_TIME}
+            />
+            <PostingSelect
+              label="난이도"
+              value={thisLevel}
+              onChange={(value) => setThisLevel(value)}
+              options={POSTING_LEVEL}
             />
           </div>
-        </fieldset>
-      </form>
+        </div>
+        <div className="flex flex-col gap-2 mb-4">
+          <PostingContent
+            label="게시글 내용"
+            value={thisCont}
+            onChange={(value) => setThisCont(value)}
+          />
+        </div>
+        <div className="text-end">
+          <PostingPassword
+            label="비밀번호"
+            value={thisPw}
+            onChange={(value) => setThisPw(value)}
+          />
+        </div>
+      </div>
     </div>
   )
 }

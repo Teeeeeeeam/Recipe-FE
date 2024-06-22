@@ -19,6 +19,7 @@ import {
   UpdateNickNameReq,
   WidthdrawalReq,
   InquiryQuestionDetail,
+  InquiryQuestionParams,
 } from '@/types/login-user-apis-type'
 
 // 마이페이지 - 로그인 한 유저 정보 확인
@@ -202,7 +203,7 @@ export async function doWidthdrawalUser(req: WidthdrawalReq) {
 
 // 마이페이지 - 문의사항 전체 조회
 export async function inquiryQuestion(
-  params: any,
+  params: InquiryQuestionParams,
   lastId: number | null,
   type: string,
 ) {

@@ -69,6 +69,11 @@ export interface SendEmailParams {
   email: string
 }
 
+// 마이페이지 - 문의사항 상세조회
+export interface InquiryQuestionParams {
+  size: number
+}
+
 // ########## axios requester payload ##########
 // 로그인 유저 정보
 export interface CheckUser extends Response {

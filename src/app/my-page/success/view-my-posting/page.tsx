@@ -3,9 +3,11 @@ import { inquiryPosting } from '@/api/login-user-apis'
 import { postUserDel } from '@/api/recipe-apis'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { MyPostings } from '@/types/user'
-import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import TableHeader from '@/components/user/infinite-paging/sequence/table-header'
+import TableBody from '@/components/user/infinite-paging/sequence/table-body'
+import TableBodyNoData from '@/components/user/infinite-paging/sequence/table-body-no-data'
 
 export default function ViewMyPosting() {
   const [posting, setPosting] = useState<MyPostings[] | []>([])
@@ -91,42 +93,24 @@ export default function ViewMyPosting() {
       <div className="h-[70vh] bg-white overflow-y-scroll">
         <div className="rounded-lg p-4">
           <table className="w-full border-gray-200 table-fixed">
-            <thead>
-              <tr>
-                <th className="p-2 w-[10%]">#</th>
-                <th className="p-2 w-[]">제목</th>
-                <th className="p-2 sm:w-[20%] w-[30%]">조작</th>
-              </tr>
-            </thead>
-            <tbody className="">
-              {posting.map((item, index) => {
-                return (
-                  <tr key={item.id}>
-                    <td className="px-2 py-5 text-center ">{index + 1}</td>
-                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                      <Link href={`/list-page/user-recipes/${item.id}`}>
-                        {item.postTitle}
-                      </Link>
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => modPosting(item.id)}
-                        className="mr-3"
-                      >
-                        수정
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => deletePosting(item.id)}
-                      >
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
+            <TableHeader
+              theadOptions={[
+                { class: 'p-2 w-[10%]', title: '#' },
+                { class: 'p-2 w-[80%]', title: '제목' },
+                { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
+              ]}
+            />
+            {posting.length > 0 ? (
+              <TableBody
+                ctg={2}
+                info="작성글"
+                data={posting}
+                onClick={modPosting}
+                onClick2={deletePosting}
+              />
+            ) : (
+              <TableBodyNoData />
+            )}
             <tfoot ref={loader}></tfoot>
           </table>
         </div>
