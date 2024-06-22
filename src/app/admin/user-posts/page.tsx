@@ -12,11 +12,17 @@ const UserPosts = ({
 }: {
   searchParams: { [key: string]: string }
 }) => {
+  const { posts, setPosts, fetchPosts, hasMore } = usePosts(searchParams)
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('요리글 제목')
-  const { posts, setPosts, fetchPosts, hasMore } = usePosts(searchParams)
+
   const [activeCommentId, setActiveCommentId] = useState<number | null>(null)
   const lastElementRef = useInfiniteScroll(fetchPosts, hasMore)
+
+  const handleSearchSubmit = () => {
+    const queryString = buildQueryString(filter, searchInput)
+    updateUrlAndFetchPosts(queryString, setPosts, fetchPosts)
+  }
 
   useEffect(() => {
     const { id, recipeTitle, postTitle } = searchParams
@@ -33,17 +39,12 @@ const UserPosts = ({
     }
   }, [searchParams])
 
-  const handleSearchSubmit = () => {
-    const queryString = buildQueryString(filter, searchInput)
-    updateUrlAndFetchPosts(queryString, setPosts, fetchPosts)
-  }
-
   const handleGetCommentClick = (id: number) => {
     setActiveCommentId((prev) => (prev === id ? null : id))
   }
 
   return (
-    <div>
+    <div className="p-4 bg-gray-100">
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -55,7 +56,6 @@ const UserPosts = ({
           setSearchInput={setSearchInput}
           setFilter={setFilter}
           filter={filter}
-          handleSearchSubmit={handleSearchSubmit}
         />
       </form>
       <PostList

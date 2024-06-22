@@ -6,18 +6,17 @@ import Link from 'next/link'
 interface MemberFilterProps {
   searchInput: string
   setSearchInput: Dispatch<SetStateAction<string>>
-  //   handleSearchSubmit: () => void
 }
 
 const NoticeFilter = ({ searchInput, setSearchInput }: MemberFilterProps) => {
   return (
-    <div className="grid grid-cols-[1fr_4fr_1fr_1fr] w-full items-center text-center gap-x-2 mb-2">
+    <div className="flex flex-col md:grid md:grid-cols-[1fr_4fr_1fr_1fr] items-center w-full gap-2 mb-2">
       <button
         type="button"
-        className="flex justify-center items-center bg-green-150 h-full rounded-sm"
+        className="flex justify-center items-center h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
         onClick={() => (window.location.href = '/admin/notices')}
       >
-        공지사항 목록
+        목록
       </button>
       <AdminInput
         placeholder="공지사항 검색"
@@ -25,17 +24,18 @@ const NoticeFilter = ({ searchInput, setSearchInput }: MemberFilterProps) => {
         setState={setSearchInput}
       />
       <button
-        className="bg-green-100 h-full rounded-sm hover:bg-green-150"
+        className="h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
         type="submit"
       >
         검색
       </button>
-      <Link
-        href="/admin/notices/write"
-        className="flex items-center justify-center h-full bg-green-100 hover:bg-green-150 rounded-sm"
+
+      <button
+        type="button"
+        className="h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
       >
-        <button type="button">공지사항 등록</button>
-      </Link>
+        <Link href="/admin/notices/write">등록</Link>
+      </button>
     </div>
   )
 }

@@ -19,7 +19,7 @@ export const updateUrlAndFetchPosts = (
   fetchPosts: () => void,
 ): void => {
   const newUrl = `/admin/user-posts?${queryString}`
-  window.history.pushState(null, '', newUrl)
+  window.location.href = newUrl
   setPosts([])
   fetchPosts()
 }
