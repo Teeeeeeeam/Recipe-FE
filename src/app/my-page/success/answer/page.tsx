@@ -1,10 +1,12 @@
 'use client'
 
 import { deleteQuestion, inquiryQuestion } from '@/api/login-user-apis'
+import InputDeleteButton from '@/components/user/infinite-paging/input/input-delete-button'
+import InputTableBody from '@/components/user/infinite-paging/input/input-table-body'
+import InputTableBodyNoData from '@/components/user/infinite-paging/input/input-table-body-no-data'
+import InputTableHeader from '@/components/user/infinite-paging/input/input-table-header'
 import { MyQuestion } from '@/types/user'
 import axios from 'axios'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function Answer() {
@@ -124,73 +126,32 @@ export default function Answer() {
       <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
         <div className="rounded-lg p-4">
           <table className="w-full border-gray-200 table-fixed">
-            <thead>
-              <tr>
-                <th className="p-2 w-[10%]">
-                  <input
-                    type="checkbox"
-                    checked={isAllChecked}
-                    onChange={(e) => allCheckHandler(e)}
-                  />
-                </th>
-                <th className="p-2">제목</th>
-                <th className="p-2 sm:w-[10%] w-[20%]">상태</th>
-                <th className="p-2 sm:w-[10%] w-[20%]">삭제</th>
-              </tr>
-            </thead>
-            <tbody className="">
-              {question.map((item) => {
-                const status = item.status
-                return (
-                  <tr key={item.id}>
-                    <td className="px-2 py-5 text-center ">
-                      <input
-                        type="checkbox"
-                        onChange={() => eachCheckHandler(item.id)}
-                        className="chk_box"
-                      />
-                    </td>
-                    <td className="px-2 py-5 text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                      <Link href={`/my-page/success/answer/${item.id}`}>
-                        {item.title}
-                      </Link>
-                    </td>
-                    <td className="px-2 py-5 flex justify-center">
-                      <Image
-                        src={`/svg/${status === 'COMPLETED' ? 'completed' : 'pending'}.svg`}
-                        alt={status === 'COMPLETED' ? '완료' : '대기중'}
-                        width={30}
-                        height={30}
-                      />
-                    </td>
-                    <td className="px-2 py-5 text-center">
-                      <button type="button">
-                        <Image
-                          src="/svg/trash.svg"
-                          alt="삭제"
-                          width={25}
-                          height={25}
-                          onClick={() => deleteQuestionHandler(true, item.id)}
-                          className="cursor-pointer"
-                        />
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
+            <InputTableHeader
+              theadOptions={[
+                { class: 'p-2', title: '제목' },
+                { class: 'p-2 sm:w-[10%] w-[20%]', title: '상태' },
+                { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
+              ]}
+              isChecked={isAllChecked}
+              onChange={allCheckHandler}
+            />
+            {question.length > 0 ? (
+              <InputTableBody
+                data={question}
+                isStatus={true}
+                onChange={eachCheckHandler}
+                onClick={deleteQuestionHandler}
+              />
+            ) : (
+              <InputTableBodyNoData isStatus={true} />
+            )}
+
             <tfoot ref={loader}></tfoot>
           </table>
         </div>
       </div>
       <div className="text-end">
-        <button
-          type="button"
-          onClick={() => deleteQuestionHandler(false, null)}
-          className="border border-black px-3 py-2 rounded-lg"
-        >
-          선택삭제
-        </button>
+        <InputDeleteButton onClick={deleteQuestionHandler} />
       </div>
     </>
   )
