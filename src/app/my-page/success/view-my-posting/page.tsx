@@ -96,8 +96,8 @@ export default function ViewMyPosting() {
             <TableHeader
               theadOptions={[
                 { class: 'p-2 w-[10%]', title: '#' },
-                { class: 'p-2 w-[80%]', title: '제목' },
-                { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
+                { class: 'p-2 sm:w-[70%] w-[60%]', title: '제목' },
+                { class: 'p-2 sm:w-[20%] w-[30%]', title: '삭제' },
               ]}
             />
             {posting.length > 0 ? (
