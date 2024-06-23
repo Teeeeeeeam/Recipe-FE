@@ -12,7 +12,7 @@ const JoinForm = () => {
     handleInputBlur,
     handleJoinClick,
     handleValidationClick,
-    handleEmailVerificationClick,
+    handleEmailValidationClick,
     handleEmailAuthenticationCheckClick,
   } = useJoinForm()
 
@@ -100,7 +100,7 @@ const JoinForm = () => {
         '이메일',
         'email',
         regExp.regExpEmail,
-        <AuthButton type="button" onClick={handleEmailVerificationClick}>
+        <AuthButton type="button" onClick={handleEmailValidationClick}>
           인증
         </AuthButton>,
         true,

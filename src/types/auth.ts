@@ -36,12 +36,14 @@ export interface JoinEmailValidation extends Response {
   data: {
     duplicateEmail: boolean
     useEmail: boolean
+    blackListEmail: boolean
   }
 }
 
-export interface JoinEmailAuthentication extends Response {
+export interface EmailCodeValidation extends Response {
   data: {
-    isVerifyCode: boolean
+    isVerified: boolean
+    isExpired: boolean
   }
 }
 
