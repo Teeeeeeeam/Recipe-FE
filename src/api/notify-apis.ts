@@ -43,7 +43,7 @@ export async function inquiryNotifyRecent(apiPath: string) {
 }
 
 // 알림 삭제
-export async function deleteNotify(notificationIds: string | string[]) {
+export async function deleteNotify(notificationIds: number | number[] | null) {
   // 일괄 삭제
   if (Array.isArray(notificationIds)) {
     const { payload } = await requester({
