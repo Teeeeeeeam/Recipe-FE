@@ -36,10 +36,10 @@ const NoticeList = ({ notices, lastElementRef }: NoticeListProps) => {
   }
 
   return (
-    <div className="bg-white md:p-4 rounded shadow text-[12px] md:text-[14px]">
-      <ul className="grid grid-cols-[0.5fr_2fr_1fr_1fr] md:grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
-        <li className="flex justify-center items-center">
-          <div className="relative">
+    <div className="bg-white md:p-4 mt-4 rounded shadow text-[12px] md:text-[14px]">
+      <ul className="grid grid-cols-[0.5fr_2fr_1fr_1fr] md:grid-cols-[0.5fr_1fr_3fr_2fr_2fr_2fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
+        <li className="flex justify-center">
+          <div className="relative flex items-center">
             <input
               type="checkbox"
               checked={selectAll}
@@ -79,7 +79,7 @@ const NoticeList = ({ notices, lastElementRef }: NoticeListProps) => {
           notices.map((notice) => (
             <ul
               key={notice.id}
-              className="relative grid grid-cols-[0.5fr_2fr_1fr_1fr] md:grid-cols-[1fr_1fr_3fr_2fr_2fr_2fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+              className="relative grid grid-cols-[0.5fr_2fr_1fr_1fr] md:grid-cols-[0.5fr_1fr_3fr_2fr_2fr_2fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
               onMouseEnter={(e) => handleMouseEnter(notice)}
               onMouseLeave={handleMouseLeave}
             >

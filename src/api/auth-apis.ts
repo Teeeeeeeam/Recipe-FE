@@ -1,11 +1,12 @@
 import {
-  JoinEmailAuthentication,
   Join,
   Login,
   RefreshToken,
   Response,
   SearchLoginId,
   LoginInfo,
+  JoinEmailValidation,
+  EmailCodeValidation,
 } from '@/types/auth'
 import requester from './index'
 import { removeLocalStorage } from '@/lib/local-storage'
@@ -93,15 +94,15 @@ export const postJoinNicknameValidation = async (nickname: string) => {
 }
 
 export const postJoinEmailValidation = async (email: string) => {
-  const { payload } = await requester<Response>({
+  const { payload } = await requester<JoinEmailValidation>({
     method: 'post',
     url: '/api/join/email/validation',
     data: { email },
   })
-  return payload
+  return payload.data
 }
 
-export const postJoinEmailAuthentication = async (email: string) => {
+export const postJoinEmailCode = async (email: string) => {
   const { payload } = await requester<Response>({
     method: 'post',
     url: `/api/join/email-confirmation?email=${email}`,
@@ -109,11 +110,11 @@ export const postJoinEmailAuthentication = async (email: string) => {
   return payload
 }
 
-export const postJoinEmailAuthenticationCheck = async (
+export const postJoinEmailCodeValidation = async (
   email: string,
   code: number,
 ) => {
-  const { payload } = await requester<JoinEmailAuthentication>({
+  const { payload } = await requester<EmailCodeValidation>({
     method: 'post',
     url: `/api/join/email-confirmation/verify`,
     data: { email, code },
@@ -121,7 +122,7 @@ export const postJoinEmailAuthenticationCheck = async (
   return payload.data
 }
 
-export const postEmailAuthentication = async (email: string) => {
+export const postEmailCode = async (email: string) => {
   removeLocalStorage('accessToken')
   const { payload } = await requester<Response>({
     method: 'post',
@@ -130,11 +131,8 @@ export const postEmailAuthentication = async (email: string) => {
   return payload
 }
 
-export const postCodeEmailAuthentication = async (
-  email: string,
-  code: number,
-) => {
-  const { payload } = await requester<JoinEmailAuthentication>({
+export const postEmailCodeValidation = async (email: string, code: number) => {
+  const { payload } = await requester<EmailCodeValidation>({
     method: 'post',
     url: `/api/code/email-confirmation/verify`,
     data: { email, code },
