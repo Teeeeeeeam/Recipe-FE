@@ -52,7 +52,7 @@ export interface PostInfo {
   postTitle: string
   createdAt: string
   postImageUrl: string
-  member: { nickName: string; loginId: string }
+  member: { nickname: string; loginId: string }
   recipe: { id: number; title: string }
 }
 
