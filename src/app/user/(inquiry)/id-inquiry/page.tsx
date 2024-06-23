@@ -3,8 +3,8 @@
 import AuthButton from '@/components/common/auth-button'
 import AuthInput from '@/components/common/auth-input'
 import {
-  handleAuthenticationCheckClick,
-  handleEmailVerificationClick,
+  handleEmailCodeSendClick,
+  handleEmailCodeValidationkClick,
 } from '@/lib/email-authentication'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { fetchData } from '@/store/search-id-slice'
@@ -60,7 +60,7 @@ const IdInquiry = () => {
           />
           <AuthButton
             type="button"
-            onClick={() => handleEmailVerificationClick(email)}
+            onClick={() => handleEmailCodeSendClick(email)}
           >
             인증
           </AuthButton>
@@ -77,7 +77,7 @@ const IdInquiry = () => {
           />
           <AuthButton
             type="button"
-            onClick={() => handleAuthenticationCheckClick(email, code)}
+            onClick={() => handleEmailCodeValidationkClick(email, code)}
           >
             확인
           </AuthButton>

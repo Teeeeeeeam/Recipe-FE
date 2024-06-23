@@ -18,7 +18,7 @@ const Questions = () => {
   const lastElementRef = useInfiniteScroll(fetchQuestions, hasMore)
 
   return (
-    <div>
+    <div className="md:p-4 bg-gray-100">
       <QuestionFilter
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}

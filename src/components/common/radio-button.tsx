@@ -7,9 +7,9 @@ const RadioButton = ({ selected, onClick }: RaidoButtonProps) => {
   return (
     <div
       onClick={onClick}
-      className={`rounded-full h-6 w-6 border border-green-100 flex items-center justify-center cursor-pointer transition-colors`}
+      className={`rounded-full h-6 w-6 border border-blue-100 flex items-center justify-center cursor-pointer transition-colors`}
     >
-      {selected && <div className="p-[8px] rounded-full bg-green-100"></div>}
+      {selected && <div className="p-[8px] rounded-full bg-blue-100"></div>}
     </div>
   )
 }
@@ -26,11 +26,11 @@ const RadioButtonGroup = ({
   onOptionChange,
 }: RadioButtonGroupProps) => {
   return (
-    <div className="flex gap-x-2">
+    <div className="flex gap-x-4">
       {options.map((option) => (
         <div
           key={option}
-          className="flex items-center gap-x-1 cursor-pointer"
+          className="flex items-center gap-x-2 cursor-pointer"
           onClick={() =>
             onOptionChange(selectedOption === option ? null : option)
           }
@@ -41,7 +41,7 @@ const RadioButtonGroup = ({
               onOptionChange(selectedOption === option ? null : option)
             }
           />
-          <div>{option}</div>
+          <div className="text-sm font-medium">{option}</div>
         </div>
       ))}
     </div>

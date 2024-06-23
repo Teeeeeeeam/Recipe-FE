@@ -12,7 +12,7 @@ interface BlackListHeaderProps {
   handleBulkUnblock: () => void
 }
 
-const BlackListHeader = ({
+const BlackListFilter = ({
   searchTerm,
   setSearchTerm,
   handleSearchClick,
@@ -86,4 +86,4 @@ const BlackListHeader = ({
   )
 }
 
-export default BlackListHeader
+export default BlackListFilter

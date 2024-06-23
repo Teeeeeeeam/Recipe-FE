@@ -3,8 +3,8 @@ import { postSearchPassword } from '@/api/auth-apis'
 import AuthButton from '@/components/common/auth-button'
 import AuthInput from '@/components/common/auth-input'
 import {
-  handleEmailVerificationClick,
-  handleAuthenticationCheckClick,
+  handleEmailCodeSendClick,
+  handleEmailCodeValidationkClick,
 } from '@/lib/email-authentication'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -73,7 +73,7 @@ const PwInquiry = () => {
           />
           <AuthButton
             type="button"
-            onClick={() => handleEmailVerificationClick(email)}
+            onClick={() => handleEmailCodeSendClick(email)}
           >
             인증
           </AuthButton>
@@ -90,7 +90,7 @@ const PwInquiry = () => {
           />
           <AuthButton
             type="button"
-            onClick={() => handleAuthenticationCheckClick(email, code)}
+            onClick={() => handleEmailCodeValidationkClick(email, code)}
           >
             확인
           </AuthButton>

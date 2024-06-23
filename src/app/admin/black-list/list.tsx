@@ -7,7 +7,7 @@ interface BlackListItemProps {
   handleOpenModal: (id: number) => void
 }
 
-const BlackListItem = ({
+const BlackListList = ({
   item,
   isChecked,
   handleCheckboxChange,
@@ -40,4 +40,4 @@ const BlackListItem = ({
   )
 }
 
-export default BlackListItem
+export default BlackListList

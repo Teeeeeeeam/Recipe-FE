@@ -185,11 +185,12 @@ const DashBoard = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-xl font-semibold mb-2">대시보드</h1>
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {counts.map((el, idx) => (
           <div
             key={idx}
-            className="flex flex-col py-4 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
+            className="flex flex-col py-3 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
           >
             <div>{el.type}</div>
             <div>{el.count}</div>

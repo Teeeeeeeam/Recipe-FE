@@ -42,7 +42,7 @@ const PostList = ({
   }
 
   return (
-    <div className="bg-white p-4 rounded shadow text-[12px] md:text-[14px]">
+    <div className="bg-white p-4 rounded shadow text-[12px] md:text-[14px] mt-4">
       <ul className="grid grid-cols-[0.5fr_2fr_2fr_1.5fr] md:grid-cols-[0.5fr_1fr_2fr_2fr_2fr_1.5fr_1.5fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
         <li className="flex justify-center items-center">
           <div className="relative flex">

@@ -6,8 +6,8 @@ import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { BlackListInfo } from '@/types/admin'
 import { useState, useEffect, useCallback } from 'react'
 import Modal from './modal'
-import BlackListHeader from './header'
-import BlackListItem from './list-item'
+import BlackListList from './list'
+import BlackListFilter from './filter'
 
 const BlackList = () => {
   const [lastId, setLastId] = useState<number | null>(null)
@@ -87,7 +87,7 @@ const BlackList = () => {
   }
   return (
     <div className="container mx-auto p-4">
-      <BlackListHeader
+      <BlackListFilter
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         handleSearchClick={handleSearchClick}
@@ -102,7 +102,7 @@ const BlackList = () => {
       />
       {blackLists &&
         blackLists.map((el) => (
-          <BlackListItem
+          <BlackListList
             key={el.id}
             item={el}
             isChecked={deleteList.includes(el.id)}

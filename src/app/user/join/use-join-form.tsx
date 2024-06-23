@@ -1,11 +1,11 @@
 import { useState, FocusEvent } from 'react'
 import {
-  postJoinEmailAuthentication,
-  postJoinEmailAuthenticationCheck,
   postJoinEmailValidation,
   postJoinIdValidation,
   postJoin,
   postJoinNicknameValidation,
+  postJoinEmailCode,
+  postJoinEmailCodeValidation,
 } from '@/api/auth-apis'
 import regExp from '@/lib/regexp'
 import { useRouter } from 'next/navigation'
@@ -117,12 +117,22 @@ export const useJoinForm = () => {
     }
   }
 
-  const handleEmailVerificationClick = async () => {
+  const handleEmailValidationClick = async () => {
     try {
       const res = await postJoinEmailValidation(formData.email)
-      if (res.success) {
-        await postJoinEmailAuthentication(formData.email)
+      if (res.duplicateEmail && res.blackListEmail && res.useEmail) {
+        await postJoinEmailCode(formData.email)
         alert('인증번호가 해당 이메일로 발송되었습니다.')
+      }
+      if (!res.duplicateEmail) {
+        alert('이미 등록된 이메일 입니다.')
+        return
+      }
+      if (!res.blackListEmail) {
+        alert('차단된 이메일 입니다.')
+      }
+      if (!res.useEmail) {
+        alert('유효하지 않은 이메일 입니다.')
       }
     } catch (err) {
       setValidations((prev) => ({
@@ -135,15 +145,18 @@ export const useJoinForm = () => {
   const handleEmailAuthenticationCheckClick = async () => {
     try {
       const code = Number(formData.certificationNumber)
-      const isVerified = await postJoinEmailAuthenticationCheck(
-        formData.email,
-        code,
-      )
-      alert(
-        isVerified.isVerifyCode
-          ? '인증이 완료 되었습니다.'
-          : '인증시간이 만료되었습니다.',
-      )
+      const res = await postJoinEmailCodeValidation(formData.email, code)
+      if (res.isExpired && res.isVerified) {
+        alert('인증이 완료되었습니다.')
+      }
+      if (!res.isVerified) {
+        alert('인증번호를 확인해주세요.')
+        return
+      }
+      if (!res.isExpired) {
+        alert('인증시간이 만료되었습니다.')
+        return
+      }
     } catch {
       alert('인증번호를 확인해주세요.')
     }
@@ -157,7 +170,7 @@ export const useJoinForm = () => {
     handleInputBlur,
     handleJoinClick,
     handleValidationClick,
-    handleEmailVerificationClick,
+    handleEmailValidationClick,
     handleEmailAuthenticationCheckClick,
   }
 }
