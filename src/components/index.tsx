@@ -10,6 +10,7 @@ import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import NotifyRecent from './user/notify-recent'
+import Image from 'next/image'
 
 export default function Header() {
   const [isSession, setIsSession] = useState<boolean>(false)
@@ -142,12 +143,13 @@ export default function Header() {
 
   return (
     <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
-      <div className="max-w-[1440px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between border-b ">
+      <div className="max-w-[1160px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between border-b ">
         <Link
           href="/"
-          className="flex title-font font-medium items-center text-gray-900"
+          className="flex h-full title-font font-medium items-center text-gray-900"
         >
-          Recipe Radar
+          <Image src={'/logo.png'} alt="logo" width={40} height={40} priority />
+          요리 공유소
         </Link>
         {isSession && <NotifyRecent eventCount={eventCount} />}
         {isSession ? (
