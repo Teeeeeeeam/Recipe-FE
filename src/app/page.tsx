@@ -12,6 +12,7 @@ import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'
 import { postSearchState } from '@/store/search-recipe-slice'
 import { useRouter } from 'next/navigation'
+import Announcements from './announcement'
 
 export default function Home() {
   //레시피 컨트롤러 GET
@@ -80,26 +81,12 @@ export default function Home() {
     )
     setIngredients(newIngredients)
   }
+  //////////////////
 
   return (
     <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
-      <div className="home-banner">
-        <section className="text-gray-600 body-font mb-12 py-3 bg-white bg-opacity-80">
-          <div className="mx-auto flex md:flex-row flex-col items-center justify-around">
-            <div className="flex flex-col items-center text-center">
-              <h1 className="mb-3 md:mb-0 lg:mb-0 title-font text-3xl font-medium text-[#78D8B6]">
-                Recipe Radar
-              </h1>
-            </div>
-            <div className="w-3/12">
-              <img
-                className="rounded"
-                alt="hero"
-                src="https://dummyimage.com/720x600"
-              />
-            </div>
-          </div>
-        </section>
+      <div className=" mx-auto mb-6">
+        <Announcements />
       </div>
       <div className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
         <div className="flex items-center justify-center">
