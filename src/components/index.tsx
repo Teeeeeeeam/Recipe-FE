@@ -151,27 +151,22 @@ export default function Header() {
           <Image src={'/logo.png'} alt="logo" width={40} height={40} priority />
           요리 공유소
         </Link>
-        {isSession && <NotifyRecent eventCount={eventCount} />}
         {isSession ? (
-          <div className="min-w-[150px] flex items-center justify-between">
-            <p className="text-black">
-              <Link
-                href={
-                  state.roles === 'ROLE_ADMIN'
-                    ? '/admin/dash-board'
-                    : '/my-page'
-                }
-                className="w-full"
-              >
-                {state.roles === 'ROLE_ADMIN'
-                  ? '관리자'
-                  : `${state.nickName}님`}
-              </Link>
+          <div className="flex items-center">
+            <NotifyRecent eventCount={eventCount} />
+            <p className="text-gray-500 text-sm sm:text-base mr-3">
+              {state.roles === 'ROLE_ADMIN' ? (
+                <Link href="/admin/dash-board">관리자</Link>
+              ) : (
+                <Link href="/my-page">
+                  <span className="text-[#2f8f6d]">{state.nickName}</span>님
+                </Link>
+              )}
             </p>
             <button
               type="button"
               onClick={() => logOutBtn()}
-              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base "
+              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-sm sm:text-base "
             >
               로그아웃
             </button>
