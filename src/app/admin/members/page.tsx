@@ -40,7 +40,7 @@ const Members = ({
     const queryString = buildQueryString(filter, searchInput)
     updateUrlAndFetchMembers(queryString, setMembers, fetchMembers)
   }
-
+  if (!members) return null
   return (
     <div className="md:p-4 bg-gray-100">
       <form

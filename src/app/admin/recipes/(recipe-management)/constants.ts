@@ -52,7 +52,6 @@ export const COOK_METHODS = [
   { label: '끓이기', value: 'BOILING' },
   { label: '볶음', value: 'STIR_FRYING' },
   { label: '튀김', value: 'DEEP_FRYING' },
-  { label: '기타', value: 'OTHER' },
   { label: '찜', value: 'STEAMING' },
   { label: '무침', value: 'MIXING' },
   { label: '조림', value: 'BRAISING' },
@@ -62,6 +61,7 @@ export const COOK_METHODS = [
   { label: '삶기', value: 'SIMMERING' },
   { label: '회', value: 'SASHIMI' },
   { label: '데치기', value: 'BLANCHING' },
+  { label: '기타', value: 'OTHER' },
 ]
 
 export const DISH_TYPES = [

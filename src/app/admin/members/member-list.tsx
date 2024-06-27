@@ -35,6 +35,7 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
     setIsModalOpen(false)
   }
 
+  if (!members) return null
   return (
     <div className="bg-white md:p-4 rounded shadow text-[12px] md:text-[14px] mt-4">
       <ul className="grid grid-cols-[0.5fr_2fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
