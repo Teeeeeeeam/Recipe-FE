@@ -53,6 +53,9 @@ export const postRecipe = async (
   cookTime: string,
   cookSteps: string[],
   file: File,
+  cookIngredients: string,
+  cookMethods: string,
+  dishTypes: string,
 ) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -65,6 +68,9 @@ export const postRecipe = async (
       ingredients,
       cookTime,
       cookSteps,
+      cookIngredients,
+      cookMethods,
+      dishTypes,
     }),
   )
 
@@ -142,10 +148,10 @@ export const getPosts = async (
     ...(postTitle && { postTitle }),
     ...(postId !== null && { postId: String(postId) }),
     size: '10',
-  })
+  }).toString()
   const { payload } = await requester<{ data: Posts }>({
     method: 'get',
-    url: `/api/admin/posts/search?${params.toString()}`,
+    url: `/api/admin/posts/search?${params}`,
   })
   return payload.data
 }
