@@ -19,7 +19,7 @@ const useNotice = (searchParams: SearchParams) => {
     try {
       const res = await getNotices(lastId, title ?? null)
       const newNotices = res.notice
-      if (newNotices) {
+      if (newNotices.length > 0) {
         setNotices((prev) => [...prev, ...newNotices])
         setHasMore(res.nextPage)
         setLastId(newNotices[newNotices.length - 1].id)

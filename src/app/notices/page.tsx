@@ -2,10 +2,13 @@
 
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { useState, useEffect } from 'react'
-import useNotice from './use-notice'
-import NoticeFilter from './notice-filter'
-import NoticeList from './notice-list'
-import { buildQueryString, updateUrlAndFetchNotices } from './url-utils'
+import useNotice from '../admin/notices/use-notice'
+import NoticeFilter from '../admin/notices/notice-filter'
+import NoticeList from '../admin/notices/notice-list'
+import {
+  buildQueryString,
+  updateUrlAndFetchNotices,
+} from '../admin/notices/url-utils'
 
 const Notice = ({
   searchParams,
@@ -41,10 +44,9 @@ const Notice = ({
         <NoticeFilter
           searchInput={searchInput}
           setSearchInput={setSearchInput}
-          isAdmin
         />
       </form>
-      <NoticeList notices={notices} lastElementRef={lastElementRef} isAdmin />
+      <NoticeList notices={notices} lastElementRef={lastElementRef} />
     </div>
   )
 }

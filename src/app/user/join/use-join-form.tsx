@@ -7,7 +7,6 @@ import {
   postJoinEmailCode,
   postJoinEmailCodeValidation,
 } from '@/api/auth-apis'
-import regExp from '@/lib/regexp'
 import { useRouter } from 'next/navigation'
 
 interface FormData {
