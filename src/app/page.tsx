@@ -2,7 +2,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { getHomePosting, getHomeRecipe } from '@/api/recipe-apis'
+import {
+  getCategoryRecipe,
+  getHomePosting,
+  getHomeRecipe,
+} from '@/api/recipe-apis'
 import {
   RecipeFigure,
   UserPostingFigure,
@@ -13,6 +17,12 @@ import { useDispatch } from 'react-redux'
 import { postSearchState } from '@/store/search-recipe-slice'
 import { useRouter } from 'next/navigation'
 import Announcements from './announcement'
+import {
+  COOK_INGREDIENTS,
+  COOK_METHODS,
+  DISH_TYPES,
+} from './admin/recipes/(recipe-management)/constants'
+import CategorySelector from './category-selector'
 
 export default function Home() {
   //레시피 컨트롤러 GET
@@ -22,26 +32,44 @@ export default function Home() {
   const [inputValue, setInputValue] = useState<string>('')
   const [ingredients, setIngredients] = useState<string[]>([])
   const [inputCategory, setInputCategory] = useState<string>('All')
+  //
+  const [selectedIngredient, setSelectedIngredient] = useState<string[]>([])
+  const [selectedMethod, setSelectedMethod] = useState<string[]>([])
+  const [selectedDishType, setSelectedDishType] = useState<string[]>([])
   // redux
   const dispatch = useDispatch<AppDispatch>()
   //
   const router = useRouter()
   useEffect(() => {
     getData()
-  }, [])
+  }, [selectedIngredient, selectedMethod, selectedDishType])
   async function getData() {
     const option = {
       size: 3,
     }
     try {
-      const result = await getHomeRecipe()
+      if (
+        !selectedIngredient.length &&
+        !selectedMethod.length &&
+        !selectedDishType.length
+      ) {
+        const result = await getHomeRecipe()
+        setRecipes(result.data.recipes)
+      } else {
+        const result = await getCategoryRecipe(
+          selectedIngredient ?? null,
+          selectedMethod ?? null,
+          selectedDishType ?? null,
+        )
+        setRecipes(result.recipes)
+      }
       const result_posting = await getHomePosting(option)
-      setRecipes(result.data.recipe)
       setUserPosting(result_posting.data.posts)
     } catch (error) {
       console.log(error)
     }
   }
+  console.log(recipes)
 
   function enterHandler(e: any): void {
     e.preventDefault()
@@ -81,11 +109,49 @@ export default function Home() {
     )
     setIngredients(newIngredients)
   }
-  //////////////////
+  //
+
+  function clickCategoryHandler(category: string, value: string) {
+    if (category === 'ingredient') {
+      if (selectedIngredient.includes(value)) {
+        setSelectedIngredient((prev) => prev.filter((el) => el !== value))
+      } else {
+        setSelectedIngredient((prev) => [...prev, value])
+      }
+    } else if (category === 'method') {
+      if (selectedMethod.includes(value)) {
+        setSelectedMethod((prev) => prev.filter((el) => el !== value))
+      } else {
+        setSelectedMethod((prev) => [...prev, value])
+      }
+    } else if (category === 'dishType') {
+      if (selectedDishType.includes(value)) {
+        setSelectedDishType((prev) => prev.filter((el) => el !== value))
+      } else {
+        setSelectedDishType((prev) => [...prev, value])
+      }
+    }
+  }
+
+  function getLabelByValue(
+    options: { label: string; value: string }[],
+    value: string,
+  ) {
+    const option = options.find((option) => option.value === value)
+    return option ? option.label : ''
+  }
+
+  // const selectedLabels = [
+  //   ...selectedIngredient.map((value) =>
+  //     getLabelByValue(COOK_INGREDIENTS, value),
+  //   ),
+  //   ...selectedMethod.map((value) => getLabelByValue(COOK_METHODS, value)),
+  //   ...selectedDishType.map((value) => getLabelByValue(DISH_TYPES, value)),
+  // ]
 
   return (
     <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
-      <div className=" mx-auto mb-6">
+      <div className="mx-auto mb-6">
         <Announcements />
       </div>
       <div className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
@@ -104,6 +170,28 @@ export default function Home() {
             <Link href="/list-page/main-recipes">Search Recipe</Link>
           </h3>
         </div>
+        <div></div>
+        <div className="flex flex-col mt-2">
+          <CategorySelector
+            label="재료별"
+            options={COOK_INGREDIENTS.slice(1)}
+            selectedValue={selectedIngredient}
+            onClick={(value) => clickCategoryHandler('ingredient', value)}
+          />
+          <CategorySelector
+            label="방법별"
+            options={COOK_METHODS.slice(1)}
+            selectedValue={selectedMethod}
+            onClick={(value) => clickCategoryHandler('method', value)}
+          />
+          <CategorySelector
+            label="종류별"
+            options={DISH_TYPES.slice(1)}
+            selectedValue={selectedDishType}
+            onClick={(value) => clickCategoryHandler('dishType', value)}
+          />
+        </div>
+
         <form
           onSubmit={(e) => enterHandler(e)}
           className="mx-2 my-10 rounded-xl border bg-white px-4 py-8"
@@ -167,7 +255,42 @@ export default function Home() {
             </>
           )}
         </form>
-        <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
+
+        <div className="flex flex-wrap items-center px-8 mb-4">
+          {selectedIngredient.map((value, idx) => (
+            <div className="text-xl font-semibold">
+              <span key={idx} className="px-1 py-1 mb-2">
+                {getLabelByValue(COOK_INGREDIENTS, value)}
+              </span>
+              <span>{idx < selectedIngredient.length - 1 && '+'}</span>
+            </div>
+          ))}
+          {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
+            <span className="text-xl">{' > '}</span>
+          )}
+          {selectedMethod.map((value, idx) => (
+            <div className="text-xl font-semibold">
+              <span key={idx} className="px-1 py-1 mb-2">
+                {getLabelByValue(COOK_METHODS, value)}
+              </span>
+              <span>{idx < selectedMethod.length - 1 && '+'}</span>
+            </div>
+          ))}
+          {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
+            selectedDishType.length > 0 && (
+              <span className="text-xl">{' > '}</span>
+            )}
+          {selectedDishType.map((value, idx) => (
+            <div className="text-xl font-semibold">
+              <span key={idx} className="px-1 py-1 mb-2">
+                {getLabelByValue(DISH_TYPES, value)}
+              </span>
+              <span>{idx < selectedDishType.length - 1 && '+'}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-8 pb-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 mt-2 mb-10">
           <RecipeFigure recipes={recipes} />
         </div>
       </div>

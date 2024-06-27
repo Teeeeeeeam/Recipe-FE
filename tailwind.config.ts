@@ -31,6 +31,7 @@ const config: Config = {
           50: '#246BEB',
           100: '#3B8AC4',
           150: '#3278A6',
+          200: '#C9E5FA',
         },
       },
       backgroundImage: {

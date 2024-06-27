@@ -96,6 +96,9 @@ export const updateRecipe = async (
   newCookSteps: string[],
   deleteCookStepsId: string[],
   file: File | null,
+  cookIngredients: string,
+  cookMethods: string,
+  dishTypes: string,
 ) => {
   const formData = new FormData()
   if (file) formData.append('file', file)
@@ -107,6 +110,9 @@ export const updateRecipe = async (
     ingredients,
     cookTime,
     cookSteps,
+    cookIngredients,
+    cookMethods,
+    dishTypes,
   }
   if (newCookSteps.length > 0) {
     recipeUpdateRequest.newCookSteps = newCookSteps

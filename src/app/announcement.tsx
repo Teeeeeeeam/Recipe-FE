@@ -28,7 +28,7 @@ const initialAnnouncements: Announcement[] = [
     title: '공지사항을 확인하세요!',
     content: '중요한 업데이트와 이벤트 소식을 놓치지 마세요! 😊',
     imgUrl: '/announce2.png',
-    style: 'bg-[#C9E5FA]',
+    style: 'bg-blue-200',
     href: '/notices',
   },
 ]

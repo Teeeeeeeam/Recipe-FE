@@ -82,7 +82,7 @@ export interface GetCommentParams {
 // 홈(레시피)
 export interface GetHomeRecipe extends Response {
   data: {
-    recipe: Recipe[] | []
+    recipes: Recipe[] | []
   }
 }
 // 홈(게시글)

@@ -24,9 +24,37 @@ import {
 export async function getHomeRecipe() {
   const { payload } = await requester<GetHomeRecipe>({
     method: 'GET',
-    url: '/api/main/recipe',
+    url: '/api/recipe/main',
   })
   return payload
+}
+
+// 홈(카테고리 레시피)
+export async function getCategoryRecipe(
+  category1: string[] | null,
+  category2: string[] | null,
+  category3: string[] | null,
+) {
+  const params = new URLSearchParams()
+
+  if (category1) {
+    params.append('cat1', category1.join(','))
+  }
+  if (category2) {
+    params.append('cat2', category2.join(','))
+  }
+  if (category3) {
+    params.append('cat3', category3.join(','))
+  }
+
+  params.append('order', 'LIKE')
+  params.append('size', '8')
+
+  const { payload } = await requester<GetHomeRecipe>({
+    method: 'GET',
+    url: `/api/recipe/category?${params.toString()}`,
+  })
+  return payload.data
 }
 
 // 홈(게시글)
