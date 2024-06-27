@@ -3,7 +3,14 @@ import useRecipeForm from '../use-recipe-form'
 import RecipeImageUploader from '../recipe-image-uploader'
 import RecipeInput from '../recipe-input'
 import RecipeSelect from '@/app/admin/recipes/(recipe-management)/recipe-select'
-import { COOK_LEVEL, COOK_TIME, PEOPLE } from '../constants'
+import {
+  COOK_INGREDIENTS,
+  COOK_LEVEL,
+  COOK_METHODS,
+  COOK_TIME,
+  DISH_TYPES,
+  PEOPLE,
+} from '../constants'
 
 const WriteRecipe = () => {
   const {
@@ -63,6 +70,26 @@ const WriteRecipe = () => {
               options={COOK_LEVEL}
             />
           </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 mt-4">
+          <RecipeSelect
+            label="주재료"
+            value={formData.cookIngredients}
+            onChange={(value) => handleChange('cat1', value)}
+            options={COOK_INGREDIENTS}
+          />
+          <RecipeSelect
+            label="조리 방법"
+            value={formData.cookMethods}
+            onChange={(value) => handleChange('cat2', value)}
+            options={COOK_METHODS}
+          />
+          <RecipeSelect
+            label="음식 종류"
+            value={formData.dishTypes}
+            onChange={(value) => handleChange('cat3', value)}
+            options={DISH_TYPES}
+          />
         </div>
         <div className="mt-4">
           <RecipeInput

@@ -98,7 +98,6 @@ export interface NoticeInfo {
     nickname: string
   }
 }
-
 export interface Notices extends Response {
   data: {
     nextPage: boolean

@@ -35,7 +35,7 @@ const ModifyRecipe = () => {
   useEffect(() => {
     const fetchRecipeDetail = async () => {
       const res = await getRecipeDetail(recipeId as string)
-      console.log(res)
+
       setFormData({
         imgFile: res.recipe.imageUrl,
         file: null,
@@ -45,6 +45,9 @@ const ModifyRecipe = () => {
         people: res.recipe.people,
         cookTime: res.recipe.cookingTime,
         cookLevel: res.recipe.cookingLevel,
+        cookIngredients: '',
+        cookMethods: '',
+        dishTypes: '',
       })
       setCookSteps(res.cookSteps)
     }

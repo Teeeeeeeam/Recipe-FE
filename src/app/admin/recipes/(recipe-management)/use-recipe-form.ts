@@ -12,6 +12,9 @@ interface FormData {
   people: string
   cookTime: string
   cookLevel: string
+  cookIngredients: string
+  cookMethods: string
+  dishTypes: string
 }
 
 const useRecipeForm = () => {
@@ -20,10 +23,13 @@ const useRecipeForm = () => {
     file: null as File | null,
     title: '',
     ingredients: [''],
-    cookStep: [],
+    cookStep: [''],
     people: '',
     cookTime: '',
     cookLevel: '',
+    cookIngredients: '',
+    cookMethods: '',
+    dishTypes: '',
   })
 
   const imgRef = useRef<HTMLInputElement>(null)
@@ -93,6 +99,9 @@ const useRecipeForm = () => {
           formData.cookTime,
           formData.cookStep as string[],
           formData.file,
+          formData.cookIngredients,
+          formData.cookMethods,
+          formData.dishTypes,
         )
         router.push('/admin/recipes')
       }
