@@ -9,8 +9,8 @@ import { isVisited } from '@/store/visited-slice'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import NotifyRecent from './user/notify-recent'
 import Image from 'next/image'
+import { HeaderSizeMobile, HeaderSizeWeb } from './header-responsive'
 
 export default function Header() {
   const [isSession, setIsSession] = useState<boolean>(false)
@@ -143,43 +143,36 @@ export default function Header() {
 
   return (
     <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
-      <div className="max-w-[1160px] mx-auto my-0 flex flex-wrap px-3 py-[20px] items-center justify-between border-b ">
-        <Link
-          href="/"
-          className="flex h-full title-font font-medium items-center text-gray-900"
-        >
-          <Image src={'/logo.png'} alt="logo" width={40} height={40} priority />
-          요리 공유소
-        </Link>
-        {isSession ? (
-          <div className="flex items-center">
-            <NotifyRecent eventCount={eventCount} />
-            <p className="text-gray-500 text-sm sm:text-base mr-3">
-              {state.roles === 'ROLE_ADMIN' ? (
-                <Link href="/admin/dash-board">관리자</Link>
-              ) : (
-                <Link href="/my-page">
-                  <span className="text-[#2f8f6d]">{state.nickName}</span>님
-                </Link>
-              )}
-            </p>
-            <button
-              type="button"
-              onClick={() => logOutBtn()}
-              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-sm sm:text-base "
+      <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  px-6 py-4 shadow-sm mx-auto">
+        <div className="md:grow-0">
+          <h1>
+            <Link
+              href="/"
+              className="flex h-full title-font font-medium items-center text-gray-900"
             >
-              로그아웃
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base "
-          >
-            <Link href="/user/login">로그인/회원가입</Link>
-          </button>
-        )}
-      </div>
+              <Image
+                src={'/logo.png'}
+                alt="logo"
+                width={40}
+                height={40}
+                priority
+              />
+              요리 공유소
+            </Link>
+          </h1>
+        </div>
+        <HeaderSizeWeb
+          isSession={isSession}
+          eventCount={eventCount}
+          state={state}
+          logOutBtn={logOutBtn}
+        />
+        <HeaderSizeMobile
+          isSession={isSession}
+          eventCount={eventCount}
+          logOutBtn={logOutBtn}
+        />
+      </nav>
     </header>
   )
 }
