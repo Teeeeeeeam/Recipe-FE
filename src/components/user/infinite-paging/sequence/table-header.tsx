@@ -7,7 +7,7 @@ export default function TableHeader({ theadOptions }: TableHeaderProps) {
     <thead>
       <tr>
         {theadOptions.map((item, index) => (
-          <th key={index} className={item.class}>
+          <th key={index} className={`${item.class} bg-gray-100 sticky top-0`}>
             {item.title}
           </th>
         ))}
