@@ -10,7 +10,14 @@ import useRecipeForm from '../../use-recipe-form'
 import RecipeSelect from '@/app/admin/recipes/(recipe-management)/recipe-select'
 import RecipeInput from '../../recipe-input'
 import RecipeImageUploader from '../../recipe-image-uploader'
-import { COOK_LEVEL, COOK_TIME, PEOPLE } from '../../constants'
+import {
+  COOK_INGREDIENTS,
+  COOK_LEVEL,
+  COOK_METHODS,
+  COOK_TIME,
+  DISH_TYPES,
+  PEOPLE,
+} from '../../constants'
 
 const ModifyRecipe = () => {
   const [cookSteps, setCookSteps] = useState<CookStep[]>([])
@@ -45,16 +52,16 @@ const ModifyRecipe = () => {
         people: res.recipe.people,
         cookTime: res.recipe.cookingTime,
         cookLevel: res.recipe.cookingLevel,
-        cookIngredients: '',
-        cookMethods: '',
-        dishTypes: '',
+        cookIngredients: res.recipe.cookIngredients,
+        cookMethods: res.recipe.cookMethods,
+        dishTypes: res.recipe.dishTypes,
       })
       setCookSteps(res.cookSteps)
     }
 
     fetchRecipeDetail()
   }, [])
-
+  console.log(formData)
   const handleAddNewCookStepsChange = (idx: number, value: string) => {
     const updatedNewCookSteps = [...newCookSteps]
     updatedNewCookSteps[idx] = value
@@ -78,7 +85,7 @@ const ModifyRecipe = () => {
       return
     }
     if (confirm('레시피를 수정하시겠습니까?')) {
-      await updateRecipe(
+      const res = await updateRecipe(
         Number(recipeId),
         formData.title,
         formData.cookLevel,
@@ -89,6 +96,9 @@ const ModifyRecipe = () => {
         newCookSteps,
         deleteCookStepsId,
         formData.file ?? null,
+        formData.cookIngredients,
+        formData.cookMethods,
+        formData.dishTypes,
       )
 
       alert('게시글이 수정되었습니다.')
@@ -142,6 +152,26 @@ const ModifyRecipe = () => {
               options={COOK_LEVEL}
             />
           </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 mt-4">
+          <RecipeSelect
+            label="주재료"
+            value={formData.cookIngredients}
+            onChange={(value) => handleChange('cookIngredients', value)}
+            options={COOK_INGREDIENTS}
+          />
+          <RecipeSelect
+            label="조리 방법"
+            value={formData.cookMethods}
+            onChange={(value) => handleChange('cookMethods', value)}
+            options={COOK_METHODS}
+          />
+          <RecipeSelect
+            label="음식 종류"
+            value={formData.dishTypes}
+            onChange={(value) => handleChange('dishTypes', value)}
+            options={DISH_TYPES}
+          />
         </div>
         <div className="mt-4">
           <RecipeInput

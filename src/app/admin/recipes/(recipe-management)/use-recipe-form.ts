@@ -110,40 +110,6 @@ const useRecipeForm = () => {
     }
   }
 
-  const handleModifySusbmit = async (
-    recipeId: string,
-    newCookSteps: string[],
-    deleteCookStepsId: string[],
-  ) => {
-    if (
-      !formData.title ||
-      !formData.cookLevel ||
-      !formData.people ||
-      !formData.ingredients.length ||
-      !formData.cookTime
-    ) {
-      alert('모든 필드를 채워야 합니다.')
-      return
-    }
-    if (confirm('레시피를 수정하시겠습니까?')) {
-      const res = await updateRecipe(
-        Number(recipeId),
-        formData.title,
-        formData.cookLevel,
-        formData.people,
-        formData.ingredients,
-        formData.cookTime,
-        formData.cookStep as CookStep[],
-        newCookSteps,
-        deleteCookStepsId,
-        formData.file ?? null,
-      )
-      console.log(res)
-      alert('게시글이 수정되었습니다.')
-      router.push('/admin/recipes')
-    }
-  }
-
   return {
     formData,
     setFormData,
@@ -154,7 +120,6 @@ const useRecipeForm = () => {
     handleAddArrayItem,
     handleDeleteArrayItem,
     handleWriteSubmit,
-    handleModifySusbmit,
   }
 }
 
