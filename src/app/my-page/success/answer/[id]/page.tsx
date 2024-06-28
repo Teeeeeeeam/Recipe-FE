@@ -1,13 +1,16 @@
 'use client'
 
 import { inquiryQuestionDetail } from '@/api/login-user-apis'
-import { QuestionDetail } from '@/types/user'
-import Image from 'next/image'
+import { QuestionDetailComplete } from '@/types/user'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import AnswerDetailContent from './answer-detail-content'
+import AnswerDetailHeadSubject from './answer-detail-head-subject'
+
 export default function AnswerDetail() {
-  const [answer, setAnswer] = useState<QuestionDetail>()
+  const [answers, setAnswers] = useState<QuestionDetailComplete | null>(null)
+  const [status, setStatus] = useState<string>('')
   const params = useParams()
   const thisId = Number(params.id)
 
@@ -17,39 +20,57 @@ export default function AnswerDetail() {
   async function getAnswerDetail() {
     try {
       const result = await inquiryQuestionDetail(thisId)
-      setAnswer(result.data)
+      setStatus(result.data.status)
+      setAnswers(result.data)
     } catch (error) {
       console.log(error)
     }
   }
-  console.log(answer)
 
+  if (!answers) return <div>로딩중</div>
   return (
-    <div>
-      <div>
-        <h4>문의 상세페이지</h4>
-        <br />
-        <h5>내가 한 문의사항</h5>
-        <p>답변 현황: {answer?.status}</p>
-        <p>문의 날짜: {answer?.createdAt}</p>
-        <p>제목: {answer?.title}</p>
-        <p>문의 내용: {answer?.questionContent}</p>
-        <p>
-          내가 보낸 첨부이미지:
-          <Image
-            src={answer?.imgUrl || ''}
-            alt="첨부이미지"
-            width={150}
-            height={150}
+    <>
+      <div className="mx-auto">
+        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+          <AnswerDetailHeadSubject title="문의사항" date={answers.createdAt} />
+          <AnswerDetailContent
+            ctg="string"
+            title="문의 제목"
+            content={answers.title}
+            className="border-b"
           />
-        </p>
-        <br />
-        <h5>관리자 답변</h5>
-        <p>운영자 이름: {answer?.answer.answerAdminNickname}</p>
-        <p>답변 날짜: {answer?.answeredAt}</p>
-        <p>제목: {answer?.answer.answerTitle}</p>
-        <p>답변 내용: {answer?.answer.answerContent}</p>
+          <AnswerDetailContent
+            ctg="string"
+            title="문의 내용"
+            content={answers.questionContent}
+            className="border-b"
+          />
+          <AnswerDetailContent
+            ctg="image"
+            title="첨부한 이미지"
+            src={answers.imgUrl}
+            className="border-b"
+          />
+        </div>
+
+        {status === 'COMPLETED' && (
+          <div className="bg-white shadow-md rounded-lg p-6 mb-5">
+            <AnswerDetailHeadSubject title="답변" date={answers.answeredAt} />
+            <AnswerDetailContent
+              ctg="string"
+              title="답변 제목"
+              content={answers.answer.answerTitle}
+              className="border-b"
+            />
+            <AnswerDetailContent
+              ctg="string"
+              title="답변 제목"
+              content={answers.answer.answerContent}
+              className="border-b"
+            />
+          </div>
+        )}
       </div>
-    </div>
+    </>
   )
 }
