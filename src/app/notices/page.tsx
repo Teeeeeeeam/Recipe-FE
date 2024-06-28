@@ -30,7 +30,7 @@ const Notice = ({
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(searchInput)
-    updateUrlAndFetchNotices(queryString, setNotices, fetchNotice)
+    updateUrlAndFetchNotices(queryString, setNotices, fetchNotice, false)
   }
 
   return (

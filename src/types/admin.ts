@@ -31,6 +31,9 @@ export interface RecipeForm extends Response {
       people: string
       cookingTime: string
       likeCount: number
+      cookIngredients: string
+      cookMethods: string
+      dishTypes: string
     }
     ingredients: string[]
     cookSteps: CookStep[]
