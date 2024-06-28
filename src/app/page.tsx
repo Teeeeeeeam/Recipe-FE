@@ -69,7 +69,6 @@ export default function Home() {
       console.log(error)
     }
   }
-  console.log(recipes)
 
   function enterHandler(e: any): void {
     e.preventDefault()
@@ -141,14 +140,6 @@ export default function Home() {
     return option ? option.label : ''
   }
 
-  // const selectedLabels = [
-  //   ...selectedIngredient.map((value) =>
-  //     getLabelByValue(COOK_INGREDIENTS, value),
-  //   ),
-  //   ...selectedMethod.map((value) => getLabelByValue(COOK_METHODS, value)),
-  //   ...selectedDishType.map((value) => getLabelByValue(DISH_TYPES, value)),
-  // ]
-
   return (
     <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
       <div className="mx-auto mb-6">
@@ -165,12 +156,13 @@ export default function Home() {
                 }),
               )
             }
-            className="mb-3 lg:text-3xl md:text-3xl text-2xl text-black rounded-lg"
+            className="mb-3 lg:text-2xl md:text-2xl text-2xl font-semibold text-black rounded-lg"
           >
-            <Link href="/list-page/main-recipes">Search Recipe</Link>
+            <Link href="/list-page/main-recipes">
+              레시피를 카테고리별, 재료별로 검색해보세요!
+            </Link>
           </h3>
         </div>
-        <div></div>
         <div className="flex flex-col mt-2">
           <CategorySelector
             label="재료별"
@@ -191,37 +183,31 @@ export default function Home() {
             onClick={(value) => clickCategoryHandler('dishType', value)}
           />
         </div>
-
         <form
           onSubmit={(e) => enterHandler(e)}
-          className="mx-2 my-10 rounded-xl border bg-white px-4 py-8"
+          className=" my-4 md:my-10 border-y bg-white p-6"
         >
-          <div className="mb-2 flex items-center">
-            <div className="mr-1 w-full flex items-center">
-              <select
-                className="bg-transparent mr-1 px-6 py-3 outline-none border rounded-lg"
-                name="category"
-                id="category"
-                onChange={(e) => setInputCategory(e.target.value)}
-              >
-                <option value="cookAll">전체</option>
-                <option value="cookTitle">요리명</option>
-                <option value="cookIngredient">재료명</option>
-              </select>
-              <input
-                type="text"
-                onChange={(e) => {
-                  setInputValue(e.target.value)
-                }}
-                value={inputValue}
-                className="placeholder:text-gray-400 h-12 w-full rounded-md px-4 font-medium focus:outline-none"
-                placeholder="검색어를 입력해주세요"
-              />
-            </div>
+          <div className="mb-6 flex flex-col justify-center md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+            <select
+              className="w-full md:w-24 bg-transparent px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-50"
+              name="category"
+              id="category"
+              onChange={(e) => setInputCategory(e.target.value)}
+            >
+              <option value="cookAll">전체</option>
+              <option value="cookTitle">요리명</option>
+              <option value="cookIngredient">재료명</option>
+            </select>
+            <input
+              type="text"
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+              className="placeholder:text-gray-400 h-12 w-full md:w-96 rounded-lg px-4 font-medium focus:outline-none focus:border-blue-50 border border-gray-300"
+              placeholder="검색어를 입력해주세요"
+            />
             <button
-              type="button"
-              onClick={(e) => clickButtonHandler(e)}
-              className="shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-[#78D8B6] text-white hover:bg-[#68c9a7]"
+              type="submit"
+              className="w-full md:w-16  py-3 flex items-center justify-center rounded-lg bg-blue-50 text-white hover:bg-blue-100 transition duration-300"
             >
               검색
             </button>
@@ -234,31 +220,29 @@ export default function Home() {
                   5개&#41;
                 </p>
               )}
-              <div className="space-x-1 flex flex-wrap w-full justify-center">
-                {ingredients?.map((ingredient) => {
-                  return (
-                    <p
-                      key={ingredient}
-                      className="text-sm font-medium text-gray-400"
+              <div className="flex flex-wrap justify-center space-x-2 space-y-2 mt-4">
+                {ingredients?.map((ingredient) => (
+                  <p
+                    key={ingredient}
+                    className="text-sm font-medium text-gray-500 bg-gray-100 rounded-lg px-2 py-1 flex items-center"
+                  >
+                    {ingredient}
+                    <span
+                      className="ml-2 text-gray-400 cursor-pointer hover:text-red-600 transition duration-300"
+                      onClick={() => deleteIngredient(ingredient)}
                     >
-                      {ingredient}
-                      <span
-                        className="ml-1 text-gray-300 cursor-pointer hover:text-red-600"
-                        onClick={() => deleteIngredient(ingredient)}
-                      >
-                        X
-                      </span>
-                    </p>
-                  )
-                })}
+                      X
+                    </span>
+                  </p>
+                ))}
               </div>
             </>
           )}
         </form>
 
-        <div className="flex flex-wrap items-center px-8 mb-4">
+        <div className="flex flex-wrap px-2 md:px-8 mb-2 md:mb-4 text-md md:text-xl">
           {selectedIngredient.map((value, idx) => (
-            <div className="text-xl font-semibold">
+            <div className="font-semibold">
               <span key={idx} className="px-1 py-1 mb-2">
                 {getLabelByValue(COOK_INGREDIENTS, value)}
               </span>
@@ -266,10 +250,10 @@ export default function Home() {
             </div>
           ))}
           {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
-            <span className="text-xl">{' > '}</span>
+            <span>{' > '}</span>
           )}
           {selectedMethod.map((value, idx) => (
-            <div className="text-xl font-semibold">
+            <div className="font-semibold">
               <span key={idx} className="px-1 py-1 mb-2">
                 {getLabelByValue(COOK_METHODS, value)}
               </span>
@@ -277,11 +261,9 @@ export default function Home() {
             </div>
           ))}
           {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
-            selectedDishType.length > 0 && (
-              <span className="text-xl">{' > '}</span>
-            )}
+            selectedDishType.length > 0 && <span>{' > '}</span>}
           {selectedDishType.map((value, idx) => (
-            <div className="text-xl font-semibold">
+            <div className="font-semibold">
               <span key={idx} className="px-1 py-1 mb-2">
                 {getLabelByValue(DISH_TYPES, value)}
               </span>
@@ -289,10 +271,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-
-        <div className="px-8 pb-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 mt-2 mb-10">
-          <RecipeFigure recipes={recipes} />
-        </div>
+        <RecipeFigure recipes={recipes} />
       </div>
       <div className="home-users-recipe">
         <h3 className="text-3xl">회원 요리 게시글</h3>
