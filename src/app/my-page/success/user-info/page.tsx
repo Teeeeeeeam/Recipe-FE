@@ -12,6 +12,8 @@ import { UserInfo } from '@/types/user'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import FormInput from './form-input-for-update'
+import Image from 'next/image'
 
 export default function UserInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo>()
@@ -36,13 +38,15 @@ export default function UserInfo() {
     if (!toggle) {
       setIsModNicName(false)
       setIsModEmail(false)
+      setModNickName('')
+      setModEmail('')
+      setCode('')
       setIsSendEmail(false)
       setIsVerify(false)
     }
   }, [toggle])
 
   async function getInquiryUserInfo() {
-    const userId = state.loginId
     try {
       const result = await inquiryUser()
       setUserInfo(result.data)
@@ -67,12 +71,12 @@ export default function UserInfo() {
       if (isModEmail && isVerify) {
         const option = {
           email: modEmail,
-          code: code,
+          code: Number(code),
         }
         await updateEmail(option)
       }
       setToggle(false)
-      setMount(!mount)
+      setMount((prev) => !prev)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorCode = error.response?.status
@@ -169,82 +173,73 @@ export default function UserInfo() {
           </table>
         </div>
       </div>
+
       {toggle && (
         <div className="bg-slate-800 bg-opacity-50 flex justify-center items-center fixed top-0 right-0 bottom-0 left-0">
-          <div className="bg-white px-10 py-14 rounded-md text-center">
-            <p className="text-xl mb-4 font-bold text-slate-500">
-              {isModNickName
-                ? '변경할 닉네임을 적어주세요'
-                : isModEmail
-                  ? '변경할 이메일을 적어주세요'
-                  : ''}
+          <div className="relative bg-white m-10 max-w-lg rounded-md border text-gray-800 shadow-lg min-w-[360px]">
+            <p className="mt-4 pl-4 text-xl font-bold">
+              {isModNickName ? '닉네임 변경' : isModEmail ? '이메일 변경' : ''}
             </p>
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex flex-wrap flex-col"
-            >
-              <div className="w-full mb-4 flex justify-between ">
-                <input
-                  type="text"
-                  onChange={(e) => {
-                    isModNickName
-                      ? setModNickName(e.target.value)
-                      : isModEmail
-                        ? setModEmail(e.target.value)
-                        : null
-                  }}
-                  className="block pl-1"
-                  placeholder={
-                    isModNickName
-                      ? userInfo?.nickName
-                      : isModEmail
-                        ? userInfo?.email
-                        : ''
-                  }
+            <Image
+              src="/svg/close.svg"
+              alt="닫기"
+              width={50}
+              height={50}
+              onClick={() => setToggle(false)}
+              className="absolute right-0 top-0 m-3 h-6 w-6 cursor-pointer text-gray-400"
+            />
+            <div className="flex flex-col items-center px-8 py-10">
+              {isModNickName && (
+                <FormInput
+                  title="닉네임"
+                  placeholder="닉네임을 입력해주세요"
+                  verify={false}
+                  onChange={setModNickName}
                 />
-                {isModEmail && (
-                  <button
-                    type="button"
-                    onClick={() => sendingEmail()}
-                    className="items-center"
-                  >
-                    확인
-                  </button>
-                )}
-              </div>
-              <div className="mb-4">
-                {isSendEmail && !isVerify && (
-                  <>
-                    <input
-                      type="text"
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="인증코드"
-                    />
-                    <button type="button" onClick={() => verifyCode()}>
-                      인증
-                    </button>
-                  </>
-                )}
-                {isVerify && '인증 완료!'}
-              </div>
-
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setToggle(!toggle)}
-                  className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={() => submitUpdate()}
-                  className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
-                >
-                  Ok
-                </button>
-              </div>
-            </form>
+              )}
+              {isModEmail && (
+                <>
+                  <FormInput
+                    title="이메일"
+                    placeholder={userInfo?.email || ''}
+                    verify={true}
+                    onChange={setModEmail}
+                    onClick={sendingEmail}
+                  />
+                  {isSendEmail && (
+                    <>
+                      {isVerify ? (
+                        <p>인증완료</p>
+                      ) : (
+                        <FormInput
+                          title="인증번호"
+                          placeholder="인증번호를 입력해주세요"
+                          verify={true}
+                          onChange={setCode}
+                          onClick={verifyCode}
+                        />
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+            <div className="flex justify-center pb-3">
+              <button
+                type="button"
+                onClick={() => submitUpdate()}
+                className="whitespace-nowrap rounded-md bg-blue-500 px-4 py-3 font-medium text-white mr-3"
+              >
+                변경하기
+              </button>
+              <button
+                type="button"
+                onClick={() => setToggle(false)}
+                className="whitespace-nowrap rounded-md bg-gray-200 px-4 py-3 font-medium"
+              >
+                변경취소
+              </button>
+            </div>
           </div>
         </div>
       )}

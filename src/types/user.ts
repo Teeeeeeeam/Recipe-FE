@@ -63,12 +63,14 @@ export interface QuestionDetail {
   questionContent: string
   status: string
   createdAt: string
-  answeredAt: string
-  imgUrl: string
   member: {
     id: number
     loginId: string
   }
+}
+export interface QuestionDetailComplete extends QuestionDetail {
+  answeredAt: string
+  imgUrl: string
   answer: {
     id: number
     answerTitle: string

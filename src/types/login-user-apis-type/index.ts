@@ -5,7 +5,7 @@ import {
   MyPostings,
   MyQuestion,
   UserInfo,
-  QuestionDetail,
+  QuestionDetailComplete,
 } from '../user'
 
 export interface Response {
@@ -28,7 +28,7 @@ export interface UpdateNickNameReq {
 // 마이페이지 - 이메일 수정
 export interface UpdateEmailReq {
   email: string
-  code: string
+  code: number
 }
 
 // 마이페이지 - 이메일 코드 검증
@@ -133,5 +133,5 @@ export interface InquiryQuestion extends Response {
 
 // 마이페이지 - 문의사항 상세조회
 export interface InquiryQuestionDetail extends Response {
-  data: QuestionDetail
+  data: QuestionDetailComplete
 }

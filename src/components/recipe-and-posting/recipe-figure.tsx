@@ -54,7 +54,6 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
   return (
     <>
       {recipes?.map((item) => {
-        const createDate = item.createdAt.slice(0, item.createdAt.indexOf('T'))
         return (
           <figure
             key={item.id}
@@ -70,7 +69,7 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
             />
             <figcaption className="w-11/12 mx-auto pt-3 text-gray-300">
               <span className="block text-sm text-primary text-right text-[#77D8B6]">
-                {createDate}
+                {item.createdAt}
               </span>
               <dl>
                 <dt className="font-semibold text-xl leading-6 my-2 text-black">
