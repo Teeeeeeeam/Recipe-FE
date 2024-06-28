@@ -75,19 +75,19 @@ const WriteRecipe = () => {
           <RecipeSelect
             label="주재료"
             value={formData.cookIngredients}
-            onChange={(value) => handleChange('cat1', value)}
+            onChange={(value) => handleChange('cookIngredients', value)}
             options={COOK_INGREDIENTS}
           />
           <RecipeSelect
             label="조리 방법"
             value={formData.cookMethods}
-            onChange={(value) => handleChange('cat2', value)}
+            onChange={(value) => handleChange('cookMethods', value)}
             options={COOK_METHODS}
           />
           <RecipeSelect
             label="음식 종류"
             value={formData.dishTypes}
-            onChange={(value) => handleChange('cat3', value)}
+            onChange={(value) => handleChange('dishTypes', value)}
             options={DISH_TYPES}
           />
         </div>

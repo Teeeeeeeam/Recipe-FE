@@ -23,7 +23,9 @@ const NoticeFilter = ({
         <button
           type="button"
           className="flex justify-center items-center h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
-          onClick={() => (window.location.href = '/admin/notices')}
+          onClick={() =>
+            (window.location.href = isAdmin ? '/admin/notices' : '/notices')
+          }
         >
           목록
         </button>
