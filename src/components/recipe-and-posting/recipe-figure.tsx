@@ -8,7 +8,7 @@ interface RecipeFigureProps {
 }
 export function RecipeFigure({ recipes }: RecipeFigureProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+    <>
       {recipes?.map((item) => {
         return (
           <figure
@@ -20,7 +20,8 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
                 src={item.imageUrl}
                 alt={item.title}
                 fill
-                objectFit="cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: 'cover' }}
                 priority
               />
             </div>
@@ -43,7 +44,7 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
           </figure>
         )
       })}
-    </div>
+    </>
   )
 }
 
@@ -93,16 +94,18 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
         return (
           <figure
             key={item.id}
-            className="flex flex-col items-center rounded-lg border border-[#E0E0E0] shadow-md max-w-xs md:max-w-none overflow-hidden p-3"
+            className="flex flex-col items-center rounded-lg border border-gray-200 shadow-md overflow-hidden"
           >
-            <Image
-              src={item.postImageUrl}
-              alt={item.postTitle}
-              width={500}
-              height={500}
-              className="h-40 w-full object-cover rounded mb-3"
-              priority
-            />
+            <div className="relative w-full pt-[100%]">
+              <Image
+                src={item.postImageUrl}
+                alt={item.postTitle}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: 'cover' }}
+                priority
+              />
+            </div>
             <figcaption className="w-full text-left">
               <div className="flex justify-between items-center mb-2">
                 <span className="block text-sm text-gray-500">

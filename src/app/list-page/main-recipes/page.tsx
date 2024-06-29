@@ -55,7 +55,7 @@ export default function MainRecipes() {
   }
   return (
     <div>
-      <div className=" min-h-screen p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
+      <div className=" min-h-screen p-8 grid justify-center md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
         <RecipeFigure recipes={recipes} />
       </div>
       <div className="w-full flex justify-center space-x-2 py-2">

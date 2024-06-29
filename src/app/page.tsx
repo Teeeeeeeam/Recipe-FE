@@ -239,39 +239,49 @@ export default function Home() {
             </>
           )}
         </form>
-
-        <div className="flex flex-wrap px-2 md:px-8 mb-2 md:mb-4 text-md md:text-xl">
-          {selectedIngredient.map((value, idx) => (
-            <div className="font-semibold">
-              <span key={idx} className="px-1 py-1 mb-2">
-                {getLabelByValue(COOK_INGREDIENTS, value)}
-              </span>
-              <span>{idx < selectedIngredient.length - 1 && '+'}</span>
-            </div>
-          ))}
-          {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
-            <span>{' > '}</span>
-          )}
-          {selectedMethod.map((value, idx) => (
-            <div className="font-semibold">
-              <span key={idx} className="px-1 py-1 mb-2">
-                {getLabelByValue(COOK_METHODS, value)}
-              </span>
-              <span>{idx < selectedMethod.length - 1 && '+'}</span>
-            </div>
-          ))}
-          {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
-            selectedDishType.length > 0 && <span>{' > '}</span>}
-          {selectedDishType.map((value, idx) => (
-            <div className="font-semibold">
-              <span key={idx} className="px-1 py-1 mb-2">
-                {getLabelByValue(DISH_TYPES, value)}
-              </span>
-              <span>{idx < selectedDishType.length - 1 && '+'}</span>
-            </div>
-          ))}
+        <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
+          <div className="flex-1 flex-wrap">
+            {selectedIngredient.map((value, idx) => (
+              <div className="font-semibold">
+                <span key={idx} className="px-1 py-1 mb-2">
+                  {getLabelByValue(COOK_INGREDIENTS, value)}
+                </span>
+                <span>{idx < selectedIngredient.length - 1 && '+'}</span>
+              </div>
+            ))}
+            {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
+              <span>{' > '}</span>
+            )}
+            {selectedMethod.map((value, idx) => (
+              <div className="font-semibold">
+                <span key={idx} className="px-1 py-1 mb-2">
+                  {getLabelByValue(COOK_METHODS, value)}
+                </span>
+                <span>{idx < selectedMethod.length - 1 && '+'}</span>
+              </div>
+            ))}
+            {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
+              selectedDishType.length > 0 && <span>{' > '}</span>}
+            {selectedDishType.map((value, idx) => (
+              <div className="font-semibold">
+                <span key={idx} className="px-1 py-1 mb-2">
+                  {getLabelByValue(DISH_TYPES, value)}
+                </span>
+                <span>{idx < selectedDishType.length - 1 && '+'}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="px-2 py-1 bg-blue-50 hover:bg-blue-150 rounded-md text-[16px] text-white"
+            onClick={() => router.push('/list-page/main-recipes')}
+          >
+            더보기
+          </button>
         </div>
-        <RecipeFigure recipes={recipes} />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+          <RecipeFigure recipes={recipes} />
+        </div>
       </div>
       <div className="home-users-recipe">
         <h3 className="text-3xl">회원 요리 게시글</h3>
