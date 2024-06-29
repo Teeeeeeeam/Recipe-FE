@@ -1,62 +1,54 @@
 'use client'
-
-import { useState, useEffect } from 'react'
-import AdminButton from '../common/admin-button'
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
+interface MenuItem {
+  id: string
+  title: string
+  icon: string
+}
+
 interface AdminSidebarProps {
+  isOpen: boolean
   segment: string | null
 }
 
-const AdminSidebar = ({ segment }: AdminSidebarProps) => {
-  const [tab, setTab] = useState('')
+const AdminSidebar = ({ isOpen, segment }: AdminSidebarProps) => {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([
+    { id: 'dash-board', title: '대시보드', icon: '/dashboard.png' },
+    { id: 'members', title: '사용자', icon: '/user.png' },
+    { id: 'user-posts', title: '회원 게시글', icon: '/review.png' },
+    { id: 'recipes', title: '레시피', icon: '/recipe.png' },
+    { id: 'notices', title: '공지사항', icon: '/announce.png' },
+    { id: 'questions', title: '문의사항', icon: '/qna.png' },
+    { id: 'black-list', title: '블랙리스트', icon: '/blacklist.png' },
+  ])
 
   useEffect(() => {
-    if (segment) {
-      setTab(segment)
-    }
-  }, [segment])
+    setMenuItems(menuItems)
+  }, [])
 
   return (
-    <div className="flex flex-col items-center w-[250px] p-8 space-y-4 h-full bg-gray-100 border-r border-gray-200 shadow-md">
-      <h2 className="mb-6 text-2xl font-bold text-gray-800 cursor-pointer transition-transform hover:scale-110">
-        <Link href="/admin/dash-board">Menu</Link>
-      </h2>
-      <Link href="/admin/dash-board" className="w-full">
-        <AdminButton id="dash-board" segment={segment}>
-          대시보드
-        </AdminButton>
-      </Link>
-      <Link href="/admin/members" className="w-full">
-        <AdminButton id="members" segment={segment}>
-          사용자
-        </AdminButton>
-      </Link>
-      <Link href="/admin/user-posts" className="w-full">
-        <AdminButton id="user-posts" segment={segment}>
-          회원 게시글
-        </AdminButton>
-      </Link>
-      <Link href="/admin/recipes" className="w-full">
-        <AdminButton id="recipes" segment={segment}>
-          레시피
-        </AdminButton>
-      </Link>
-      <Link href="/admin/notices" className="w-full">
-        <AdminButton id="notices" segment={segment}>
-          공지사항
-        </AdminButton>
-      </Link>
-      <Link href="/admin/questions" className="w-full">
-        <AdminButton id="questions" segment={segment}>
-          문의사항
-        </AdminButton>
-      </Link>
-      <Link href="/admin/black-list" className="w-full">
-        <AdminButton id="black-list" segment={segment}>
-          블랙리스트
-        </AdminButton>
-      </Link>
+    <div
+      className={`flex flex-col ${isOpen ? 'items-start w-[250px]' : 'items-center w-[60px]'} h-full  border-r border-gray-200 pt-12`}
+    >
+      {menuItems.map((item) => (
+        <Link href={`/admin/${item.id}`} key={item.id} className="w-full">
+          <div
+            className={`flex items-center py-2 px-4 w-full hover:bg-gray-300 ${segment === item.id ? 'bg-gray-300' : ''} rounded-md`}
+          >
+            <Image
+              src={item.icon}
+              alt={item.title}
+              width={24}
+              height={24}
+              className="transition-transform hover:scale-125"
+            />
+            <span className="ml-4">{isOpen ? item.title : ''}</span>
+          </div>
+        </Link>
+      ))}
     </div>
   )
 }

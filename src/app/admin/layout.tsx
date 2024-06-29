@@ -1,46 +1,38 @@
 'use client'
 
-import AdminSidebar from '@/components/layout/admin-sidebar'
-import Image from 'next/image'
-import { useSelectedLayoutSegment } from 'next/navigation'
 import { useState } from 'react'
+import Image from 'next/image'
+import AdminSidebar from '@/components/layout/admin-sidebar'
+import { useSelectedLayoutSegment } from 'next/navigation'
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isTab, setIsTab] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const segment = useSelectedLayoutSegment()
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   return (
     <div
-      className={`relative ${isTab && 'lg:grid lg:grid-cols-[250px_1fr]'} h-full`}
+      className={`relative  ${isSidebarOpen ? 'lg:grid lg:grid-cols-[250px_1fr]' : 'grid grid-cols-[60px_1fr]'} h-full`}
     >
-      {isTab || (
+      <div className="absolute top-4 left-[10px] z-20">
         <Image
           src={'/svg/hamburger.svg'}
           alt="category-btn"
           width={36}
           height={36}
-          className={`absolute top-0 left- cursor-pointer z-20 transition-transform hover:scale-125 bg-white rounded-full shadow-md`}
-          onClick={() => setIsTab(!isTab)}
+          className={`cursor-pointer z-20 transition-transform hover:scale-125`}
+          onClick={toggleSidebar}
         />
-      )}
+      </div>
 
       <div
-        className={`fixed lg:static ${isTab || 'hidden'} z-10 h-full bg-navy-100 opacity-100`}
+        className={`${isSidebarOpen ? 'fixed lg:static' : 'static'} z-10 h-full bg-gray-100 opacity-100 shadow-md`}
       >
-        <div className="relative">
-          {isTab && (
-            <Image
-              src={'/svg/close.svg'}
-              alt="category-btn"
-              width={36}
-              height={36}
-              className={`absolute top-0 ${isTab && 'left-[214px]'} cursor-pointer z-20 transition-transform hover:scale-125`}
-              onClick={() => setIsTab(!isTab)}
-            />
-          )}
-        </div>
-        <AdminSidebar segment={segment} />
+        <AdminSidebar isOpen={isSidebarOpen} segment={segment} />
       </div>
+
       <div className="pt-10 pb-6 px-6 h-full z-0">{children}</div>
     </div>
   )
