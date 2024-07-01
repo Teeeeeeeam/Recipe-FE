@@ -1,9 +1,9 @@
 'use client'
-import { useState, Dispatch, SetStateAction, FormEvent } from 'react'
+import { useState, Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-interface PostFilterProps {
+interface AdminFilterProps {
   children: React.ReactNode
   title: string
   filterList: string[]
@@ -21,7 +21,7 @@ const AdminFilter = ({
   setFilter,
   redirectUrl,
   isWrite = false,
-}: PostFilterProps) => {
+}: AdminFilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const router = useRouter()
   return (
