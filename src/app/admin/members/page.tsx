@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import useMembers from './use-members'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
-import MemberFilter from './member-filter'
 import MemberList from './member-list'
 import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
+import AdminFilter from '@/components/layout/admin-filter'
+import AdminInput from '@/components/common/admin-input'
 
 const Members = ({
   searchParams,
@@ -49,13 +50,19 @@ const Members = ({
           handleSearchSubmit()
         }}
       >
-        <MemberFilter
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
+        <AdminFilter
+          title="사용자"
+          filterList={['아이디', '이름', '이메일', '닉네임']}
           setFilter={setFilter}
           filter={filter}
-          handleSearchSubmit={handleSearchSubmit}
-        />
+          redirectUrl="members"
+        >
+          <AdminInput
+            placeholder="사용자 검색"
+            state={searchInput}
+            setState={setSearchInput}
+          />
+        </AdminFilter>
       </form>
       <MemberList members={members} lastElementRef={lastElementRef} />
     </div>

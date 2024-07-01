@@ -92,6 +92,7 @@ const Announcements = () => {
                       src={announcement.imgUrl}
                       alt="announcement image"
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="contain w-auto h-auto"
                       priority
                     />

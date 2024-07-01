@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import usePosts from './use-posts'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
-import PostFilter from './post-filter'
 import PostList from './post-list'
 import { buildQueryString, updateUrlAndFetchPosts } from './url-utils'
+import AdminFilter from '@/components/layout/admin-filter'
+import AdminInput from '@/components/common/admin-input'
 
 const UserPosts = ({
   searchParams,
@@ -51,12 +52,19 @@ const UserPosts = ({
           handleSearchSubmit()
         }}
       >
-        <PostFilter
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-          setFilter={setFilter}
+        <AdminFilter
+          title="유저 게시글"
+          filterList={['요리글 제목', '레시피 제목', '아이디']}
           filter={filter}
-        />
+          setFilter={setFilter}
+          redirectUrl="user-posts"
+        >
+          <AdminInput
+            placeholder="요리글 정보 입력"
+            state={searchInput}
+            setState={setSearchInput}
+          />
+        </AdminFilter>
       </form>
       <PostList
         posts={posts}

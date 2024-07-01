@@ -184,7 +184,7 @@ const DashBoard = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="md:p-4 bg-gray-100 ">
       <h1 className="text-xl font-semibold mb-2">대시보드</h1>
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {counts.map((el, idx) => (

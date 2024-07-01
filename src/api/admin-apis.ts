@@ -143,7 +143,7 @@ export const deleteRecipe = async (recipeIds: number[]) => {
 }
 
 export const getPosts = async (
-  postId: number | null,
+  lastId: number | null,
   loginId: string | null,
   recipeTitle: string | null,
   postTitle: string | null,
@@ -152,7 +152,7 @@ export const getPosts = async (
     ...(loginId && { loginId }),
     ...(recipeTitle && { recipeTitle }),
     ...(postTitle && { postTitle }),
-    ...(postId !== null && { postId: String(postId) }),
+    ...(lastId && { lastId: String(lastId) }),
     size: '10',
   }).toString()
   const { payload } = await requester<{ data: Posts }>({

@@ -1,7 +1,8 @@
+'use client'
 import { Dispatch, SetStateAction, useState } from 'react'
 
 import AdminInput from '@/components/common/admin-input'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface MemberFilterProps {
   searchInput: string
@@ -14,6 +15,7 @@ const NoticeFilter = ({
   setSearchInput,
   isAdmin = false,
 }: MemberFilterProps) => {
+  const router = useRouter()
   return (
     <div className="bg-white p-4 rounded shadow">
       <h1 className="text-xl font-semibold mb-2">공지사항</h1>
@@ -45,8 +47,9 @@ const NoticeFilter = ({
           <button
             type="button"
             className="h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
+            onClick={() => router.push('/admin/notices/write')}
           >
-            <Link href="/admin/notices/write">등록</Link>
+            등록
           </button>
         )}
       </div>

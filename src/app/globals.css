@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow-y: scroll;
+}
 input {
   @apply border-[1.5px] border-gray-50;
 }
