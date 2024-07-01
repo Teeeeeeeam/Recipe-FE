@@ -1,56 +1,59 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+'use client'
+import { useState, Dispatch, SetStateAction, FormEvent } from 'react'
 import Image from 'next/image'
-import AdminInput from '@/components/common/admin-input'
+import { useRouter } from 'next/navigation'
 
-const FILTER_LIST = ['아이디', '이름', '이메일', '닉네임']
-
-interface MemberFilterProps {
-  searchInput: string
-  setSearchInput: Dispatch<SetStateAction<string>>
-  setFilter: Dispatch<SetStateAction<string>>
+interface PostFilterProps {
+  children: React.ReactNode
+  title: string
+  filterList: string[]
   filter: string
-  handleSearchSubmit: () => void
+  setFilter: Dispatch<SetStateAction<string>>
+  redirectUrl: string
+  isWrite?: boolean
 }
 
-const MemberFilter = ({
-  searchInput,
-  setSearchInput,
-  setFilter,
+const AdminFilter = ({
+  children,
+  title,
+  filterList,
   filter,
-  handleSearchSubmit,
-}: MemberFilterProps) => {
+  setFilter,
+  redirectUrl,
+  isWrite = false,
+}: PostFilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-
+  const router = useRouter()
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h1 className="text-xl font-semibold mb-2">사용자</h1>
-      <div className="flex flex-col md:grid md:grid-cols-[1fr_4fr_1fr] w-full items-center text-center gap-2">
+      <h1 className="text-xl font-semibold mb-2">{title}</h1>
+      <div
+        className={`flex flex-col md:grid ${isWrite ? 'md:grid-cols-[0.5fr_4fr_1fr_1fr]' : 'md:grid-cols-[0.5fr_4fr_1fr]'} items-center w-full gap-2`}
+      >
         <button
           type="button"
-          className="flex justify-center items-center h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
-          onClick={() => (window.location.href = '/admin/members')}
+          className="flex justify-center items-center h-10 w-full md:w-auto rounded-sm text-white bg-blue-100 hover:bg-blue-150"
+          onClick={() => (window.location.href = `/admin/${redirectUrl}`)}
         >
-          사용자 목록
+          목록
         </button>
         <div className="flex flex-col md:grid md:grid-cols-[2fr_7fr] items-center w-full md:w-auto border rounded">
           <div
             className="relative flex justify-center items-center gap-x-2 cursor-pointer bg-white h-10 text-[14px] border-b md:border-b-0 md:border-r w-full md:w-auto"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
           >
-            <button type="button" className="px-2">
-              {filter}
-            </button>
+            <button type="button">{filter}</button>
             <Image
               src="/svg/down-arrow.svg"
               alt="down-arrow"
-              width={0}
-              height={0}
+              width={16}
+              height={16}
               className="w-4 h-4"
               priority
             />
             {isFilterOpen && (
               <ul className="absolute top-full left-0 bg-white w-full z-30 border rounded shadow-lg">
-                {FILTER_LIST.map((el) => (
+                {filterList.map((el) => (
                   <li
                     key={el}
                     onClick={() => {
@@ -65,22 +68,26 @@ const MemberFilter = ({
               </ul>
             )}
           </div>
-          <AdminInput
-            placeholder="사용자 검색"
-            state={searchInput}
-            setState={setSearchInput}
-          />
+          {children}
         </div>
         <button
           className="h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
           type="submit"
-          onClick={handleSearchSubmit}
         >
           검색
         </button>
+        {isWrite && (
+          <button
+            type="button"
+            className="h-10 w-full md:w-auto px-4 rounded-sm text-white bg-blue-100 hover:bg-blue-150"
+            onClick={() => router.push(`/admin/${redirectUrl}/write`)}
+          >
+            등록
+          </button>
+        )}
       </div>
     </div>
   )
 }
 
-export default MemberFilter
+export default AdminFilter

@@ -3,9 +3,10 @@
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { useState, useEffect } from 'react'
 import useRecipes from './use-recipes'
-import RecipeFilter from './recipe-filter'
 import RecipeList from './recipe-list'
 import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
+import AdminFilter from '@/components/layout/admin-filter'
+import AdminInput from '@/components/common/admin-input'
 
 const AdminRecipe = ({
   searchParams,
@@ -16,7 +17,7 @@ const AdminRecipe = ({
     useRecipes(searchParams)
 
   const [searchInput, setSearchInput] = useState('')
-  const [filter, setFilter] = useState('재료')
+  const [filter, setFilter] = useState('요리명')
 
   const lastElementRef = useInfiniteScroll(fetchRecipes, hasMore)
   const handleSearchSubmit = () => {
@@ -42,12 +43,20 @@ const AdminRecipe = ({
           handleSearchSubmit()
         }}
       >
-        <RecipeFilter
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
+        <AdminFilter
+          title="레시피"
+          filterList={['요리명', '재료']}
           setFilter={setFilter}
           filter={filter}
-        />
+          redirectUrl="recipes"
+          isWrite
+        >
+          <AdminInput
+            placeholder="레시피 정보 입력"
+            state={searchInput}
+            setState={setSearchInput}
+          />
+        </AdminFilter>
       </form>
       <RecipeList recipes={recipes} lastElementRef={lastElementRef} />
     </div>
