@@ -124,7 +124,7 @@ export default function Answer() {
     <>
       <h4 className="text-center text-lg mb-3">문의내역</h4>
       <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
-        <div className="rounded-lg p-4">
+        <div className="rounded-lg pb-4">
           <table className="w-full border-gray-200 table-fixed">
             <InputTableHeader
               theadOptions={[

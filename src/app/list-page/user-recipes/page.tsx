@@ -1,20 +1,36 @@
 'use client'
 
-import { getPostingList } from '@/api/recipe-apis'
+import { getPostingAboutRecipe, getPostingList } from '@/api/recipe-apis'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { UserPostingFigure } from '@/components/recipe-and-posting/recipe-figure'
-import { PostingFigure } from '@/types/recipe'
+import { PostingFigure, PostingFigureAboutRecipe } from '@/types/recipe'
 
 export default function UserRecipes() {
-  const [posting, setPosting] = useState<PostingFigure[]>([])
+  const [params, setParams] = useState<string | null>(null)
+  const [posting, setPosting] = useState<
+    PostingFigure[] | PostingFigureAboutRecipe[]
+  >([])
   const [next, setNext] = useState<boolean>(false)
   const [lastId, setLastId] = useState<number | null>(null)
+  const [lastLikeCount, setLastLikeCount] = useState<number>(-1)
 
   const loader = useRef(null)
 
   useEffect(() => {
-    getData(true)
+    if (typeof window !== 'undefined') {
+      const urlParams =
+        new URL(window.location.href).searchParams.get('recipeid') || null
+      setParams(urlParams)
+    }
   }, [])
+
+  useEffect(() => {
+    if (params) {
+      getData2(true)
+    } else {
+      getData(true)
+    }
+  }, [params])
 
   async function getData(isInit: boolean) {
     try {
@@ -40,13 +56,57 @@ export default function UserRecipes() {
     }
   }
 
+  async function getData2(isInit: boolean) {
+    try {
+      const option = {
+        size: 8,
+      }
+      if (isInit) {
+        const result = await getPostingAboutRecipe(Number(params), option)
+        setPosting(result.data.posts)
+        const dataLastId = result.data.posts[result.data.posts.length - 1]?.id
+        const dataLastLikeCount =
+          result.data.posts[result.data.posts.length - 1].postLikeCount
+        setNext(result.data.nextPage)
+        setLastId(dataLastId)
+        setLastLikeCount(dataLastLikeCount)
+      } else {
+        const queryForParams = {
+          lastId,
+          lastLikeCount,
+        }
+        const result = await getPostingAboutRecipe(
+          Number(params),
+          option,
+          queryForParams,
+        )
+        setPosting((prev) => {
+          const newData = result.data.posts
+          return [...prev, ...newData]
+        })
+        const dataLastId = result.data.posts[result.data.posts.length - 1]?.id
+        const dataLastLikeCount =
+          result.data.posts[result.data.posts.length - 1].postLikeCount
+        setNext(result.data.nextPage)
+        setLastId(dataLastId)
+        setLastLikeCount(dataLastLikeCount)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // Intersection Observer 콜백 함수
   const handleObserver = useCallback(
     (entries: any) => {
       const target = entries[0]
       if (target.isIntersecting) {
         if (next) {
-          getData(false)
+          if (params) {
+            getData2(false)
+          } else {
+            getData(false)
+          }
         }
       }
     },
@@ -66,9 +126,12 @@ export default function UserRecipes() {
     return () => observer.disconnect()
   }, [handleObserver])
 
+  if (posting.length < 1) {
+    return <div>loading</div>
+  }
   return (
     <div className="userRecipe-wrap">
-      <div className="p-8 grid justify-center md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 my-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 p-2 md:px-8 md:pb-8">
         <UserPostingFigure recipes={posting} />
         <div ref={loader} />
       </div>

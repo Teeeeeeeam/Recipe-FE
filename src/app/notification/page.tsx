@@ -119,7 +119,7 @@ export default function Notification() {
     <>
       <h4 className="text-center text-lg mb-3">알림</h4>
       <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
-        <div className="rounded-lg p-4">
+        <div className="rounded-lg">
           <table className="w-full border-gray-200 table-fixed">
             <InputTableHeader
               theadOptions={[

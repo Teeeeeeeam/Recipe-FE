@@ -2,22 +2,35 @@ import Image from 'next/image'
 import Link from 'next/link'
 import NotifyRecent from './user/notify-recent'
 import { LoginInfo } from '@/store/user-info-slice'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 interface HeaderSizeWebProps {
   isSession: boolean
   eventCount: number
   state: LoginInfo
+  inputValue: string
   logOutBtn: () => void
+  searchHeader: (e: any) => void
+  setInputValue: (value: string) => void
+  toggleProfile: boolean
+  toggleNotify: boolean
+  setToggleProfile: React.Dispatch<React.SetStateAction<boolean>>
+  setToggleNotify: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function HeaderSizeWeb({
   isSession,
   eventCount,
   state,
+  inputValue,
   logOutBtn,
+  searchHeader,
+  setInputValue,
+  toggleProfile,
+  toggleNotify,
+  setToggleProfile,
+  setToggleNotify,
 }: HeaderSizeWebProps) {
-  const [profile, setProfile] = useState<boolean>(false)
   return (
     <>
       {/* nav */}
@@ -49,7 +62,7 @@ export function HeaderSizeWeb({
       </div>
       {/* input */}
       <div className="grow md:block hidden">
-        <form className="relative z-50">
+        <form onSubmit={searchHeader} className="relative z-50">
           <button
             type="submit"
             className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -58,6 +71,8 @@ export function HeaderSizeWeb({
           </button>
           <input
             type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             className="w-11/12 pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 text-gray-300 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out"
             placeholder="Search"
           />
@@ -75,10 +90,14 @@ export function HeaderSizeWeb({
         )}
         {isSession && (
           <div className="flex items-center">
-            <NotifyRecent eventCount={eventCount} />
+            <NotifyRecent
+              eventCount={eventCount}
+              toggleNotify={toggleNotify}
+              setToggleNotify={setToggleNotify}
+            />
             <div className="relative">
               <p
-                onClick={() => setProfile((prev) => !prev)}
+                onClick={() => setToggleProfile((prev) => !prev)}
                 className="border rounded-full py-1 px-2 cursor-pointer "
               >
                 {state.roles === 'ROLE_ADMIN' && <>관</>}
@@ -86,11 +105,11 @@ export function HeaderSizeWeb({
                   <>{state.nickName && state.nickName[0]}</>
                 )}
               </p>
-              {profile && (
+              {toggleProfile && (
                 <div className="absolute w-[150px] right-0 top-[46px] bg-white">
                   <ul
                     className="py-1 px-3"
-                    onClick={() => setProfile((prev) => !prev)}
+                    onClick={() => setToggleProfile((prev) => !prev)}
                   >
                     <li className="py-2 hover:bg-gray-100">
                       {state.roles === 'ROLE_ADMIN' && (
@@ -133,28 +152,58 @@ export function HeaderSizeWeb({
 interface HeaderSizeMobileProps {
   isSession: boolean
   eventCount: number
+  inputValue: string
   logOutBtn: () => void
+  searchHeader: (e: any) => void
+  setInputValue: (value: string) => void
+  toggleMenu: boolean
+  toggleSearch: boolean
+  toggleNotify: boolean
+  setToggleMenu: React.Dispatch<React.SetStateAction<boolean>>
+  setToggleSearch: React.Dispatch<React.SetStateAction<boolean>>
+  setToggleNotify: React.Dispatch<React.SetStateAction<boolean>>
 }
 export function HeaderSizeMobile({
   isSession,
   eventCount,
+  inputValue,
   logOutBtn,
+  searchHeader,
+  setInputValue,
+  toggleMenu,
+  toggleSearch,
+  toggleNotify,
+  setToggleMenu,
+  setToggleSearch,
+  setToggleNotify,
 }: HeaderSizeMobileProps) {
-  const [open, setOpen] = useState<boolean>(false)
-  const [search, setSearch] = useState<boolean>(false)
   return (
     <>
       {/* icons */}
-      <div className="flex md:hidden">
-        <button type="button" onClick={() => setSearch((prev) => !prev)}>
+      <div className="w-[100px] flex justify-between items-center md:hidden">
+        <button type="button" onClick={() => setToggleSearch((prev) => !prev)}>
           <Image src="/svg/search.svg" alt="검색" width={30} height={30} />
         </button>
-        <NotifyRecent eventCount={eventCount} />
+        {isSession && (
+          <NotifyRecent
+            eventCount={eventCount}
+            toggleNotify={toggleNotify}
+            setToggleNotify={setToggleNotify}
+          />
+        )}
+        <div className="" onClick={() => setToggleMenu((prev) => !prev)}>
+          <Image
+            src={toggleMenu ? '/svg/close.svg' : '/svg/hamburger.svg'}
+            alt="메뉴"
+            width={30}
+            height={30}
+          />
+        </div>
       </div>
       {/* spread menu */}
-      {open && (
+      {toggleMenu && (
         <div
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() => setToggleMenu((prev) => !prev)}
           className="fixed block w-full top-[71px] left-0 bg-white shadow-md md:hidden"
         >
           <ul className="border-b">
@@ -214,10 +263,13 @@ export function HeaderSizeMobile({
           </ul>
         </div>
       )}
-      {/* spread search */}
-      {search && (
+      {/* spread toggleSearch */}
+      {toggleSearch && (
         <div className="w-full py-5 fixed left-0 top-[71px] block md:hidden shadow-md bg-white">
-          <form className="relative z-50 w-11/12 mx-auto">
+          <form
+            onSubmit={searchHeader}
+            className="relative z-50 w-11/12 mx-auto"
+          >
             <button
               type="submit"
               className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -226,25 +278,14 @@ export function HeaderSizeMobile({
             </button>
             <input
               type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
               className="w-full pl-10 pr-3 py-2 border rounded-md leading-5 text-gray-300 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out"
               placeholder="요리명 검색"
             />
           </form>
         </div>
       )}
-
-      {/* hamburger and close btn */}
-      <div
-        className="absolute right-3 top-5 block md:hidden"
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        <Image
-          src={open ? '/svg/close.svg' : '/svg/hamburger.svg'}
-          alt="메뉴"
-          width={30}
-          height={30}
-        />
-      </div>
     </>
   )
 }

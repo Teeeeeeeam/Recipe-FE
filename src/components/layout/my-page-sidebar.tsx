@@ -11,7 +11,7 @@ export default function MypageNav() {
       {!isNav && (
         <p
           onClick={() => setIsNav(true)}
-          className="absolute min-w-[30px] z-20"
+          className="absolute min-w-[30px] z-20 pt-2"
         >
           <Image
             src="/svg/hamburger.svg"
@@ -26,7 +26,7 @@ export default function MypageNav() {
         <>
           <p
             onClick={() => setIsNav(false)}
-            className="absolute min-w-[30px] z-20"
+            className="absolute min-w-[30px] z-30 pt-2"
           >
             <Image
               src="/svg/close.svg"
@@ -36,7 +36,7 @@ export default function MypageNav() {
               className="cursor-pointer"
             />
           </p>
-          <div className="absolute h-full flex bg-gray-200">
+          <div className="absolute h-full flex bg-gray-200 z-20">
             <nav className="flex flex-col items-center bg-white text-gray-700 shadow h-full">
               <div className="h-16 mt-6 flex items-center justify-center w-full text-xl">
                 마이페이지

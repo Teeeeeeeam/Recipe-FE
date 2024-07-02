@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import {
@@ -64,7 +63,7 @@ export default function Home() {
         setRecipes(result.recipes)
       }
       const result_posting = await getHomePosting(option)
-      setUserPosting(result_posting.data.posts)
+      setUserPosting(result_posting.data.post)
     } catch (error) {
       console.log(error)
     }
