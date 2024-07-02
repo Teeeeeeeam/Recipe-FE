@@ -61,11 +61,11 @@ export async function getCategoryRecipe(
 }
 
 // 홈(게시글)
-export async function getHomePosting(/* params: GetHomePostingParams */) {
+export async function getHomePosting(params: GetHomePostingParams) {
   const { payload } = await requester<GetHomePosting>({
     method: 'GET',
     url: '/api/posts/main',
-    // params,
+    params,
   })
   return payload
 }
