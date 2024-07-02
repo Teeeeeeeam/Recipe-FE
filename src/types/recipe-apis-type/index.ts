@@ -4,6 +4,7 @@ import {
   PostingDetail,
   PostingFigure,
   Recipe,
+  PostingFigureAboutRecipe,
 } from '../recipe'
 
 export interface Response {
@@ -77,6 +78,14 @@ export interface GetCommentParams {
   size: number
   sort: string
 }
+// 게시글 - 레시피 참조(무한스크롤)
+export interface GetPostingAboutRecipePageable {
+  size: number
+}
+export interface GetPostingAboutRecipeParams {
+  lastId: number | null
+  lastLikeCount: number
+}
 
 // ########## axios requester payload options ##########
 // 홈(레시피)
@@ -88,8 +97,8 @@ export interface GetHomeRecipe extends Response {
 // 홈(게시글)
 export interface GetHomePosting extends Response {
   data: {
-    posts: PostingFigure[] | []
-    nextPage: boolean
+    post: PostingFigure[] | []
+    // nextPage: boolean
   }
 }
 // 레시피 - 페이지네이션
@@ -146,5 +155,13 @@ export interface GetComment extends Response {
     }
     totalElements: number
     totalPages: number
+  }
+}
+
+// 게시글 - 레시피 참조
+export interface GetPostingAboutRecipe extends Response {
+  data: {
+    posts: PostingFigureAboutRecipe[]
+    nextPage: boolean
   }
 }

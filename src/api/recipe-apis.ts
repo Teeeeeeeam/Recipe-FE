@@ -8,6 +8,9 @@ import {
   GetHomePosting,
   GetHomePostingParams,
   GetHomeRecipe,
+  GetPostingAboutRecipe,
+  GetPostingAboutRecipePageable,
+  GetPostingAboutRecipeParams,
   GetPostingDetail,
   GetPostingList,
   GetPostingListParams,
@@ -58,11 +61,11 @@ export async function getCategoryRecipe(
 }
 
 // 홈(게시글)
-export async function getHomePosting(params: GetHomePostingParams) {
+export async function getHomePosting(/* params: GetHomePostingParams */) {
   const { payload } = await requester<GetHomePosting>({
     method: 'GET',
-    url: '/api/posts',
-    params,
+    url: '/api/posts/main',
+    // params,
   })
   return payload
 }
@@ -200,6 +203,61 @@ export async function commentDel(req: CommentDelReq) {
     method: 'Delete',
     url: '/api/user/comments',
     data: req,
+  })
+  return payload
+}
+
+// 게시글 BEST (레시피 상세페이지)
+interface GetTopPostingParams {
+  recipeId: number
+}
+interface AxiosTopPosting extends Response {
+  data: {
+    id: number
+    post: TopPosting[]
+  }
+}
+export interface TopPosting {
+  id: number
+  postTitle: string
+  createAt: string
+  postLikeCount: number
+  postImageUrl: string
+  member: {
+    nickname: string
+  }
+}
+export async function getTopPosting(params: GetTopPostingParams) {
+  const { payload } = await requester<AxiosTopPosting>({
+    method: 'GET',
+    url: '/api/top/posts',
+    params,
+  })
+  return payload
+}
+
+// 게시글 - 레시피 참조
+export async function getPostingAboutRecipe(
+  recipeId: number,
+  params: GetPostingAboutRecipePageable,
+  last?: GetPostingAboutRecipeParams,
+) {
+  const newQuery = new URLSearchParams()
+  if (last && last.lastLikeCount === 0) {
+    newQuery.append('lastCount', String(last.lastLikeCount))
+    newQuery.append('lastId', String(last.lastId))
+  }
+  if (last && last.lastLikeCount > 0) {
+    newQuery.append('lastCount', String(last.lastLikeCount))
+  }
+
+  const { payload } = await requester<GetPostingAboutRecipe>({
+    method: 'GET',
+    // url: `/api/posts/${recipeId}`,
+    url: last
+      ? `/api/posts/${recipeId}?${newQuery.toString()}`
+      : `/api/posts/${recipeId}`,
+    params,
   })
   return payload
 }

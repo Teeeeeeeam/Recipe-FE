@@ -16,6 +16,7 @@ import {
 } from '@/api/login-user-apis'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
+import PostingTop from './posting-top'
 
 export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<RecipeDetail>()
@@ -218,6 +219,7 @@ export default function RecipeDetailMain() {
           </section>
         </article>
       )}
+      <PostingTop id={thisId} />
     </>
   )
 }

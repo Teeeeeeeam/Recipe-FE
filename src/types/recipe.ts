@@ -2,14 +2,11 @@
 export interface PostingFigure {
   createdAt: string
   id: number
-  member: PostingMember
+  member: {
+    nickname: string
+  }
   postImageUrl: string
   postTitle: string
-  recipe: PostingDetailRecipe
-}
-interface PostingMember {
-  nickname: string
-  loginId: string
 }
 
 // 레시피 검색 req (+[redux] search-recipe-slice)
@@ -93,4 +90,14 @@ export interface ModData {
   postTitle: string
   member: PostingDetailMember
   recipe: PostingDetailRecipe
+}
+
+// 게시글 - 레시피 참조
+export interface PostingFigureAboutRecipe {
+  createdAt: string
+  id: number
+  member: { nickname: string }
+  postImageUrl: string
+  postLikeCount: number
+  postTitle: string
 }
