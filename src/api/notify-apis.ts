@@ -48,7 +48,7 @@ export async function deleteNotify(notificationIds: number | number[] | null) {
   if (Array.isArray(notificationIds)) {
     const { payload } = await requester({
       method: 'DELETE',
-      url: '/api/user/user/notification',
+      url: '/api/user/notification',
       params: { notificationIds },
       paramsSerializer: (paramObj) => {
         const params = new URLSearchParams()
@@ -64,7 +64,7 @@ export async function deleteNotify(notificationIds: number | number[] | null) {
     // 단일 삭제
     const { payload } = await requester({
       method: 'DELETE',
-      url: '/api/user/user/notification',
+      url: '/api/user/notification',
       params: { notificationIds },
     })
     return payload
