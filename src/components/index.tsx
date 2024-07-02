@@ -11,14 +11,17 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { HeaderSizeMobile, HeaderSizeWeb } from './header-responsive'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isSession, setIsSession] = useState<boolean>(false)
+  const [inputValue, setInputValue] = useState<string>('')
 
   const state = useAppSelector((state) => state.userInfo)
   const visitedInfo = useAppSelector((state) => state.visited)
   const dispatch = useAppDispatch()
   const accessToken = getLocalStorage('accessToken')
+  const router = useRouter()
 
   // access token이 있을 때 유저 정보를 확인하는 api요청
   useEffect(() => {
@@ -141,6 +144,42 @@ export default function Header() {
     fetchVisit()
   }, [dispatch, visitedInfo])
 
+  function searchHeader(e: any): void {
+    e.preventDefault()
+    const newParams = new URLSearchParams()
+    newParams.append('title', inputValue)
+    const newUrl = `/list-page/main-recipes?${newParams.toString()}`
+    setInputValue('')
+    router.push(newUrl)
+  }
+
+  // toggle
+  const [toggleProfile, setToggleProfile] = useState<boolean>(false)
+  const [toggleNotify, setToggleNotify] = useState<boolean>(false)
+  const [toggleMenu, setToggleMenu] = useState<boolean>(false)
+  const [toggleSearch, setToggleSearch] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (toggleProfile) {
+      setToggleNotify(false)
+      setToggleMenu(false)
+    }
+    if (toggleNotify) {
+      setToggleProfile(false)
+      setToggleMenu(false)
+      setToggleSearch(false)
+    }
+    if (toggleMenu) {
+      setToggleProfile(false)
+      setToggleNotify(false)
+      setToggleSearch(false)
+    }
+    if (toggleSearch) {
+      setToggleNotify(false)
+      setToggleMenu(false)
+    }
+  }, [toggleProfile, toggleNotify, toggleMenu, toggleSearch])
+
   return (
     <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
       <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  px-6 py-4 shadow-sm mx-auto">
@@ -165,12 +204,28 @@ export default function Header() {
           isSession={isSession}
           eventCount={eventCount}
           state={state}
+          inputValue={inputValue}
           logOutBtn={logOutBtn}
+          searchHeader={searchHeader}
+          setInputValue={setInputValue}
+          toggleProfile={toggleProfile}
+          toggleNotify={toggleNotify}
+          setToggleProfile={setToggleProfile}
+          setToggleNotify={setToggleNotify}
         />
         <HeaderSizeMobile
           isSession={isSession}
           eventCount={eventCount}
+          inputValue={inputValue}
           logOutBtn={logOutBtn}
+          searchHeader={searchHeader}
+          setInputValue={setInputValue}
+          toggleMenu={toggleMenu}
+          toggleSearch={toggleSearch}
+          toggleNotify={toggleNotify}
+          setToggleMenu={setToggleMenu}
+          setToggleSearch={setToggleSearch}
+          setToggleNotify={setToggleNotify}
         />
       </nav>
     </header>
