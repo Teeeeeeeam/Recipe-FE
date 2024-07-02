@@ -53,7 +53,7 @@ export default function InputTableBody({
         const convertData = converHandler(item)
         return (
           convertData && (
-            <tr key={convertData.id}>
+            <tr key={convertData.id} className="border-b">
               <InputTableBodyCommon
                 convertData={convertData}
                 isStatus={isStatus}

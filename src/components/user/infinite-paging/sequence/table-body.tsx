@@ -80,7 +80,7 @@ export default function TableBody({
                 convertData && (
                   <tr key={convertData.idForKey} className="border-b">
                     <TableBodyCommon index={index} convertData={convertData} />
-                    <td className="px-2 py-5 text-center">
+                    <td className="px-2 text-center">
                       <TableButton
                         label="취소"
                         onClick={onClick}

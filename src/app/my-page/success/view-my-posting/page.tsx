@@ -91,13 +91,13 @@ export default function ViewMyPosting() {
     <>
       <h4 className="text-center text-lg mb-3">내가 작성한 글</h4>
       <div className="h-[70vh] bg-white overflow-y-scroll">
-        <div className="rounded-lg p-4">
+        <div className="rounded-lg pb-4">
           <table className="w-full border-gray-200 table-fixed">
             <TableHeader
               theadOptions={[
                 { class: 'p-2 w-[10%]', title: '#' },
                 { class: 'p-2 sm:w-[70%] w-[60%]', title: '제목' },
-                { class: 'p-2 sm:w-[20%] w-[30%]', title: '삭제' },
+                { class: 'p-2 sm:w-[20%] w-[30%]', title: '기능' },
               ]}
             />
             {posting.length > 0 ? (

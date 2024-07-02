@@ -11,7 +11,7 @@ export default function InputTableHeader({
 }: InputTableHeaderProps) {
   return (
     <thead>
-      <tr>
+      <tr className="bg-gray-100 sticky top-0">
         <th className="p-2 w-[10%]">
           <input
             type="checkbox"

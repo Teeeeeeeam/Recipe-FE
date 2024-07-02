@@ -91,7 +91,7 @@ export default function ViewPostingLikes() {
     <>
       <h4 className="text-center text-lg mb-3">좋아요한 게시글</h4>
       <div className="h-[70vh] bg-white overflow-y-scroll">
-        <div className="rounded-lg p-4">
+        <div className="rounded-lg pb-4">
           <table className="w-full border-gray-200 table-fixed">
             <TableHeader
               theadOptions={[
