@@ -91,6 +91,7 @@ export interface GetPostingAboutRecipeParams {
 // 홈(레시피)
 export interface GetHomeRecipe extends Response {
   data: {
+    nextPage: boolean
     recipes: Recipe[] | []
   }
 }

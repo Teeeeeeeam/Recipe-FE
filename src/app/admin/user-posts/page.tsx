@@ -45,7 +45,7 @@ const UserPosts = ({
   }
 
   return (
-    <div className="p-4 bg-gray-100">
+    <div className="md:p-4 bg-gray-100">
       <form
         onSubmit={(e) => {
           e.preventDefault()
