@@ -22,20 +22,30 @@ import {
   DISH_TYPES,
 } from './admin/recipes/(recipe-management)/constants'
 import CategorySelector from './category-selector'
+import useCategorySelection from '@/hooks/use-category-selection'
+import RecipeSearchForm from '@/components/recipe/recipe-search-form'
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string }
+}) {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
   // 재료검색
   const [inputValue, setInputValue] = useState<string>('')
-  const [ingredients, setIngredients] = useState<string[]>([])
-  const [inputCategory, setInputCategory] = useState<string>('All')
-  //
-  const [selectedIngredient, setSelectedIngredient] = useState<string[]>([])
-  const [selectedMethod, setSelectedMethod] = useState<string[]>([])
-  const [selectedDishType, setSelectedDishType] = useState<string[]>([])
+  // const [ingredients, setIngredients] = useState<string[]>([])
+  const [inputCategory, setInputCategory] = useState<string>('cookTitle')
+  // 카테고리 선택
+  const {
+    selectedIngredient,
+    selectedMethod,
+    selectedDishType,
+    clickCategoryHandler,
+  } = useCategorySelection(searchParams)
   // redux
+  const { cat1, cat2, cat3, ingredients } = searchParams
   const dispatch = useDispatch<AppDispatch>()
   //
   const router = useRouter()
@@ -56,9 +66,15 @@ export default function Home() {
         setRecipes(result.data.recipes)
       } else {
         const result = await getCategoryRecipe(
+          null,
+          null,
           selectedIngredient ?? null,
           selectedMethod ?? null,
           selectedDishType ?? null,
+          null,
+          null,
+          'LIKE',
+          true,
         )
         setRecipes(result.recipes)
       }
@@ -69,66 +85,24 @@ export default function Home() {
     }
   }
 
-  function enterHandler(e: any): void {
-    e.preventDefault()
-    if (inputCategory !== 'cookIngredient') {
-      const newState = { category: inputCategory, value: inputValue }
-      dispatch(postSearchState(newState))
-      router.push('/list-page/main-recipes')
+  const handleRouting = () => {
+    const query: any = {}
+    if (!!cat1) {
+      query.cat1 = cat1
     }
-    if (inputCategory === 'cookIngredient') {
-      if (inputValue && ingredients.length < 5) {
-        !ingredients.includes(inputValue) &&
-          setIngredients([...ingredients, inputValue])
-        setInputValue('')
-      }
+    if (!!cat2) {
+      query.cat2 = cat2
     }
-  }
+    if (!!cat3) {
+      query.cat3 = cat3
+    }
 
-  function clickButtonHandler(e: any): void {
-    if (inputCategory === 'cookIngredient') {
-      if (ingredients.length >= 1) {
-        const newState = { category: inputCategory, value: ingredients }
-        dispatch(postSearchState(newState))
-      } else {
-        const formattedInputArray = [inputValue]
-        const newState = { category: inputCategory, value: formattedInputArray }
-        dispatch(postSearchState(newState))
-      }
-      router.push('/list-page/main-recipes')
-    } else {
-      enterHandler(e)
+    if (!!ingredients) {
+      query.ingredients = ingredients
     }
-  }
 
-  function deleteIngredient(item: string) {
-    const newIngredients = ingredients.filter(
-      (ingredient) => ingredient !== item,
-    )
-    setIngredients(newIngredients)
-  }
-  //
-
-  function clickCategoryHandler(category: string, value: string) {
-    if (category === 'ingredient') {
-      if (selectedIngredient.includes(value)) {
-        setSelectedIngredient((prev) => prev.filter((el) => el !== value))
-      } else {
-        setSelectedIngredient((prev) => [...prev, value])
-      }
-    } else if (category === 'method') {
-      if (selectedMethod.includes(value)) {
-        setSelectedMethod((prev) => prev.filter((el) => el !== value))
-      } else {
-        setSelectedMethod((prev) => [...prev, value])
-      }
-    } else if (category === 'dishType') {
-      if (selectedDishType.includes(value)) {
-        setSelectedDishType((prev) => prev.filter((el) => el !== value))
-      } else {
-        setSelectedDishType((prev) => [...prev, value])
-      }
-    }
+    const queryString = new URLSearchParams(query).toString()
+    router.push(`/list-page/main-recipes?${queryString}`)
   }
 
   function getLabelByValue(
@@ -182,64 +156,9 @@ export default function Home() {
             onClick={(value) => clickCategoryHandler('dishType', value)}
           />
         </div>
-        <form
-          onSubmit={(e) => enterHandler(e)}
-          className=" my-4 md:my-10 border-y bg-white p-6"
-        >
-          <div className="mb-6 flex flex-col justify-center md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-            <select
-              className="w-full md:w-24 bg-transparent px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-50"
-              name="category"
-              id="category"
-              onChange={(e) => setInputCategory(e.target.value)}
-            >
-              <option value="cookAll">전체</option>
-              <option value="cookTitle">요리명</option>
-              <option value="cookIngredient">재료명</option>
-            </select>
-            <input
-              type="text"
-              onChange={(e) => setInputValue(e.target.value)}
-              value={inputValue}
-              className="placeholder:text-gray-400 h-12 w-full md:w-96 rounded-lg px-4 font-medium focus:outline-none focus:border-blue-50 border border-gray-300"
-              placeholder="검색어를 입력해주세요"
-            />
-            <button
-              type="submit"
-              className="w-full md:w-16  py-3 flex items-center justify-center rounded-lg bg-blue-50 text-white hover:bg-blue-100 transition duration-300"
-            >
-              검색
-            </button>
-          </div>
-          {inputCategory === 'cookIngredient' && (
-            <>
-              {ingredients.length < 1 && (
-                <p className="text-center text-sm font-medium text-gray-400">
-                  검색어를 입력 후 엔터를 누르면 여기에 표시됩니다. &#40;최대
-                  5개&#41;
-                </p>
-              )}
-              <div className="flex flex-wrap justify-center space-x-2 space-y-2 mt-4">
-                {ingredients?.map((ingredient) => (
-                  <p
-                    key={ingredient}
-                    className="text-sm font-medium text-gray-500 bg-gray-100 rounded-lg px-2 py-1 flex items-center"
-                  >
-                    {ingredient}
-                    <span
-                      className="ml-2 text-gray-400 cursor-pointer hover:text-red-600 transition duration-300"
-                      onClick={() => deleteIngredient(ingredient)}
-                    >
-                      X
-                    </span>
-                  </p>
-                ))}
-              </div>
-            </>
-          )}
-        </form>
+        <RecipeSearchForm searchParams={searchParams} />
         <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
-          <div className="flex-1 flex-wrap">
+          <div className="flex flex-1 flex-wrap">
             {selectedIngredient.map((value, idx) => (
               <div className="font-semibold">
                 <span key={idx} className="px-1 py-1 mb-2">
@@ -273,7 +192,7 @@ export default function Home() {
           <button
             type="button"
             className="px-2 py-1 bg-blue-50 hover:bg-blue-150 rounded-md text-[16px] text-white"
-            onClick={() => router.push('/list-page/main-recipes')}
+            onClick={handleRouting}
           >
             더보기
           </button>

@@ -34,28 +34,40 @@ export async function getHomeRecipe() {
 
 // 홈(카테고리 레시피)
 export async function getCategoryRecipe(
-  category1: string[] | null,
-  category2: string[] | null,
-  category3: string[] | null,
+  title: string | null,
+  ingredients: string[] | null,
+  cat1: string[] | null,
+  cat2: string[] | null,
+  cat3: string[] | null,
+  lastCount: number | null,
+  lastId: number | null,
+  order: 'DATE' | 'LIKE',
+  isSize: boolean,
 ) {
-  const params = new URLSearchParams()
+  const params = new URLSearchParams({
+    ...(title && { title }),
+    ...((lastCount || lastCount === 0) && { lastCount: String(lastCount) }),
+    ...(lastId && { lastId: String(lastId) }),
+  })
 
-  if (category1) {
-    params.append('cat1', category1.join(','))
+  if (cat1) {
+    params.append('cat1', cat1.join(','))
   }
-  if (category2) {
-    params.append('cat2', category2.join(','))
+  if (cat2) {
+    params.append('cat2', cat2.join(','))
   }
-  if (category3) {
-    params.append('cat3', category3.join(','))
+  if (cat3) {
+    params.append('cat3', cat3.join(','))
   }
-
-  params.append('order', 'LIKE')
-  params.append('size', '8')
+  if (ingredients) {
+    params.append('ingredients', ingredients.join(','))
+  }
+  params.append('order', order)
+  params.append('size', isSize ? '8' : '12')
 
   const { payload } = await requester<GetHomeRecipe>({
     method: 'GET',
-    url: `/api/recipe/category?${params.toString()}`,
+    url: `/api/recipe/search?${params.toString()}`,
   })
   return payload.data
 }
