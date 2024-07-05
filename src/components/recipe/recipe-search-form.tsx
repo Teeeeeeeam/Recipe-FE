@@ -6,7 +6,7 @@ import { useState, useEffect, FormEvent } from 'react'
 const RecipeSearchForm = ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string }
+  searchParams: { [key: string]: string | null }
 }) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [inputIngredients, setInputIngredients] = useState<string[]>([])
@@ -14,7 +14,7 @@ const RecipeSearchForm = ({
 
   const router = useRouter()
   const { cat1, cat2, cat3, ingredients } = searchParams
-
+  console.log(cat1, cat2, cat3)
   useEffect(() => {
     if (!!ingredients) {
       const newIngredients = ingredients.split(',')

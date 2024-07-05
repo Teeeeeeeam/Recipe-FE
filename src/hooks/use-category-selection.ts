@@ -5,24 +5,27 @@ import { useRouter } from 'next/navigation'
 type CategoryType = 'ingredient' | 'method' | 'dishType'
 type CategoryQueryType = 'cat1' | 'cat2' | 'cat3'
 interface SearchParams {
-  cat1?: string
-  cat2?: string
-  cat3?: string
+  cat1?: string | null
+  cat2?: string | null
+  cat3?: string | null
 }
 
-const useCategorySelection = (searchParams: SearchParams = {}) => {
+const useCategorySelection = ({ cat1, cat2, cat3 }: SearchParams) => {
   const [selectedIngredient, setSelectedIngredient] = useState<string[]>([])
   const [selectedMethod, setSelectedMethod] = useState<string[]>([])
   const [selectedDishType, setSelectedDishType] = useState<string[]>([])
 
   const router = useRouter()
-  const { cat1, cat2, cat3 } = searchParams
+  // const { cat1, cat2, cat3 } = searchParams
 
   useEffect(() => {
+    console.log(cat1)
+    console.log(cat2)
+    console.log(cat3)
     !!cat1 && setSelectedIngredient(cat1.split(','))
     !!cat2 && setSelectedMethod(cat2.split(','))
     !!cat3 && setSelectedDishType(cat3.split(','))
-  }, [searchParams])
+  }, [cat1, cat2, cat3])
 
   const updateURL = (category: CategoryQueryType, value: string[]) => {
     const queryParams = new URLSearchParams(window.location.search)

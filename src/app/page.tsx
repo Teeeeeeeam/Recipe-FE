@@ -14,7 +14,7 @@ import { PostingFigure, Recipe } from '@/types/recipe'
 import { AppDispatch } from '@/store'
 import { useDispatch } from 'react-redux'
 import { postSearchState } from '@/store/search-recipe-slice'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Announcements from './announcement'
 import {
   COOK_INGREDIENTS,
@@ -34,21 +34,30 @@ export default function Home({
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
   // 재료검색
-  const [inputValue, setInputValue] = useState<string>('')
+  // const [inputValue, setInputValue] = useState<string>('')
   // const [ingredients, setIngredients] = useState<string[]>([])
-  const [inputCategory, setInputCategory] = useState<string>('cookTitle')
+  // const [inputCategory, setInputCategory] = useState<string>('cookTitle')
   // 카테고리 선택
+
+  // redux
+  const dispatch = useDispatch<AppDispatch>()
+  //
+  const router = useRouter()
+  const hi = useSearchParams()
+  const cat1 = hi.get('cat1')
+  const cat2 = hi.get('cat2')
+  const cat3 = hi.get('cat3')
+  const title = hi.get('title')
+  const ingredients = hi.get('ingredients')
+
+  // const { cat1, cat2, cat3, ingredients } = searchParams
+  // console.log(cc)
   const {
     selectedIngredient,
     selectedMethod,
     selectedDishType,
     clickCategoryHandler,
-  } = useCategorySelection(searchParams)
-  // redux
-  const { cat1, cat2, cat3, ingredients } = searchParams
-  const dispatch = useDispatch<AppDispatch>()
-  //
-  const router = useRouter()
+  } = useCategorySelection({ cat1, cat2, cat3 })
   useEffect(() => {
     getData()
   }, [selectedIngredient, selectedMethod, selectedDishType])
