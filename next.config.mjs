@@ -5,7 +5,22 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'recipe1.ezmember.co.kr',
-        pathname: '/cache/**',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'recipe-reader-kr.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.recipe.o-r.kr',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd2d8tf2n841pdt.cloudfront.net',
+        pathname: '/**',
       },
     ],
   },
@@ -13,14 +28,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: '/:path',
-        destination: 'https://www.recipe.o-r.kr/:path',
-      },
-    ]
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/api/:path',
+  //       destination: 'https://www.recipe.o-r.kr/:path',
+  //     },
+  //   ]
+  // },
 }
 
 export default nextConfig
