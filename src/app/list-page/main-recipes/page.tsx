@@ -1,6 +1,6 @@
 'use client'
 
-import { getCategoryRecipe, getRecipeList } from '@/api/recipe-apis'
+import { getCategoryRecipe } from '@/api/recipe-apis'
 import {
   COOK_INGREDIENTS,
   COOK_METHODS,
@@ -12,28 +12,37 @@ import RecipeSearchForm from '@/components/recipe/recipe-search-form'
 import useCategorySelection from '@/hooks/use-category-selection'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { Recipe } from '@/types/recipe'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function MainRecipes({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) {
+export default function MainRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [lastCount, setLastCount] = useState<number | null>(null)
   const [lastId, setLastId] = useState<number | null>(null)
   const [order, setOrder] = useState<'DATE' | 'LIKE'>('LIKE')
   const [hasMore, setHasMore] = useState<boolean>(true)
+
+  const router = useRouter()
+  const hi = useSearchParams()
+  const cat1 = hi.get('cat1')
+  const cat2 = hi.get('cat2')
+  const cat3 = hi.get('cat3')
+  const title = hi.get('title')
+  const ingredients = hi.get('ingredients')
+
   const {
     selectedIngredient,
     selectedMethod,
     selectedDishType,
     clickCategoryHandler,
-  } = useCategorySelection(searchParams)
+  } = useCategorySelection({ cat1, cat2, cat3 })
 
-  const { cat1, cat2, cat3, title, ingredients } = searchParams
+  // const { cat1, cat2, cat3, title, ingredients } = searchParams
   useEffect(() => {
     setRecipes([])
+    setLastCount(null)
+    setLastId(null)
+    setHasMore(true)
     getData()
   }, [cat1, cat2, cat3, title, ingredients])
 
@@ -59,6 +68,7 @@ export default function MainRecipes({
 
       const newRecipes = res.recipes
       setHasMore(res.nextPage)
+      console.log(lastCount)
       lastCount !== null
         ? setRecipes((prev) => [...prev, ...newRecipes])
         : setRecipes(newRecipes)
@@ -99,7 +109,9 @@ export default function MainRecipes({
           onClick={(value) => clickCategoryHandler('dishType', value)}
         />
       </div>
-      <RecipeSearchForm searchParams={searchParams} />
+      <RecipeSearchForm
+        searchParams={{ cat1, cat2, cat3, title, ingredients }}
+      />
       {!!title && (
         <h2 className="font-semibold text-xl px-2 md:px-8 mb-2">{`"${title}"에 대한 결과`}</h2>
       )}
