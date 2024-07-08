@@ -4,17 +4,17 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect, FormEvent } from 'react'
 
 const RecipeSearchForm = ({
-  searchParams,
+  params,
 }: {
-  searchParams: { [key: string]: string | null }
+  params: { [key: string]: string | null }
 }) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [inputIngredients, setInputIngredients] = useState<string[]>([])
   const [inputCategory, setInputCategory] = useState<string>('cookTitle')
 
   const router = useRouter()
-  const { cat1, cat2, cat3, ingredients } = searchParams
-  console.log(cat1, cat2, cat3)
+  const { cat1, cat2, cat3, title, ingredients } = params
+
   useEffect(() => {
     if (!!ingredients) {
       const newIngredients = ingredients.split(',')
@@ -22,7 +22,7 @@ const RecipeSearchForm = ({
     } else {
       setInputIngredients([])
     }
-  }, [searchParams])
+  }, [params])
 
   const handleRouting = () => {
     const query: any = {}

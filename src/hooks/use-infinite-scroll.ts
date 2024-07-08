@@ -7,7 +7,6 @@ const useInfiniteScroll = (
   hasMore: boolean,
 ) => {
   const lastElementRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (!hasMore) return
     const options = {
@@ -25,10 +24,14 @@ const useInfiniteScroll = (
       options,
     )
 
-    lastElementRef.current && observer.observe(lastElementRef.current)
+    if (lastElementRef.current) {
+      observer.observe(lastElementRef.current)
+    }
 
     return () => {
-      observer.disconnect()
+      if (lastElementRef.current) {
+        observer.unobserve(lastElementRef.current)
+      }
     }
   }, [fetchMore, hasMore])
 

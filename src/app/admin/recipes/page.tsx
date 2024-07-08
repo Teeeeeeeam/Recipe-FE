@@ -7,18 +7,16 @@ import RecipeList from './recipe-list'
 import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
 import AdminFilter from '@/components/layout/admin-filter'
 import AdminInput from '@/components/common/admin-input'
+import { useSearchParams } from 'next/navigation'
 
-const AdminRecipe = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) => {
-  const { recipes, setRecipes, fetchRecipes, hasMore } =
-    useRecipes(searchParams)
-
+const AdminRecipe = () => {
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('요리명')
 
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+
+  const { recipes, setRecipes, fetchRecipes, hasMore } = useRecipes(params)
   const lastElementRef = useInfiniteScroll(fetchRecipes, hasMore)
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(filter, searchInput)
@@ -26,14 +24,14 @@ const AdminRecipe = ({
   }
 
   useEffect(() => {
-    const { ingredients, title } = searchParams
+    const { ingredients, title } = params
     if (title && title.length > 0) {
       setFilter('요리명')
       setSearchInput(title)
     } else if (ingredients && ingredients.length > 0) {
       setSearchInput(ingredients)
     }
-  }, [searchParams])
+  }, [params])
 
   return (
     <div className="md:p-4 bg-gray-100">

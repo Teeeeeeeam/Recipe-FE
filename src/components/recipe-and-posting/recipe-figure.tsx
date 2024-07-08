@@ -22,7 +22,7 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
-                priority
+                loading="lazy"
               />
             </div>
             <figcaption className="p-4 w-full">

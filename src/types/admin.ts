@@ -1,7 +1,7 @@
 import { Response } from './auth'
 
 export interface Recipe extends Response {
-  data: { recipeDtoList: RecipeDtoList[]; nextPage: boolean }
+  data: { recipes: RecipeDtoList[]; nextPage: boolean }
 }
 
 export interface RecipeData {
