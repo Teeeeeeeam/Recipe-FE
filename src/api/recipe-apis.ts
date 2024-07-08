@@ -41,7 +41,7 @@ export async function getCategoryRecipe(
   cat3: string[] | null,
   lastCount: number | null,
   lastId: number | null,
-  order: 'DATE' | 'LIKE',
+  order: string,
   isSize: boolean,
 ) {
   const params = new URLSearchParams({

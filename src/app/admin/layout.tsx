@@ -14,7 +14,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div
-      className={`relative  ${isSidebarOpen ? 'lg:grid lg:grid-cols-[250px_1fr]' : 'grid grid-cols-[60px_1fr]'} w-full h-full`}
+      className={`relative ${isSidebarOpen ? 'lg:grid lg:grid-cols-[250px_1fr]' : 'grid md:grid-cols-[60px_1fr]'} w-full h-full`}
     >
       <div className="absolute top-4 left-[10px] z-20">
         <Image
@@ -28,12 +28,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       <div
-        className={`${isSidebarOpen ? 'fixed lg:static' : 'static'} z-10 h-full bg-gray-100 opacity-100 shadow-md`}
+        className={`${isSidebarOpen ? 'fixed lg:static' : 'hidden md:block md:static'} z-10  h-full bg-gray-100 opacity-100 shadow-md`}
       >
         <AdminSidebar isOpen={isSidebarOpen} segment={segment} />
       </div>
 
-      <div className="pt-10 pb-6 px-6 h-full w-full z-0">{children}</div>
+      <div className="pt-8 pb-6 px-4 md:px-6 h-full w-full z-0">{children}</div>
     </div>
   )
 }

@@ -32,7 +32,7 @@ export const getRecipes = async (
 
   const { payload } = await requester<Recipe>({
     method: 'get',
-    url: `/api/recipes/search?${params}`,
+    url: `/api/recipe/search?${params}`,
   })
   return payload.data
 }

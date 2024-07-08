@@ -80,7 +80,7 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
         {members.map((el) => (
           <ul
             key={el.id}
-            className="relative grid grid-cols-[0.5fr_2fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+            className="relative grid grid-cols-[0.5fr_2fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_2fr_2fr_3fr_1fr] text-center p-2 hover:bg-gray-100 transition-colors duration-200 cursor-pointer truncate"
             onMouseEnter={(e) => handleMouseEnter(el)}
             onMouseLeave={handleMouseLeave}
           >
@@ -92,14 +92,10 @@ const MemberList = ({ members, lastElementRef }: MemberListProps) => {
                 className="cursor-pointer"
               />
             </li>
-            <li className="hidden md:block">{el.username}</li>
-            <li>{el.nickname}</li>
-            <li>
-              {el.loginId.length > 16
-                ? `${el.loginId.slice(0, 16)}...`
-                : el.loginId}
-            </li>
-            <li className="hidden md:block">{el.email}</li>
+            <li className="hidden md:block truncate">{el.username}</li>
+            <li className="truncate">{el.nickname}</li>
+            <li className="truncate">{el.loginId}</li>
+            <li className="hidden md:block truncate">{el.email}</li>
             <li>
               <button
                 onClick={() => handleDeleteClick(el.id, deleteMembers)}

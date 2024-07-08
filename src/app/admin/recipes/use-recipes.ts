@@ -19,9 +19,9 @@ const useRecipes = (searchParams: SearchParams) => {
     if (!hasMore) return
     try {
       const res = await getRecipes(lastId, ingredients ?? null, title ?? null)
-      const newRecipes = res.recipeDtoList
-      setLastId(newRecipes[newRecipes.length - 1].id)
+      const newRecipes = res.recipes
       setRecipes((prev) => [...prev, ...newRecipes])
+      setLastId(newRecipes[newRecipes.length - 1].id)
       setHasMore(res.nextPage)
     } catch (error) {
       console.log(error)

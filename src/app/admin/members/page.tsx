@@ -7,20 +7,20 @@ import MemberList from './member-list'
 import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
 import AdminFilter from '@/components/layout/admin-filter'
 import AdminInput from '@/components/common/admin-input'
+import { useSearchParams } from 'next/navigation'
 
-const Members = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) => {
+const Members = () => {
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('아이디')
-  const { members, setMembers, fetchMembers, hasMore } =
-    useMembers(searchParams)
-  const lastElementRef = useInfiniteScroll(fetchMembers, hasMore)
 
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+
+  const { members, setMembers, fetchMembers, hasMore } = useMembers(params)
+  const lastElementRef = useInfiniteScroll(fetchMembers, hasMore)
+  console.log(members)
   useEffect(() => {
-    const { loginId, username, email, nickname } = searchParams
+    const { loginId, username, email, nickname } = params
 
     if (loginId && loginId.length > 0) {
       setFilter('아이디')
@@ -35,7 +35,7 @@ const Members = ({
       setFilter('닉네임')
       setSearchInput(nickname)
     }
-  }, [searchParams])
+  }, [params])
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(filter, searchInput)

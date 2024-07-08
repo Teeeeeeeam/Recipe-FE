@@ -69,10 +69,10 @@ const RecipeList = ({ recipes, lastElementRef }: RecipeListProps) => {
             )}
           </div>
         </li>
-        <li className="hidden md:block">번호</li>
+        <li className="hidden md:block truncate">번호</li>
         <li>요리명</li>
-        <li className="hidden md:block">인분</li>
-        <li className="hidden md:block">요리시간</li>
+        <li className="hidden md:block truncate">인분</li>
+        <li className="hidden md:block truncate">요리시간</li>
         <li>등록일자</li>
         <li>관리</li>
       </ul>
@@ -93,14 +93,14 @@ const RecipeList = ({ recipes, lastElementRef }: RecipeListProps) => {
                   className="w-3 h-3 md:w-4 md:h-4 cursor-pointer"
                 />
               </li>
-              <li className="hidden md:block">{recipe.id}</li>
-              <li className="cursor-pointer hover:text-blue-100">
+              <li className="hidden md:block truncate">{recipe.id}</li>
+              <li className="cursor-pointer hover:text-blue-100 truncate">
                 <Link href={`/list-page/main-recipes/${recipe.id}`}>
                   {recipe.title}
                 </Link>
               </li>
-              <li className="hidden md:block">{recipe.people}</li>
-              <li className="hidden md:block">{recipe.cookingTime}</li>
+              <li className="hidden md:block truncate">{recipe.people}</li>
+              <li className="hidden md:block truncate">{recipe.cookingTime}</li>
               <li>{recipe.createdAt}</li>
               <li className="space-x-1">
                 <Link href={`/admin/recipes/modify/${recipe.id}`}>

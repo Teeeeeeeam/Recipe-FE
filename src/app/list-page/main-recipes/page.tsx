@@ -15,78 +15,78 @@ import { Recipe } from '@/types/recipe'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function MainRecipes() {
+const MainRecipes = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [lastCount, setLastCount] = useState<number | null>(null)
   const [lastId, setLastId] = useState<number | null>(null)
-  const [order, setOrder] = useState<'DATE' | 'LIKE'>('LIKE')
   const [hasMore, setHasMore] = useState<boolean>(true)
-
+  const [loading, setLoading] = useState<boolean>(false)
   const router = useRouter()
-  const hi = useSearchParams()
-  const cat1 = hi.get('cat1')
-  const cat2 = hi.get('cat2')
-  const cat3 = hi.get('cat3')
-  const title = hi.get('title')
-  const ingredients = hi.get('ingredients')
+
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+  const { cat1, cat2, cat3, title, ingredients, order } = params
 
   const {
     selectedIngredient,
     selectedMethod,
     selectedDishType,
     clickCategoryHandler,
-  } = useCategorySelection({ cat1, cat2, cat3 })
+  } = useCategorySelection(params)
+  console.log(order)
+  const fetchGetCategoryRecipe = async () => {
+    if (!hasMore || loading) return
+    setLoading(true)
+    const newIngredients = !!ingredients ? ingredients.split(',') : null
 
-  // const { cat1, cat2, cat3, title, ingredients } = searchParams
+    try {
+      const res = await getCategoryRecipe(
+        title ?? null,
+        newIngredients ?? null,
+        selectedIngredient ?? null,
+        selectedMethod ?? null,
+        selectedDishType ?? null,
+        order !== 'DATE' ? lastCount ?? null : null,
+        lastCount === 0 ? lastId : null,
+        !!order ? order : 'LIKE',
+        false,
+      )
+
+      const newRecipes = res.recipes
+      setRecipes((prev) =>
+        lastId === null ? [...newRecipes] : [...prev, ...newRecipes],
+      )
+      setLastCount(newRecipes[newRecipes.length - 1]?.likeCount ?? null)
+      setLastId(newRecipes[newRecipes.length - 1]?.id ?? null)
+      setHasMore(res.nextPage)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
     setRecipes([])
     setLastCount(null)
     setLastId(null)
     setHasMore(true)
-    getData()
-  }, [cat1, cat2, cat3, title, ingredients])
+    setLoading(false)
+    fetchGetCategoryRecipe()
+  }, [cat1, cat2, cat3, title, ingredients, order])
+  const lastElementRef = useInfiniteScroll(fetchGetCategoryRecipe, hasMore)
 
-  async function getData() {
-    const newCat1 = !!cat1 ? cat1.split(' ') : null
-    const newCat2 = !!cat2 ? cat2.split(' ') : null
-    const newCat3 = !!cat3 ? cat3.split(' ') : null
-    const newIngredients = !!ingredients ? ingredients.split(' ') : null
-
-    try {
-      if (!hasMore) return
-      const res = await getCategoryRecipe(
-        title ?? null,
-        newIngredients ?? null,
-        newCat1 ?? null,
-        newCat2 ?? null,
-        newCat3 ?? null,
-        lastCount ?? null,
-        lastCount === 0 ? lastId : null,
-        order,
-        false,
-      )
-
-      const newRecipes = res.recipes
-      setHasMore(res.nextPage)
-      console.log(lastCount)
-      lastCount !== null
-        ? setRecipes((prev) => [...prev, ...newRecipes])
-        : setRecipes(newRecipes)
-      setLastCount(newRecipes[newRecipes.length - 1].likeCount)
-      setLastId(newRecipes[newRecipes.length - 1].id)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  const lastElementRef = useInfiniteScroll(getData, hasMore)
-
-  function getLabelByValue(
+  const getLabelByValue = (
     options: { label: string; value: string }[],
     value: string,
-  ) {
+  ) => {
     const option = options.find((option) => option.value === value)
     return option ? option.label : ''
   }
+  const handleOrderChange = (newOrder: 'DATE' | 'LIKE') => {
+    const queryParams = new URLSearchParams(window.location.search)
+    queryParams.set('order', newOrder)
+    router.push(`?${queryParams.toString()}`)
+  }
+  if (!recipes) return null
   return (
     <div>
       <div className="flex flex-col">
@@ -109,42 +109,62 @@ export default function MainRecipes() {
           onClick={(value) => clickCategoryHandler('dishType', value)}
         />
       </div>
-      <RecipeSearchForm
-        searchParams={{ cat1, cat2, cat3, title, ingredients }}
-      />
+      <RecipeSearchForm params={params} />
       {!!title && (
-        <h2 className="font-semibold text-xl px-2 md:px-8 mb-2">{`"${title}"에 대한 결과`}</h2>
+        <h2 className="font-semibold text-lg md:text-xl px-2 md:px-8 mb-2">{`"${title}"에 대한 결과`}</h2>
       )}
-      <div className="flex flex-1 flex-wrap px-2 md:px-8  text-2xl">
-        {selectedIngredient.map((value, idx) => (
-          <div key={idx} className="font-semibold">
-            <span className="px-1 py-1 mb-2">
-              {getLabelByValue(COOK_INGREDIENTS, value)}
-            </span>
-            <span>{idx < selectedIngredient.length - 1 && '+'}</span>
-          </div>
-        ))}
-        {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
-          <span>{' > '}</span>
-        )}
-        {selectedMethod.map((value, idx) => (
-          <div key={idx} className="font-semibold">
-            <span className="px-1 py-1 mb-2">
-              {getLabelByValue(COOK_METHODS, value)}
-            </span>
-            <span>{idx < selectedMethod.length - 1 && '+'}</span>
-          </div>
-        ))}
-        {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
-          selectedDishType.length > 0 && <span>{' > '}</span>}
-        {selectedDishType.map((value, idx) => (
-          <div key={idx} className="font-semibold">
-            <span className="px-1 py-1 mb-2">
-              {getLabelByValue(DISH_TYPES, value)}
-            </span>
-            <span>{idx < selectedDishType.length - 1 && '+'}</span>
-          </div>
-        ))}
+      <div className="flex justify-between px-2 md:px-8">
+        <div className="flex flex-1 flex-wrap  text-xl  md:text-2xl">
+          {selectedIngredient.map((value, idx) => (
+            <div key={idx} className="font-semibold">
+              <span className="px-1 py-1 mb-2">
+                {getLabelByValue(COOK_INGREDIENTS, value)}
+              </span>
+              <span>{idx < selectedIngredient.length - 1 && '+'}</span>
+            </div>
+          ))}
+          {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
+            <span>{' > '}</span>
+          )}
+          {selectedMethod.map((value, idx) => (
+            <div key={idx} className="font-semibold">
+              <span className="px-1 py-1 mb-2">
+                {getLabelByValue(COOK_METHODS, value)}
+              </span>
+              <span>{idx < selectedMethod.length - 1 && '+'}</span>
+            </div>
+          ))}
+          {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
+            selectedDishType.length > 0 && <span>{' > '}</span>}
+          {selectedDishType.map((value, idx) => (
+            <div key={idx} className="font-semibold">
+              <span className="px-1 py-1 mb-2">
+                {getLabelByValue(DISH_TYPES, value)}
+              </span>
+              <span>{idx < selectedDishType.length - 1 && '+'}</span>
+            </div>
+          ))}
+        </div>
+        <div>
+          <button
+            className={`px-2 py-2 ${
+              order === 'LIKE' || order === undefined
+                ? 'font-bold'
+                : 'font-normal'
+            }`}
+            onClick={() => handleOrderChange('LIKE')}
+          >
+            좋아요순
+          </button>
+          <button
+            className={`px-2 py-2 ${
+              order === 'DATE' ? 'font-bold' : 'font-normal'
+            }`}
+            onClick={() => handleOrderChange('DATE')}
+          >
+            최신순
+          </button>
+        </div>
       </div>
       <div className="md:px-8 grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
         <RecipeFigure recipes={recipes} />
@@ -153,3 +173,5 @@ export default function MainRecipes() {
     </div>
   )
 }
+
+export default MainRecipes

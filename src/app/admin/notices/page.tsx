@@ -3,27 +3,28 @@
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { useState, useEffect } from 'react'
 import useNotice from './use-notice'
-import NoticeFilter from './notice-filter'
-import NoticeList from './notice-list'
+
 import { buildQueryString, updateUrlAndFetchNotices } from './url-utils'
+import { useSearchParams } from 'next/navigation'
+import NoticeList from '@/components/notice/notice-list'
+import NoticeFilter from '@/components/notice/notice-filter'
 
-const Notice = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) => {
+const Notice = () => {
   const [searchInput, setSearchInput] = useState('')
-  const { notices, setNotices, fetchNotice, hasMore } = useNotice(searchParams)
 
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+
+  const { notices, setNotices, fetchNotice, hasMore } = useNotice(params)
   const lastElementRef = useInfiniteScroll(fetchNotice, hasMore)
 
   useEffect(() => {
-    const { title } = searchParams
+    const { title } = params
 
     if (title) {
       setSearchInput(title)
     }
-  }, [searchParams])
+  }, [params])
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(searchInput)

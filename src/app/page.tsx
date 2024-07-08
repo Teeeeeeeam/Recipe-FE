@@ -25,39 +25,24 @@ import CategorySelector from './category-selector'
 import useCategorySelection from '@/hooks/use-category-selection'
 import RecipeSearchForm from '@/components/recipe/recipe-search-form'
 
-export default function Home({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) {
+export default function Home() {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
-  // 재료검색
-  // const [inputValue, setInputValue] = useState<string>('')
-  // const [ingredients, setIngredients] = useState<string[]>([])
-  // const [inputCategory, setInputCategory] = useState<string>('cookTitle')
-  // 카테고리 선택
-
   // redux
   const dispatch = useDispatch<AppDispatch>()
   //
   const router = useRouter()
-  const hi = useSearchParams()
-  const cat1 = hi.get('cat1')
-  const cat2 = hi.get('cat2')
-  const cat3 = hi.get('cat3')
-  const title = hi.get('title')
-  const ingredients = hi.get('ingredients')
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+  const { cat1, cat2, cat3, ingredients } = params
 
-  // const { cat1, cat2, cat3, ingredients } = searchParams
-  // console.log(cc)
   const {
     selectedIngredient,
     selectedMethod,
     selectedDishType,
     clickCategoryHandler,
-  } = useCategorySelection({ cat1, cat2, cat3 })
+  } = useCategorySelection(params)
   useEffect(() => {
     getData()
   }, [selectedIngredient, selectedMethod, selectedDishType])
@@ -165,7 +150,7 @@ export default function Home({
             onClick={(value) => clickCategoryHandler('dishType', value)}
           />
         </div>
-        <RecipeSearchForm searchParams={searchParams} />
+        <RecipeSearchForm params={params} />
         <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
           <div className="flex flex-1 flex-wrap">
             {selectedIngredient.map((value, idx) => (

@@ -107,6 +107,18 @@ const Login = () => {
             priority
           />
         </Link>
+        <Link
+          href={`${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/google`}
+        >
+          <Image
+            src="/google-icon.svg"
+            alt="naver-icon"
+            width={50}
+            height={50}
+            className="cursor-pointer transition-transform hover:scale-110"
+            priority
+          />
+        </Link>
       </div>
     </div>
   )
