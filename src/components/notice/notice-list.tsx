@@ -106,9 +106,9 @@ const NoticeList = ({
               )}
               <li className="hidden md:block">{notice.id}</li>
               <Link href={`/notices/${notice.id}`}>
-                <li>{notice.noticeTitle}</li>
+                <li className="truncate">{notice.noticeTitle}</li>
               </Link>
-              <li>{notice.member.nickname}</li>
+              <li className="truncate">{notice.member.nickname}</li>
               <li className="hidden md:block">{notice.createdAt}</li>
               <li>
                 {isAdmin && (
