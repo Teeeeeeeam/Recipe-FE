@@ -45,7 +45,8 @@ export default function Home() {
   } = useCategorySelection(params)
   useEffect(() => {
     getData()
-  }, [selectedIngredient, selectedMethod, selectedDishType])
+  }, [cat1, cat2, cat3, ingredients])
+
   async function getData() {
     const option = {
       size: 3,
@@ -54,17 +55,23 @@ export default function Home() {
       if (
         !selectedIngredient.length &&
         !selectedMethod.length &&
-        !selectedDishType.length
+        !selectedDishType.length &&
+        !ingredients.length
       ) {
         const result = await getHomeRecipe()
         setRecipes(result.data.recipes)
       } else {
+        const newCat1 = !!cat1 ? cat1.split(',') : null
+        const newCat2 = !!cat2 ? cat2.split(',') : null
+        const newCat3 = !!cat3 ? cat3.split(',') : null
+        const newIngredients = !!ingredients ? ingredients.split(',') : null
+
         const result = await getCategoryRecipe(
           null,
-          null,
-          selectedIngredient ?? null,
-          selectedMethod ?? null,
-          selectedDishType ?? null,
+          newIngredients ?? null,
+          newCat1 ?? null,
+          newCat2 ?? null,
+          newCat3 ?? null,
           null,
           null,
           'LIKE',
@@ -154,8 +161,8 @@ export default function Home() {
         <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
           <div className="flex flex-1 flex-wrap">
             {selectedIngredient.map((value, idx) => (
-              <div className="font-semibold">
-                <span key={idx} className="px-1 py-1 mb-2">
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
                   {getLabelByValue(COOK_INGREDIENTS, value)}
                 </span>
                 <span>{idx < selectedIngredient.length - 1 && '+'}</span>
@@ -165,8 +172,8 @@ export default function Home() {
               <span>{' > '}</span>
             )}
             {selectedMethod.map((value, idx) => (
-              <div className="font-semibold">
-                <span key={idx} className="px-1 py-1 mb-2">
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
                   {getLabelByValue(COOK_METHODS, value)}
                 </span>
                 <span>{idx < selectedMethod.length - 1 && '+'}</span>
@@ -175,8 +182,8 @@ export default function Home() {
             {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
               selectedDishType.length > 0 && <span>{' > '}</span>}
             {selectedDishType.map((value, idx) => (
-              <div className="font-semibold">
-                <span key={idx} className="px-1 py-1 mb-2">
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
                   {getLabelByValue(DISH_TYPES, value)}
                 </span>
                 <span>{idx < selectedDishType.length - 1 && '+'}</span>

@@ -157,7 +157,7 @@ export const getPosts = async (
   }).toString()
   const { payload } = await requester<{ data: Posts }>({
     method: 'get',
-    url: `/api/admin/posts/search?${params}`,
+    url: `/api/posts/search?${params}`,
   })
   return payload.data
 }
