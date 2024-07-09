@@ -13,7 +13,7 @@ export default function PostingPassword({
     <>
       <label className="mr-2">{label}</label>
       <input
-        type="password"
+        type="text"
         value={value}
         placeholder="비밀번호"
         onChange={(e) => onChange(e.target.value)}
