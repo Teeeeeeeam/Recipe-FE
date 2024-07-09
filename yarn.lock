@@ -561,6 +561,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.6
+  resolution: "@types/lodash@npm:4.17.6"
+  checksum: 10c0/3b197ac47af9443fee8c4719c5ffde527d7febc018b827d44a6bc2523c728c7adfdd25196fdcfe3eed827993e0c41a917d0da6e78938b18b2be94164789f1117
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20":
   version: 20.12.7
   resolution: "@types/node@npm:20.12.7"
@@ -2915,6 +2922,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash@npm:4.17.21"
+  checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
+  languageName: node
+  linkType: hard
+
 "loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
@@ -3738,6 +3752,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:^2.2.3"
     "@types/chart.js": "npm:^2.9.41"
     "@types/event-source-polyfill": "npm:^1"
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
@@ -3748,6 +3763,7 @@ __metadata:
     eslint-config-next: "npm:14.2.3"
     event-source-polyfill: "npm:^1.0.31"
     jwt-decode: "npm:^4.0.0"
+    lodash: "npm:^4.17.21"
     next: "npm:14.2.3"
     postcss: "npm:^8"
     prettier: "npm:^3.2.5"
