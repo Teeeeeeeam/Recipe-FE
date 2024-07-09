@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import {
   getCategoryRecipe,
   getHomePosting,
@@ -34,7 +34,10 @@ export default function Home() {
   //
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = Object.fromEntries(searchParams.entries())
+  const params = useMemo(
+    () => Object.fromEntries(searchParams.entries()),
+    [searchParams],
+  )
   const { cat1, cat2, cat3, ingredients } = params
 
   const {
@@ -47,20 +50,12 @@ export default function Home() {
     getData()
   }, [cat1, cat2, cat3, ingredients])
 
-  async function getData() {
+  const getData = useCallback(async () => {
     const option = {
       size: 3,
     }
     try {
-      if (
-        !selectedIngredient.length &&
-        !selectedMethod.length &&
-        !selectedDishType.length &&
-        !ingredients.length
-      ) {
-        const result = await getHomeRecipe()
-        setRecipes(result.data.recipes)
-      } else {
+      if (!!cat1 || !!cat2 || !!cat3 || !!ingredients) {
         const newCat1 = !!cat1 ? cat1.split(',') : null
         const newCat2 = !!cat2 ? cat2.split(',') : null
         const newCat3 = !!cat3 ? cat3.split(',') : null
@@ -78,13 +73,16 @@ export default function Home() {
           true,
         )
         setRecipes(result.recipes)
+      } else {
+        const result = await getHomeRecipe()
+        setRecipes(result.data.recipes)
       }
       const result_posting = await getHomePosting(option)
       setUserPosting(result_posting.data.post)
     } catch (error) {
       console.log(error)
     }
-  }
+  }, [cat1, cat2, cat3, ingredients])
 
   const handleRouting = () => {
     const query: any = {}
