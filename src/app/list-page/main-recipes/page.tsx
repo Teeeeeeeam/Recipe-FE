@@ -33,7 +33,7 @@ const MainRecipes = () => {
     selectedDishType,
     clickCategoryHandler,
   } = useCategorySelection(params)
-  console.log(order)
+
   const fetchGetCategoryRecipe = async () => {
     if (!hasMore || loading) return
     setLoading(true)
@@ -61,6 +61,8 @@ const MainRecipes = () => {
       setHasMore(res.nextPage)
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -70,9 +72,19 @@ const MainRecipes = () => {
     setLastId(null)
     setHasMore(true)
     setLoading(false)
-    fetchGetCategoryRecipe()
   }, [cat1, cat2, cat3, title, ingredients, order])
-  const lastElementRef = useInfiniteScroll(fetchGetCategoryRecipe, hasMore)
+
+  useEffect(() => {
+    if (lastId === null && lastCount === null && hasMore) {
+      fetchGetCategoryRecipe()
+    }
+  }, [lastId, lastCount, hasMore])
+
+  const lastElementRef = useInfiniteScroll(
+    fetchGetCategoryRecipe,
+    hasMore,
+    lastId as number,
+  )
 
   const getLabelByValue = (
     options: { label: string; value: string }[],

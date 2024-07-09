@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 const useInfiniteScroll = (
   fetchMore: () => Promise<void>,
   hasMore: boolean,
+  id?: number,
 ) => {
   const lastElementRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -12,7 +13,7 @@ const useInfiniteScroll = (
     const options = {
       root: null,
       rootMargin: '0px',
-      threshold: 1.0,
+      threshold: 0.9,
     }
 
     const observer = new IntersectionObserver(
@@ -23,15 +24,13 @@ const useInfiniteScroll = (
       },
       options,
     )
-
-    if (lastElementRef.current) {
-      observer.observe(lastElementRef.current)
+    const element = lastElementRef.current
+    if (element) {
+      observer.observe(element)
     }
 
     return () => {
-      if (lastElementRef.current) {
-        observer.unobserve(lastElementRef.current)
-      }
+      if (element) observer.unobserve(element)
     }
   }, [fetchMore, hasMore])
 
