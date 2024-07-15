@@ -152,6 +152,7 @@ export function HeaderSizeWeb({
 interface HeaderSizeMobileProps {
   isSession: boolean
   eventCount: number
+  state: LoginInfo
   inputValue: string
   logOutBtn: () => void
   searchHeader: (e: any) => void
@@ -166,6 +167,7 @@ interface HeaderSizeMobileProps {
 export function HeaderSizeMobile({
   isSession,
   eventCount,
+  state,
   inputValue,
   logOutBtn,
   searchHeader,
@@ -180,7 +182,9 @@ export function HeaderSizeMobile({
   return (
     <>
       {/* icons */}
-      <div className="w-[100px] flex justify-between items-center md:hidden">
+      <div
+        className={`${isSession ? 'w-[100px]' : 'w-[65px]'} flex justify-between items-center md:hidden`}
+      >
         <button type="button" onClick={() => setToggleSearch((prev) => !prev)}>
           <Image src="/svg/search.svg" alt="검색" width={30} height={30} />
         </button>
@@ -251,7 +255,12 @@ export function HeaderSizeMobile({
             {isSession && (
               <>
                 <li className="py-3 text-center">
-                  <Link href="/my-page">마이페이지</Link>
+                  {state.roles === 'ROLE_ADMIN' && (
+                    <Link href="/admin/dash-board">관리페이지</Link>
+                  )}
+                  {state.roles === 'ROLE_USER' && (
+                    <Link href="/my-page">마이페이지</Link>
+                  )}
                 </li>
                 <li className="py-3">
                   <button type="button" onClick={logOutBtn} className="w-full">
