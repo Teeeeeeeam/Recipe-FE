@@ -24,11 +24,16 @@ import {
 import CategorySelector from './category-selector'
 import useCategorySelection from '@/hooks/use-category-selection'
 import RecipeSearchForm from '@/components/recipe/recipe-search-form'
+import {
+  RecipeSkeletonLoader,
+  UserPostingSkeletonLoader,
+} from '@/components/layout/skeleton/main-skeleton'
 
 export default function Home() {
   //레시피 컨트롤러 GET
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   // redux
   const dispatch = useDispatch<AppDispatch>()
   //
@@ -51,6 +56,7 @@ export default function Home() {
   }, [cat1, cat2, cat3, ingredients])
 
   const getData = useCallback(async () => {
+    setLoading(true)
     const option = {
       size: 3,
     }
@@ -81,6 +87,8 @@ export default function Home() {
       setUserPosting(result_posting.data.post)
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }, [cat1, cat2, cat3, ingredients])
 
@@ -196,25 +204,33 @@ export default function Home() {
             더보기
           </button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
-          <RecipeFigure recipes={recipes} />
-        </div>
+        {loading ? (
+          <RecipeSkeletonLoader />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+            <RecipeFigure recipes={recipes} />
+          </div>
+        )}
       </div>
       <div className="home-users-recipe">
         <h3 className="text-3xl">회원 요리 게시글</h3>
-        <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
-          <div className="col-span-5 grid grid-cols-3 gap-5">
-            <UserPostingFigure recipes={userPosting} />
+        {loading ? (
+          <UserPostingSkeletonLoader />
+        ) : (
+          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
+            <div className="col-span-5 grid grid-cols-3 gap-5">
+              <UserPostingFigure recipes={userPosting} />
+            </div>
+            <Link
+              href="/list-page/user-recipes"
+              className="col-span-1 col-end-auto bg-[#D1D5DA] rounded-lg border border-[#C6C6C6]"
+            >
+              <p className="h-full flex justify-center items-center text-black">
+                더보기
+              </p>
+            </Link>
           </div>
-          <Link
-            href="/list-page/user-recipes"
-            className="col-span-1 col-end-auto bg-[#D1D5DA] rounded-lg border border-[#C6C6C6]"
-          >
-            <p className="h-full flex justify-center items-center text-black">
-              더보기
-            </p>
-          </Link>
-        </div>
+        )}
       </div>
     </div>
   )

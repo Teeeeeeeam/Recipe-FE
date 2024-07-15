@@ -25,7 +25,7 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
                 loading="lazy"
               />
             </div>
-            <figcaption className="p-4 w-full">
+            <figcaption className="p-2 sm:p-4 w-full">
               <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                 <span className="text-sm text-green-600 font-semibold">
                   좋아요: {item.likeCount.toLocaleString()}
@@ -34,7 +34,7 @@ export function RecipeFigure({ recipes }: RecipeFigureProps) {
                   {item.people}, {item.cookingLevel}
                 </span>
               </div>
-              <h3 className="font-semibold text-lg text-black mb-2">
+              <h3 className="font-semibold sm:text-lg text-black mb-2">
                 {item.title}
               </h3>
               <Link href={`/list-page/main-recipes/${item.id}`}>

@@ -2,21 +2,24 @@ import { useState, useEffect, useCallback } from 'react'
 import { getPosts } from '@/api/admin-apis'
 import { PostInfo } from '@/types/admin'
 
-export interface SearchParams {
+export interface Params {
   recipeTitle?: string
   postTitle?: string
   id?: string
 }
 
-const usePosts = (searchParams: SearchParams) => {
+const usePosts = (params: Params) => {
   const [posts, setPosts] = useState<PostInfo[]>([])
   const [postId, setPostId] = useState<number | null>(null)
   const [hasMore, setHasMore] = useState(true)
-
-  const { id, recipeTitle, postTitle } = searchParams
+  const [loading, setLoading] = useState<boolean>(false)
+  const [initialLoading, setInitialLoading] = useState<boolean>(true)
+  const { id, recipeTitle, postTitle } = params
 
   const fetchPosts = useCallback(async () => {
-    if (!hasMore) return
+    if (!hasMore || loading) return
+    setLoading(true)
+
     try {
       const res = await getPosts(
         postId,
@@ -32,10 +35,21 @@ const usePosts = (searchParams: SearchParams) => {
       setHasMore(res.nextPage)
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
+      setInitialLoading(false)
     }
-  }, [postId, hasMore, searchParams])
+  }, [postId, hasMore, id, recipeTitle, postTitle])
 
-  return { posts, setPosts, fetchPosts, hasMore }
+  useEffect(() => {
+    setPosts([])
+    setPostId(null)
+    setHasMore(true)
+    setInitialLoading(true)
+    fetchPosts()
+  }, [id, recipeTitle, postTitle])
+
+  return { posts, setPosts, fetchPosts, hasMore, loading, initialLoading }
 }
 
 export default usePosts

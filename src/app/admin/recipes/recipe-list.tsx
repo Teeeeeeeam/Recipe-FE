@@ -6,13 +6,15 @@ import { useState } from 'react'
 import { deleteRecipe } from '@/api/admin-apis'
 import useCheckbox from '@/hooks/use-check-box'
 import { RecipeDtoList } from '@/types/admin'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
 interface RecipeListProps {
   recipes: RecipeDtoList[]
+  loading: boolean
   lastElementRef: React.RefObject<HTMLDivElement>
 }
 
-const RecipeList = ({ recipes, lastElementRef }: RecipeListProps) => {
+const RecipeList = ({ recipes, loading, lastElementRef }: RecipeListProps) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [hoveredRecipe, setHoveredRecipe] = useState<RecipeDtoList | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -148,7 +150,7 @@ const RecipeList = ({ recipes, lastElementRef }: RecipeListProps) => {
             </ul>
           ))}
 
-        <div ref={lastElementRef}></div>
+        <div ref={lastElementRef}>{loading && <AdminListSkeletonLoader />}</div>
       </div>
     </div>
   )
