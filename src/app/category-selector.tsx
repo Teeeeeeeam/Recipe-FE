@@ -13,7 +13,7 @@ const CategorySelector = ({
 }: CategorySelectorProps) => {
   return (
     <div className="flex border-y text-[12px] md:text-[14px]">
-      <div className="flex-shrink-0 flex w-[50px] md:w-[60px] h-auto items-center justify-center font-smibold border-r p-2 text-blue-50">
+      <div className="flex-shrink-0 flex w-[54px] md:w-[60px] h-auto items-center justify-center font-smibold border-r p-2 text-blue-50">
         <span>{label}</span>
       </div>
       <div className="flex flex-wrap gap-1 md:gap-2 p-2">

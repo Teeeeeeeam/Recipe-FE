@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import AdminSidebar from '@/components/layout/admin-sidebar'
+import AdminSidebar from '@/components/layout/admin/admin-sidebar'
 import { useSelectedLayoutSegment } from 'next/navigation'
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

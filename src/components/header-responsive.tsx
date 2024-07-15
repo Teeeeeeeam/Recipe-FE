@@ -73,7 +73,7 @@ export function HeaderSizeWeb({
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            className="w-11/12 pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 text-gray-300 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out"
+            className="w-11/12 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 text-gray-300 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out"
             placeholder="Search"
           />
         </form>

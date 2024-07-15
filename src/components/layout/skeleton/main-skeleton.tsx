@@ -1,7 +1,18 @@
 export function SkeletonLoader() {
-  return <div className="skeleton h-[300px] lg:h-[360px] w-full mb-4"></div>
+  return (
+    <div className="flex flex-col items-center rounded-lg border border-gray-200 shadow-md overflow-hidden animate-pulse">
+      <div className="relative md:w-full pt-[100%] bg-gray-300"></div>
+      <div className="p-4 w-full">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+          <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          <div className="h-4 bg-gray-300 rounded w-1/6 md:ml-4"></div>
+        </div>
+        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+      </div>
+    </div>
+  )
 }
-
 export function RecipeSkeletonLoader() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
@@ -14,17 +25,10 @@ export function RecipeSkeletonLoader() {
 
 export function UserPostingSkeletonLoader() {
   return (
-    <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
-      <div className="col-span-5 grid grid-cols-3 gap-5">
-        {Array.from({ length: 6 }).map((_, idx) => (
-          <SkeletonLoader key={idx} />
-        ))}
-      </div>
-      <div className="col-span-1 col-end-auto bg-gray-200 rounded-lg border border-gray-300">
-        <p className="h-full flex justify-center items-center text-gray-400">
-          Loading...
-        </p>
-      </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <SkeletonLoader key={idx} />
+      ))}
     </div>
   )
 }

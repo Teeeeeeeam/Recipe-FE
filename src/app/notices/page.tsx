@@ -9,8 +9,8 @@ import {
   updateUrlAndFetchNotices,
 } from '../admin/notices/url-utils'
 import { useSearchParams } from 'next/navigation'
-import NoticeList from '@/components/notice/notice-list'
-import NoticeFilter from '@/components/notice/notice-filter'
+import NoticeList from '@/components/layout/notice/notice-list'
+import NoticeFilter from '@/components/layout/notice/notice-filter'
 
 const Notice = () => {
   const [searchInput, setSearchInput] = useState('')

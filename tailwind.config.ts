@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['nanumgothic', 'sans-serif'],
+        BMJUA: ['BMJUA'],
+      },
       colors: {
         gray: {
           50: '#D4D4D4',

@@ -201,7 +201,7 @@ const DashBoard = () => {
               key={idx}
               className="flex flex-col py-3 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
             >
-              <div>{el.type}</div>
+              <div className="font-semibold">{el.type}</div>
               <div>{el.count}</div>
             </div>
           ))}

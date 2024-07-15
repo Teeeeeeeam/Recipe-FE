@@ -61,19 +61,19 @@ export const useJoinForm = () => {
   }
 
   const handleJoinClick = async () => {
-    const requiredFields: (keyof FormData)[] = [
-      'id',
-      'password',
-      'verifyPassword',
-      'username',
-      'nickname',
-      'email',
-      'certificationNumber',
+    const requiredFields: [keyof FormData, string][] = [
+      ['id', '아이디'],
+      ['password', '비밀번호'],
+      ['verifyPassword', '비밀번호 확인'],
+      ['username', '이름'],
+      ['nickname', '닉네임'],
+      ['email', '이메일'],
+      ['certificationNumber', '인증번호'],
     ]
     const newValidations = requiredFields.reduce(
       (acc, field) => {
-        acc[field] =
-          formData[field] === '' ? `${field}: 필수 입력 정보입니다.` : ''
+        acc[field[0]] =
+          formData[field[0]] === '' ? `${field[1]}: 필수 입력 정보입니다.` : ''
         return acc
       },
       {} as Partial<Record<keyof FormData, string>>,

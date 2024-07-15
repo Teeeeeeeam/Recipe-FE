@@ -7,6 +7,7 @@ import {
   DISH_TYPES,
 } from '@/app/admin/recipes/(recipe-management)/constants'
 import CategorySelector from '@/app/category-selector'
+import { RecipeSkeletonLoader } from '@/components/layout/skeleton/main-skeleton'
 import { RecipeFigure } from '@/components/recipe-and-posting/recipe-figure'
 import RecipeSearchForm from '@/components/recipe/recipe-search-form'
 import useCategorySelection from '@/hooks/use-category-selection'
@@ -100,7 +101,7 @@ const MainRecipes = () => {
   }
   if (!recipes) return null
   return (
-    <div>
+    <div className="bg-white">
       <div className="flex flex-col">
         <CategorySelector
           label="재료별"
@@ -178,10 +179,15 @@ const MainRecipes = () => {
           </button>
         </div>
       </div>
-      <div className="md:px-8 grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
-        <RecipeFigure recipes={recipes} />
-        <div ref={lastElementRef} />
-      </div>
+
+      {loading ? (
+        <RecipeSkeletonLoader />
+      ) : (
+        <div className="md:px-8 grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
+          <RecipeFigure recipes={recipes} />
+          <div ref={lastElementRef} />
+        </div>
+      )}
     </div>
   )
 }
