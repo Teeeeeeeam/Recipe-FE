@@ -35,7 +35,7 @@ export async function checkUser() {
 export async function checkLikesForRecipe(recipeId: number) {
   const { payload } = await requester<Response>({
     method: 'GET',
-    url: `/api/user/recipe/${recipeId}/like/check`,
+    url: `/api/recipe/${recipeId}/like/check`,
   })
   return payload
 }
@@ -69,7 +69,7 @@ export async function doLikeForPosting(req: { postId: number }) {
 export async function checkBookmark(recipeId: number) {
   const { payload } = await requester<Response>({
     method: 'GET',
-    url: `/api/user/recipe/${recipeId}/bookmarks/check`,
+    url: `/api/recipe/${recipeId}/bookmarks/check`,
   })
   return payload
 }
