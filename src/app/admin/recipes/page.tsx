@@ -8,6 +8,7 @@ import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
 import AdminFilter from '@/components/layout/admin-filter'
 import AdminInput from '@/components/common/admin-input'
 import { useSearchParams } from 'next/navigation'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
 const AdminRecipe = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -16,7 +17,14 @@ const AdminRecipe = () => {
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
 
-  const { recipes, setRecipes, fetchRecipes, hasMore } = useRecipes(params)
+  const {
+    recipes,
+    setRecipes,
+    fetchRecipes,
+    hasMore,
+    loading,
+    initialLoading,
+  } = useRecipes(params)
   const lastElementRef = useInfiniteScroll(fetchRecipes, hasMore)
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(filter, searchInput)
@@ -25,10 +33,10 @@ const AdminRecipe = () => {
 
   useEffect(() => {
     const { ingredients, title } = params
-    if (title && title.length > 0) {
+    if (!!title) {
       setFilter('요리명')
       setSearchInput(title)
-    } else if (ingredients && ingredients.length > 0) {
+    } else if (!!ingredients) {
       setSearchInput(ingredients)
     }
   }, [params])
@@ -56,7 +64,15 @@ const AdminRecipe = () => {
           />
         </AdminFilter>
       </form>
-      <RecipeList recipes={recipes} lastElementRef={lastElementRef} />
+      {initialLoading ? (
+        <AdminListSkeletonLoader />
+      ) : (
+        <RecipeList
+          recipes={recipes}
+          loading={loading}
+          lastElementRef={lastElementRef}
+        />
+      )}
     </div>
   )
 }

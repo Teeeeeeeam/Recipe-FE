@@ -5,9 +5,11 @@ import { PostInfo } from '@/types/admin'
 import { deletePosts } from '@/api/admin-apis'
 import Link from 'next/link'
 import Comments from './comments'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
 interface PostListProps {
   posts: PostInfo[]
+  loading: boolean
   lastElementRef: React.RefObject<HTMLDivElement>
   activeCommentId: number | null
   handleGetCommentClick: (id: number) => void
@@ -15,6 +17,7 @@ interface PostListProps {
 
 const PostList = ({
   posts,
+  loading,
   lastElementRef,
   activeCommentId,
   handleGetCommentClick,
@@ -143,7 +146,7 @@ const PostList = ({
             {activeCommentId === post.id && <Comments id={post.id} />}
           </div>
         ))}
-        <div ref={lastElementRef} />
+        <div ref={lastElementRef}>{loading && <AdminListSkeletonLoader />}</div>
       </div>
     </div>
   )

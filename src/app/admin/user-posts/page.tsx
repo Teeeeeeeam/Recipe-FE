@@ -7,17 +7,20 @@ import PostList from './post-list'
 import { buildQueryString, updateUrlAndFetchPosts } from './url-utils'
 import AdminFilter from '@/components/layout/admin-filter'
 import AdminInput from '@/components/common/admin-input'
+import { useSearchParams } from 'next/navigation'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
-const UserPosts = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string }
-}) => {
-  const { posts, setPosts, fetchPosts, hasMore } = usePosts(searchParams)
+const UserPosts = () => {
   const [searchInput, setSearchInput] = useState('')
   const [filter, setFilter] = useState('요리글 제목')
 
   const [activeCommentId, setActiveCommentId] = useState<number | null>(null)
+
+  const searchParams = useSearchParams()
+  const params = Object.fromEntries(searchParams.entries())
+
+  const { posts, setPosts, fetchPosts, hasMore, loading, initialLoading } =
+    usePosts(params)
   const lastElementRef = useInfiniteScroll(fetchPosts, hasMore)
 
   const handleSearchSubmit = () => {
@@ -26,7 +29,7 @@ const UserPosts = ({
   }
 
   useEffect(() => {
-    const { id, recipeTitle, postTitle } = searchParams
+    const { id, recipeTitle, postTitle } = params
 
     if (id) {
       setFilter('아이디')
@@ -38,7 +41,7 @@ const UserPosts = ({
       setFilter('요리글 제목')
       setSearchInput(postTitle)
     }
-  }, [searchParams])
+  }, [params])
 
   const handleGetCommentClick = (id: number) => {
     setActiveCommentId((prev) => (prev === id ? null : id))
@@ -66,12 +69,17 @@ const UserPosts = ({
           />
         </AdminFilter>
       </form>
-      <PostList
-        posts={posts}
-        lastElementRef={lastElementRef}
-        activeCommentId={activeCommentId}
-        handleGetCommentClick={handleGetCommentClick}
-      />
+      {initialLoading ? (
+        <AdminListSkeletonLoader />
+      ) : (
+        <PostList
+          posts={posts}
+          lastElementRef={lastElementRef}
+          activeCommentId={activeCommentId}
+          loading={loading}
+          handleGetCommentClick={handleGetCommentClick}
+        />
+      )}
     </div>
   )
 }

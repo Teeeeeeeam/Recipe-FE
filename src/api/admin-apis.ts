@@ -173,7 +173,7 @@ export const deletePosts = async (postIds: number[]) => {
 export const getComments = async (postId: number, lastId: number | null) => {
   const { payload } = await requester<Comments>({
     method: 'get',
-    url: `/api/admin/posts/${postId}/comments?${lastId ? `&lastId=${lastId}` : ''}&size=10`,
+    url: `/api/user/posts/${postId}/comments?${lastId ? `&lastId=${lastId}` : ''}&size=10`,
   })
   return payload.data
 }
@@ -436,7 +436,7 @@ export const getBlackList = async (
 export const deleteBlackList = async (blacklistIds: number[]) => {
   const { payload } = await requester<Response>({
     method: 'delete',
-    url: `/api/admin/blacklist?blacklistIds=${blacklistIds}`,
+    url: `/api/admin/blacklist/${blacklistIds}`,
   })
   return payload
 }

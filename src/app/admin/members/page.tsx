@@ -8,6 +8,7 @@ import { buildQueryString, updateUrlAndFetchMembers } from './url-utils'
 import AdminFilter from '@/components/layout/admin-filter'
 import AdminInput from '@/components/common/admin-input'
 import { useSearchParams } from 'next/navigation'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
 const Members = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -16,22 +17,29 @@ const Members = () => {
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
 
-  const { members, setMembers, fetchMembers, hasMore } = useMembers(params)
+  const {
+    members,
+    setMembers,
+    fetchMembers,
+    hasMore,
+    loading,
+    initialLoading,
+  } = useMembers(params)
   const lastElementRef = useInfiniteScroll(fetchMembers, hasMore)
-  console.log(members)
+
   useEffect(() => {
     const { loginId, username, email, nickname } = params
 
-    if (loginId && loginId.length > 0) {
+    if (!!loginId) {
       setFilter('아이디')
       setSearchInput(loginId)
-    } else if (username && username.length > 0) {
+    } else if (!!username) {
       setFilter('이름')
       setSearchInput(username)
-    } else if (email && email.length > 0) {
+    } else if (!!email) {
       setFilter('이메일')
       setSearchInput(email)
-    } else if (nickname && nickname.length > 0) {
+    } else if (!!nickname) {
       setFilter('닉네임')
       setSearchInput(nickname)
     }
@@ -41,7 +49,7 @@ const Members = () => {
     const queryString = buildQueryString(filter, searchInput)
     updateUrlAndFetchMembers(queryString, setMembers, fetchMembers)
   }
-  if (!members) return null
+
   return (
     <div className="md:p-4 bg-gray-100">
       <form
@@ -64,7 +72,15 @@ const Members = () => {
           />
         </AdminFilter>
       </form>
-      <MemberList members={members} lastElementRef={lastElementRef} />
+      {initialLoading ? (
+        <AdminListSkeletonLoader />
+      ) : (
+        <MemberList
+          members={members}
+          lastElementRef={lastElementRef}
+          loading={loading}
+        />
+      )}
     </div>
   )
 }
