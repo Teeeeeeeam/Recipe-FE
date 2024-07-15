@@ -121,11 +121,11 @@ export default function Home() {
   }
 
   return (
-    <div className="home-wrap max-w-[1300px] mx-auto my-0 lg:pt-10 md:pt-10">
-      <div className="mx-auto mb-6">
+    <div className="home-wrap max-w-[1300px] mx-auto my-0">
+      <div className="mx-auto">
         <Announcements />
       </div>
-      <div className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
+      <section className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
         <div className="flex items-center justify-center">
           <h3
             onClick={() =>
@@ -143,7 +143,8 @@ export default function Home() {
             </Link>
           </h3>
         </div>
-        <div className="flex flex-col mt-2">
+
+        <section className="flex flex-col mt-2">
           <CategorySelector
             label="재료별"
             options={COOK_INGREDIENTS.slice(1)}
@@ -162,8 +163,10 @@ export default function Home() {
             selectedValue={selectedDishType}
             onClick={(value) => clickCategoryHandler('dishType', value)}
           />
-        </div>
+        </section>
+
         <RecipeSearchForm params={params} />
+
         <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
           <div className="flex flex-1 flex-wrap">
             {selectedIngredient.map((value, idx) => (
@@ -204,34 +207,36 @@ export default function Home() {
             더보기
           </button>
         </div>
+
         {loading ? (
           <RecipeSkeletonLoader />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8  pb-4 md:pb-8">
             <RecipeFigure recipes={recipes} />
           </div>
         )}
-      </div>
-      <div className="home-users-recipe">
-        <h3 className="text-3xl">회원 요리 게시글</h3>
+      </section>
+
+      <section className="home-users-recipe bg-white border-t">
+        <div className="flex justify-between p-2 md:px-8 mt-4">
+          <h3 className="text-3xl">회원 요리 게시글</h3>
+          <button
+            type="button"
+            className="px-2 py-1 bg-blue-50 hover:bg-blue-150 rounded-md text-[16px] text-white"
+          >
+            <Link href="/list-page/user-recipes">더보기</Link>
+          </button>
+        </div>
         {loading ? (
           <UserPostingSkeletonLoader />
         ) : (
-          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-7 my-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
             <div className="col-span-5 grid grid-cols-3 gap-5">
               <UserPostingFigure recipes={userPosting} />
             </div>
-            <Link
-              href="/list-page/user-recipes"
-              className="col-span-1 col-end-auto bg-[#D1D5DA] rounded-lg border border-[#C6C6C6]"
-            >
-              <p className="h-full flex justify-center items-center text-black">
-                더보기
-              </p>
-            </Link>
           </div>
         )}
-      </div>
+      </section>
     </div>
   )
 }

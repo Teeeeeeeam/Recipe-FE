@@ -61,8 +61,8 @@ const Announcements = () => {
 
   if (!announcements) return null
   return (
-    <div className="h-[240px] bg-white rounded-lg shadow-md relative mx-auto">
-      <div className="relative h-full overflow-hidden rounded-lg">
+    <div className="h-[240px] bg-white shadow-md relative mx-auto">
+      <div className="relative h-full overflow-hidden">
         {announcements.map((announcement, index) => (
           <div
             key={announcement.id}

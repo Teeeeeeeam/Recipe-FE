@@ -90,7 +90,7 @@ const RecipeSearchForm = ({
     >
       <div className="mb-6 flex flex-col justify-center md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
         <select
-          className="w-full md:w-24 bg-transparent px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-50"
+          className="w-full md:w-24 bg-transparent px-2 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-50"
           name="category"
           id="category"
           onChange={(e) => setInputCategory(e.target.value)}

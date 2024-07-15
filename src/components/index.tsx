@@ -181,10 +181,10 @@ export default function Header() {
   }, [toggleProfile, toggleNotify, toggleMenu, toggleSearch])
 
   return (
-    <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
-      <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  px-6 py-4 shadow-sm mx-auto">
+    <header className="w-full fixed text-gray-600 body-font z-50 bg-white ">
+      <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  pl-2 pr-4 py-4 mx-auto">
         <div className="md:grow-0">
-          <h1>
+          <h1 className="font-BMJUA text-lg">
             <Link
               href="/"
               className="flex h-full title-font font-medium items-center text-gray-900"
