@@ -5,6 +5,7 @@ import {
   PostingFigure,
   Recipe,
   PostingFigureAboutRecipe,
+  PostingFigureSearch,
 } from '../recipe'
 
 export interface Response {
@@ -163,6 +164,14 @@ export interface GetComment extends Response {
 export interface GetPostingAboutRecipe extends Response {
   data: {
     posts: PostingFigureAboutRecipe[]
+    nextPage: boolean
+  }
+}
+
+// 게시글 - 검색
+export interface GetPostingSearchData extends Response {
+  data: {
+    posts: PostingFigureSearch[]
     nextPage: boolean
   }
 }
