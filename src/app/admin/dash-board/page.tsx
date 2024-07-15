@@ -23,6 +23,7 @@ import {
   Legend,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import { DashBoardSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
 
 ChartJS.register(
   CategoryScale,
@@ -75,6 +76,7 @@ const DashBoard = () => {
   })
   const [counts, setCounts] = useState<Counts[]>([])
   const [interval, setInterval] = useState('일간')
+  const [loading, setLoading] = useState(true)
 
   const fetchBasicVisit = async () => {
     const alldayVisit = await getAllDayVisit()
@@ -148,14 +150,18 @@ const DashBoard = () => {
   }
 
   useEffect(() => {
-    fetchBasicVisit()
-    fetchVisitData(interval)
-    fetchCounts()
+    const fetchData = async () => {
+      await fetchBasicVisit()
+      await fetchVisitData(interval)
+      await fetchCounts()
+      setLoading(false)
+    }
+    fetchData()
   }, [interval])
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     interaction: {
       mode: 'index' as const,
       intersect: false,
@@ -182,60 +188,68 @@ const DashBoard = () => {
       },
     },
   }
-
+  if (loading) {
+    return <DashBoardSkeletonLoader />
+  }
   return (
-    <div className="md:p-4 bg-gray-100 ">
-      <h1 className="text-xl font-semibold mb-2">대시보드</h1>
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {counts.map((el, idx) => (
-          <div
-            key={idx}
-            className="flex flex-col py-3 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
-          >
-            <div>{el.type}</div>
-            <div>{el.count}</div>
-          </div>
-        ))}
-      </section>
-      <section className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <div className="flex flex-col md:flex-row items-center justify-around">
-          <div className="flex flex-col items-center mb-4 md:mb-0">
-            <div className="text-lg font-semibold">오늘 방문수</div>
-            <div className="text-2xl">{numberOfVisit?.todayVisit}</div>
-          </div>
-          <div className="flex flex-col items-center mb-4 md:mb-0">
-            <div className="text-lg font-semibold">전일 방문수</div>
-            <div className="text-2xl">{numberOfVisit?.yesterdayVisit}</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="text-lg font-semibold">누적 방문수</div>
-            <div className="text-2xl">
-              {numberOfVisit?.alldayVisit?.toLocaleString()}
+    <div className="bg-gray-100">
+      <div className="md:p-4">
+        <h1 className="text-xl font-semibold mb-2">대시보드</h1>
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {counts.map((el, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col py-3 px-4 gap-y-4 items-center bg-white rounded-lg shadow-md text-xl"
+            >
+              <div>{el.type}</div>
+              <div>{el.count}</div>
+            </div>
+          ))}
+        </section>
+        <section className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div className="flex flex-col md:flex-row items-center justify-around">
+            <div className="flex flex-col items-center mb-4 md:mb-0">
+              <div className="text-lg font-semibold">오늘 방문수</div>
+              <div className="text-2xl">{numberOfVisit?.todayVisit}</div>
+            </div>
+            <div className="flex flex-col items-center mb-4 md:mb-0">
+              <div className="text-lg font-semibold">전일 방문수</div>
+              <div className="text-2xl">{numberOfVisit?.yesterdayVisit}</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-lg font-semibold">누적 방문수</div>
+              <div className="text-2xl">
+                {numberOfVisit?.alldayVisit?.toLocaleString()}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="text-right mb-4">
-          {CHART_INTERVALS.map((el, idx) => (
-            <button
-              key={idx}
-              className={`border px-3 py-1 rounded-lg mx-1 transition ${el === interval && 'bg-blue-100 text-white'}`}
-              onClick={() => {
-                setInterval(el)
-              }}
-            >
-              {el}
-            </button>
-          ))}
-        </div>
-        {visitData.labels.length > 0 && (
-          <div className="relative w-full h-80">
-            <Line options={options} data={visitData} />
+        <section className="w-full bg-white p-6 rounded-lg shadow-md ">
+          <div className="flex flex-wrap justify-end text-right mb-4">
+            {CHART_INTERVALS.map((el, idx) => (
+              <button
+                key={idx}
+                className={`border px-3 py-1 rounded-lg mx-1 transition ${el === interval && 'bg-blue-100 text-white'}`}
+                onClick={() => {
+                  setInterval(el)
+                }}
+              >
+                {el}
+              </button>
+            ))}
           </div>
-        )}
-      </section>
+          {visitData.labels.length > 0 && (
+            <div className="flex justify-center w-full h-full relative">
+              <Line
+                options={options}
+                data={visitData}
+                style={{ width: '100%', height: '100%' }}
+              />
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   )
 }
