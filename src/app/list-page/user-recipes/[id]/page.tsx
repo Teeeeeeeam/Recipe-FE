@@ -124,7 +124,7 @@ export default function RecipeDetailUser() {
                 />
                 <div className="lg:w-1/2 w-full lg:pl-10 lg:pt-6 mb-6 lg:mb-0 flex flex-col justify-between">
                   <h4 className="text-gray-900 text-3xl title-font font-medium mb-4">
-                    {thisInfo.recipe.title}
+                    {thisInfo.postTitle}
                   </h4>
                   <div className="detail-bottom">
                     <ul className="flex justify-between w-[70%] mx-auto mb-4">
@@ -185,8 +185,11 @@ export default function RecipeDetailUser() {
             </div>
           </section>
           <section className="mb-5 px-5">
-            <div className="p-2 border min-h-60 bg-white">
-              <h5 className="text-2xl mb-3">내용</h5>
+            <div className="p-2 min-h-60">
+              <p className="text-2xl mb-3 pb-3 border-b border-gray-400">
+                &#91;{thisInfo.recipe.title}&#93;
+                <span className="text-lg"> 후기</span>
+              </p>
               <p className="overflow-wrap break-words">
                 {thisInfo.postContent}
               </p>

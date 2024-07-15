@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { HeaderSizeMobile, HeaderSizeWeb } from './header-responsive'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSelectedLayoutSegment } from 'next/navigation'
 
 export default function Header() {
   const [isSession, setIsSession] = useState<boolean>(false)
@@ -180,54 +180,67 @@ export default function Header() {
     }
   }, [toggleProfile, toggleNotify, toggleMenu, toggleSearch])
 
+  const [isPopup, setIsPopup] = useState<boolean>(false)
+  const url = useSelectedLayoutSegment()
+  useEffect(() => {
+    if (url === 'search-recipe') {
+      setIsPopup(true)
+    }
+  }, [url])
+
   return (
-    <header className="w-full fixed text-gray-600 body-font z-50 bg-white ">
-      <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  pl-2 pr-4 py-4 mx-auto">
-        <div className="md:grow-0">
-          <h1 className="font-BMJUA text-lg">
-            <Link
-              href="/"
-              className="flex h-full title-font font-medium items-center text-gray-900"
-            >
-              <Image
-                src={'/logo.png'}
-                alt="logo"
-                width={40}
-                height={40}
-                priority
-              />
-              요리 공유소
-            </Link>
-          </h1>
-        </div>
-        <HeaderSizeWeb
-          isSession={isSession}
-          eventCount={eventCount}
-          state={state}
-          inputValue={inputValue}
-          logOutBtn={logOutBtn}
-          searchHeader={searchHeader}
-          setInputValue={setInputValue}
-          toggleProfile={toggleProfile}
-          toggleNotify={toggleNotify}
-          setToggleProfile={setToggleProfile}
-          setToggleNotify={setToggleNotify}
-        />
-        <HeaderSizeMobile
-          isSession={isSession}
-          eventCount={eventCount}
-          inputValue={inputValue}
-          logOutBtn={logOutBtn}
-          searchHeader={searchHeader}
-          setInputValue={setInputValue}
-          toggleMenu={toggleMenu}
-          toggleSearch={toggleSearch}
-          toggleNotify={toggleNotify}
-          setToggleMenu={setToggleMenu}
-          setToggleSearch={setToggleSearch}
-          setToggleNotify={setToggleNotify}
-        />
-      </nav>
-    </header>
+    <>
+      {!isPopup && (
+        <header className="w-full fixed text-gray-600 body-font z-50 bg-gray-300 ">
+          <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  px-6 py-4 shadow-sm mx-auto">
+            <div className="md:grow-0">
+              <h1>
+                <Link
+                  href="/"
+                  className="flex h-full title-font font-medium items-center text-gray-900"
+                >
+                  <Image
+                    src={'/logo.png'}
+                    alt="logo"
+                    width={40}
+                    height={40}
+                    priority
+                  />
+                  요리 공유소
+                </Link>
+              </h1>
+            </div>
+            <HeaderSizeWeb
+              isSession={isSession}
+              eventCount={eventCount}
+              state={state}
+              inputValue={inputValue}
+              logOutBtn={logOutBtn}
+              searchHeader={searchHeader}
+              setInputValue={setInputValue}
+              toggleProfile={toggleProfile}
+              toggleNotify={toggleNotify}
+              setToggleProfile={setToggleProfile}
+              setToggleNotify={setToggleNotify}
+            />
+            <HeaderSizeMobile
+              isSession={isSession}
+              eventCount={eventCount}
+              state={state}
+              inputValue={inputValue}
+              logOutBtn={logOutBtn}
+              searchHeader={searchHeader}
+              setInputValue={setInputValue}
+              toggleMenu={toggleMenu}
+              toggleSearch={toggleSearch}
+              toggleNotify={toggleNotify}
+              setToggleMenu={setToggleMenu}
+              setToggleSearch={setToggleSearch}
+              setToggleNotify={setToggleNotify}
+            />
+          </nav>
+        </header>
+      )}
+    </>
   )
 }

@@ -14,6 +14,7 @@ import {
   GetPostingDetail,
   GetPostingList,
   GetPostingListParams,
+  GetPostingSearchData,
   GetRecipeDetail,
   GetRecipeList,
   GetRecipeListParams,
@@ -269,6 +270,26 @@ export async function getPostingAboutRecipe(
     url: last
       ? `/api/posts/${recipeId}?${newQuery.toString()}`
       : `/api/posts/${recipeId}`,
+    params,
+  })
+  return payload
+}
+
+// 게시글 - 검색
+export async function getPostingSearch(
+  title: string,
+  params: any,
+  lastId?: number | null,
+) {
+  const newQuery = new URLSearchParams()
+  newQuery.append('postTitle', title)
+  if (lastId) {
+    newQuery.append('lastId', String(lastId))
+  }
+
+  const { payload } = await requester<GetPostingSearchData>({
+    method: 'GET',
+    url: `/api/posts/search?${newQuery.toString()}`,
     params,
   })
   return payload

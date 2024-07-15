@@ -3,13 +3,18 @@
 import { postingWrite } from '@/api/recipe-apis'
 import { getLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import PostingContent from '../posting-content'
 import PostingSelect from '../posting-select'
 import PostingPassword from '../posting-password'
 import PostingImageUploader from '../posting-image-uploader'
 import { POSTING_LEVEL, POSTING_PEOPLE, POSTING_TIME } from '../constants'
+
+interface SelectedRecipe {
+  id: number
+  title: string
+}
 
 export default function Write() {
   const [thisTitle, setThisTitle] = useState<string>('')
@@ -20,42 +25,61 @@ export default function Write() {
   const [thisLevel, setThisLevel] = useState<string>('')
   const [thisCont, setThisCont] = useState<string>('')
   const [thisPw, setThisPw] = useState<string>('')
+  const [thisRecipeId, setThisRecipeId] = useState<number>(0)
+  const [selectedRecipe, setSelectedRecipe] = useState<SelectedRecipe | null>(
+    null,
+  )
 
   const imgRef = useRef<HTMLInputElement>(null)
   const state = useSelector((state: RootState) => state.writeRecipe)
 
+  useEffect(() => {
+    if (typeof state.id === 'number') {
+      setThisRecipeId(state.id)
+    } else if (selectedRecipe) {
+      setThisRecipeId(selectedRecipe.id)
+    }
+  }, [state, selectedRecipe])
+
+  async function postRecipeData() {
+    try {
+      const option = {
+        writeReq: {
+          postTitle: thisTitle,
+          postContent: thisCont,
+          postCookingTime: thisTime,
+          postCookingLevel: thisLevel,
+          postServing: thisPeople,
+          recipeId: thisRecipeId,
+          postPassword: thisPw,
+        },
+        writeFile: file!,
+      }
+      const hasEmptyData = Object.values(option.writeReq).some(
+        (value) => value === '',
+      )
+      const hasRecipeId = option.writeReq.recipeId === 0
+
+      if (hasEmptyData) {
+        alert('양식을 모두 채워주세요')
+      } else if (option.writeFile === null) {
+        alert('이미지를 첨부해주세요')
+      } else if (hasRecipeId) {
+        alert('참조할 레시피가 선택되지 않았습니다')
+      } else {
+        await postingWrite(option)
+        window.location.href = state.direct
+          ? `/list-page/main-recipes/${thisRecipeId}`
+          : '/list-page/user-recipes'
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   function submitHandler(e: any) {
     e.preventDefault()
     const accessToken = getLocalStorage('accessToken')
-    async function postRecipeData() {
-      try {
-        const option = {
-          writeReq: {
-            postTitle: thisTitle,
-            postContent: thisCont,
-            postCookingTime: thisTime,
-            postCookingLevel: thisLevel,
-            postServing: thisPeople,
-            recipeId: Number(state.id),
-            postPassword: thisPw,
-          },
-          writeFile: file!,
-        }
-        const hasEmptyData = Object.values(option.writeReq).some(
-          (value) => value === '',
-        )
-        if (hasEmptyData) {
-          alert('양식을 모두 채워주세요')
-        } else if (option.writeFile === null) {
-          alert('이미지를 첨부해주세요')
-        } else {
-          await postingWrite(option)
-          window.location.href = `/list-page/main-recipes/${state.id}`
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
     if (accessToken) {
       postRecipeData()
     }
@@ -80,11 +104,29 @@ export default function Write() {
     }
   }
 
+  function openRecipePopup() {
+    const popup = window.open(
+      '/search-recipe',
+      'SearchRecipe',
+      'width=500,height=600',
+    )
+    // 팝업 창에서 메시지를 받는 이벤트 리스너
+    window.addEventListener('message', (e) => {
+      if (popup && e.data.type === 'RECIPE_SELECTED') {
+        setSelectedRecipe(e.data.recipe)
+        popup.close()
+      } else {
+        setSelectedRecipe(null)
+      }
+    })
+  }
+
   return (
     <div className="p-4 bg-gray-50 h-full">
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-[5fr_1fr] justify-between items-center gap-x-4 mb-6">
           <input
+            type="text"
             placeholder="게시글 제목"
             onChange={(e) => setThisTitle(e.target.value)}
             className="w-full py-3 px-4 bg-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -95,6 +137,20 @@ export default function Write() {
             className="py-3 bg-blue-50 text-white rounded-md shadow-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-green-300"
           >
             <span>등록</span>
+          </button>
+        </div>
+        <div className="flex justify-center mb-4">
+          <input
+            type="text"
+            value={state.title || selectedRecipe?.title || ''}
+            readOnly
+            className="w-[50%] py-2 px-3 rounded-md"
+          />
+          <button
+            onClick={() => openRecipePopup()}
+            className="rounded-md ml-1 px-1 py-2 bg-blue-50 text-white"
+          >
+            검색
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

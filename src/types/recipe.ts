@@ -101,3 +101,11 @@ export interface PostingFigureAboutRecipe {
   postLikeCount: number
   postTitle: string
 }
+
+// 게시글 - 검색 figure
+export interface PostingFigureSearch extends PostingFigure {
+  recipe: {
+    id: number
+    title: string
+  }
+}

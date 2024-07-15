@@ -2,6 +2,7 @@ import { Recipe } from '@/types/recipe'
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface Init {
+  direct: boolean | null
   id: number | null
   likeCount: number | null
   cookingLevel: string | null
@@ -13,6 +14,7 @@ interface Init {
 }
 
 const initialState: Init = {
+  direct: null,
   id: null,
   likeCount: null,
   cookingLevel: null,
@@ -26,11 +28,12 @@ const writeRecipeSlice = createSlice({
   name: 'writeRecipe',
   initialState,
   reducers: {
-    postWriteState: (state, action: PayloadAction<Recipe>) => {
+    initWriteState: () => initialState,
+    postWriteState: (state, action: PayloadAction<Init>) => {
       return action.payload
     },
   },
 })
 
-export const { postWriteState } = writeRecipeSlice.actions
+export const { postWriteState, initWriteState } = writeRecipeSlice.actions
 export default writeRecipeSlice.reducer

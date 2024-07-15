@@ -2,7 +2,7 @@
 
 import { getRecipeDetail } from '@/api/recipe-apis'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { RecipeDetail, ThreeCookInfo } from '@/types/recipe'
 import Link from 'next/link'
@@ -14,8 +14,6 @@ import {
   doBookmark,
   doLikeForRecipe,
 } from '@/api/login-user-apis'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
 import PostingTop from './posting-top'
 
 export default function RecipeDetailMain() {
@@ -26,21 +24,21 @@ export default function RecipeDetailMain() {
 
   const params = useParams()
   const thisId = Number(params.id)
-  const userInfo = useSelector((state: RootState) => state.userInfo)
   const dispatch = useDispatch()
   const accessToken = localStorage.getItem('accessToken')
+  const router = useRouter()
 
   useEffect(() => {
     getData()
     if (accessToken) {
       getLike()
+      getBookMark()
     }
   }, [like, bookmark])
 
   async function getData() {
     try {
       const resultData = await getRecipeDetail(thisId)
-      const resultBookmark = await checkBookmark(thisId)
       const createThree = (title: string, data: string, img: string) => {
         return {
           title,
@@ -59,7 +57,6 @@ export default function RecipeDetailMain() {
       ]
       setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
-      setBookmark(resultBookmark.success)
     } catch (error) {
       console.log(error)
     }
@@ -75,16 +72,29 @@ export default function RecipeDetailMain() {
   }
 
   async function likeHandler() {
-    const userId = userInfo.id
     try {
-      if (userId) {
+      if (accessToken) {
         const option = {
           recipeId: thisId,
         }
         await doLikeForRecipe(option)
         const result = await checkLikesForRecipe(thisId)
         setLike(result.success)
+      } else {
+        const isLogin = confirm(
+          '로그인이 필요한 서비스 입니다. 로그인을 하시겠습니까?',
+        )
+        isLogin ? router.push('/user/login') : null
       }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function getBookMark() {
+    try {
+      const result = await checkBookmark(thisId)
+      setBookmark(result.success)
     } catch (error) {
       console.log(error)
     }
@@ -95,8 +105,15 @@ export default function RecipeDetailMain() {
       const options = {
         recipeId: thisId,
       }
-      const result = await doBookmark(options)
-      setBookmark(result.success)
+      if (accessToken) {
+        const result = await doBookmark(options)
+        setBookmark(result.success)
+      } else {
+        const isLogin = confirm(
+          '로그인이 필요한 서비스 입니다. 로그인을 하시겠습니까?',
+        )
+        isLogin ? router.push('/user/login') : null
+      }
     } catch (error) {
       console.log(error)
     }
@@ -162,7 +179,8 @@ export default function RecipeDetailMain() {
                             : '/user/login'
                         }
                         onClick={() => {
-                          dispatch(postWriteState(thisInfo.recipe))
+                          const newData = { ...thisInfo.recipe, direct: true }
+                          dispatch(postWriteState(newData))
                         }}
                         className="block w-full"
                       >
