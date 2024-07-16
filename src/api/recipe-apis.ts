@@ -181,10 +181,14 @@ export async function postingVerifyPassword(req: PostingVerifyPasswordReq) {
 }
 
 // 게시글 - 댓글 조회
-export async function getComment(params: GetCommentParams, postId: number) {
+export async function getComment(
+  params: GetCommentParams,
+  postId: number,
+  lastId?: number | null,
+) {
   const { payload } = await requester<GetComment>({
     method: 'GET',
-    url: `/api/comments?postId=${postId}`,
+    url: `/api/user/posts/${postId}/comments${lastId ? `?lastId=${lastId}` : ''}`,
     params,
   })
   return payload

@@ -73,8 +73,12 @@ export interface PostingDetailRecipe {
 export interface Comments {
   id: number
   commentContent: string
-  nickName: string
   createdAt: string
+  member: {
+    username: string
+    nickname: string
+    loginId: string
+  }
 }
 
 // 수정페이지 렌더링용 초기 데이터

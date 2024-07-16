@@ -7,34 +7,49 @@ import {
 } from '@/api/recipe-apis'
 import { Comments } from '@/types/recipe'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface PropsType {
   thisId: number
   userId: string | null
 }
 export function Comment({ thisId, userId }: PropsType) {
-  const [comment, setComment] = useState<Comments[] | []>([])
+  const [comment, setComment] = useState<Comments[]>([])
   const [mount, setMount] = useState<boolean>(false)
   const [content, setContent] = useState<string>('')
   const [isMod, setIsMod] = useState<{ [key: number]: boolean }>({})
   const [saveComment, setSaveComment] = useState<{ [key: number]: string }>({})
   const [isDel, setIsDel] = useState<boolean>(false)
   const [targetDel, setTargetDel] = useState<number | null>(null)
+  const [lastId, setLastId] = useState<number | null>(null)
+  const [next, setNext] = useState<boolean>(false)
+
+  const loader = useRef(null)
 
   useEffect(() => {
-    getCommentData()
+    getCommentData(true)
   }, [mount])
 
-  async function getCommentData() {
+  async function getCommentData(isInit: boolean) {
     try {
       const option = {
-        page: 0,
-        size: 100,
-        sort: [''].join(''),
+        size: 5,
       }
-      const result = await getComment(option, thisId)
-      setComment(result.data.content)
+      const result = await getComment(option, thisId, lastId)
+      if (isInit) {
+        setComment(result.data.comment)
+      } else {
+        setComment((prev) => {
+          const newData = result.data.comment
+          return [...prev, ...newData]
+        })
+      }
+      if (result.data.comment.length > 0) {
+        const dataLastId =
+          result.data.comment[result.data.comment.length - 1].id
+        setLastId(dataLastId)
+      }
+      setNext(result.data.nextPage)
     } catch (error) {
       console.log(error)
     }
@@ -101,6 +116,32 @@ export function Comment({ thisId, userId }: PropsType) {
     }
   }
 
+  // Intersection Observer 콜백 함수
+  const handleObserver = useCallback(
+    (entries: any) => {
+      const target = entries[0]
+      if (target.isIntersecting) {
+        if (next) {
+          getCommentData(false)
+        }
+      }
+    },
+    [comment],
+  )
+  // Intersection Observer 설정
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0.1,
+    }
+    const observer = new IntersectionObserver(handleObserver, option)
+    if (loader.current) {
+      observer.observe(loader.current)
+    }
+    return () => observer.disconnect()
+  }, [handleObserver])
+
   return (
     <>
       <div className="w-full mb-4 border-b border-black">
@@ -145,7 +186,7 @@ export function Comment({ thisId, userId }: PropsType) {
               >
                 <div className="w-full text-left">
                   <div className="mb-2 flex flex-col justify-between text-gray-600 sm:flex-row">
-                    <p className="font-medium">{item.nickName}</p>
+                    <p className="font-medium">{item.member.nickname}</p>
                     <span className="text-xs">{thisDate}</span>
                   </div>
                   {isMod[item.id] ? (
@@ -217,6 +258,7 @@ export function Comment({ thisId, userId }: PropsType) {
               </div>
             )
           })}
+          <div ref={loader}></div>
         </div>
       )}
 
