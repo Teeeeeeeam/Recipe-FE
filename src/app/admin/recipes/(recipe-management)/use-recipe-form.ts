@@ -89,7 +89,20 @@ const useRecipeForm = () => {
   }
 
   const handleWriteSubmit = async () => {
-    if (formData.file) {
+    if (
+      !formData.title ||
+      !formData.cookLevel ||
+      !formData.people ||
+      !formData.ingredients ||
+      !formData.cookTime ||
+      !formData.cookStep ||
+      !formData.file ||
+      !formData.cookIngredients ||
+      !formData.cookMethods ||
+      !formData.dishTypes
+    ) {
+      alert('빈 칸이 없는지 확인해주세요')
+    } else if (formData.file) {
       if (confirm('게시글을 등록하시겠습니까?')) {
         await postRecipe(
           formData.title,

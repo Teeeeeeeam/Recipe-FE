@@ -6,6 +6,7 @@ import { NoticeInfo } from '@/types/admin'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import NoResult from '../no-result'
 interface NoticeListProps {
   notices: NoticeInfo[]
   lastElementRef: React.RefObject<HTMLDivElement>
@@ -86,7 +87,7 @@ const NoticeList = ({
         <li>{isAdmin && '관리'}</li>
       </ul>
       <div className="flex flex-col space-y-2 mt-2">
-        {notices &&
+        {notices.length !== 0 ? (
           notices.map((notice) => (
             <ul
               key={notice.id}
@@ -146,7 +147,10 @@ const NoticeList = ({
                   </div>
                 )}
             </ul>
-          ))}
+          ))
+        ) : (
+          <NoResult />
+        )}
         <div ref={lastElementRef}></div>
       </div>
     </div>

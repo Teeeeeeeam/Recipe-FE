@@ -58,7 +58,7 @@ const AdminRecipe = () => {
           isWrite
         >
           <AdminInput
-            placeholder="레시피 정보 입력"
+            placeholder="레시피 정보 입력 (2글자 이상)"
             state={searchInput}
             setState={setSearchInput}
           />

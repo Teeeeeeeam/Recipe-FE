@@ -9,6 +9,7 @@ import AdminFilter from '@/components/layout/admin/admin-filter'
 import AdminInput from '@/components/common/admin-input'
 import { useSearchParams } from 'next/navigation'
 import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
+import NoResult from '@/components/layout/no-result'
 
 const UserPosts = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -18,10 +19,10 @@ const UserPosts = () => {
 
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
+  const { id, recipeTitle, postTitle } = params
 
   const { posts, setPosts, fetchPosts, hasMore, loading, initialLoading } =
     usePosts(params)
-  const lastElementRef = useInfiniteScroll(fetchPosts, hasMore)
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(filter, searchInput)
@@ -29,20 +30,18 @@ const UserPosts = () => {
   }
 
   useEffect(() => {
-    const { id, recipeTitle, postTitle } = params
-
-    if (id) {
+    if (!!id) {
       setFilter('아이디')
       setSearchInput(id)
-    } else if (recipeTitle) {
+    } else if (!!recipeTitle) {
       setFilter('레시피 제목')
       setSearchInput(recipeTitle)
-    } else if (postTitle) {
+    } else if (!!postTitle) {
       setFilter('요리글 제목')
       setSearchInput(postTitle)
     }
-  }, [params])
-
+  }, [id, recipeTitle, postTitle])
+  const lastElementRef = useInfiniteScroll(fetchPosts, hasMore)
   const handleGetCommentClick = (id: number) => {
     setActiveCommentId((prev) => (prev === id ? null : id))
   }
@@ -63,7 +62,7 @@ const UserPosts = () => {
           redirectUrl="user-posts"
         >
           <AdminInput
-            placeholder="요리글 정보 입력"
+            placeholder="요리글 정보 입력 (2글자 이상)"
             state={searchInput}
             setState={setSearchInput}
           />
@@ -71,6 +70,8 @@ const UserPosts = () => {
       </form>
       {initialLoading ? (
         <AdminListSkeletonLoader />
+      ) : posts.length === 0 ? (
+        <NoResult />
       ) : (
         <PostList
           posts={posts}

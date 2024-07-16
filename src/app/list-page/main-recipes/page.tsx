@@ -101,7 +101,7 @@ const MainRecipes = () => {
   }
   if (!recipes) return null
   return (
-    <div className="bg-white">
+    <div>
       <div className="flex flex-col">
         <CategorySelector
           label="재료별"

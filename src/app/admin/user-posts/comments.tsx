@@ -61,8 +61,8 @@ const Comments = ({ id }: { id: number }) => {
   }
 
   return (
-    <div className="p-4 w-full max-h-[500px] border bg-white rounded shadow">
-      <h1 className="text-lg font-semibold mb-4">{`댓글 ${comments.length}`}</h1>
+    <div className="p-4 w-full max-h-[500px] border bg-white rounded shadow overflow-y-auto">
+      <h1 className="text-lg font-semibold mb-2">{`댓글 ${comments.length}`}</h1>
       <div className="bg-gray-100 p-2 font-semibold rounded">
         <ul className="grid grid-cols-[0.51fr_3fr_6fr_1fr] md:grid-cols-[0.51fr_2fr_7fr_2fr_1fr] items-center text-[12px] gap-x-2">
           <li className="flex items-center pl-2">

@@ -34,7 +34,7 @@ const Login = () => {
         if (userInfo.roles === 'ROLE_ADMIN') {
           router.push('/admin/dash-board')
         } else {
-          router.push('/')
+          router.back()
         }
       } catch {
         alert('아이디와 비밀번호를 확인해주세요')
