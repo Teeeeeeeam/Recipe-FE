@@ -8,7 +8,14 @@ const useInfiniteScroll = (
   id?: number,
 ) => {
   const lastElementRef = useRef<HTMLDivElement>(null)
+  const isFirstRender = useRef(true)
+
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
     if (!hasMore) return
     const options = {
       root: null,

@@ -9,6 +9,7 @@ import AdminFilter from '@/components/layout/admin/admin-filter'
 import AdminInput from '@/components/common/admin-input'
 import { useSearchParams } from 'next/navigation'
 import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
+import NoResult from '@/components/layout/no-result'
 
 const Members = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -16,7 +17,7 @@ const Members = () => {
 
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
-
+  const { loginId, username, email, nickname } = params
   const {
     members,
     setMembers,
@@ -28,8 +29,6 @@ const Members = () => {
   const lastElementRef = useInfiniteScroll(fetchMembers, hasMore)
 
   useEffect(() => {
-    const { loginId, username, email, nickname } = params
-
     if (!!loginId) {
       setFilter('아이디')
       setSearchInput(loginId)
@@ -43,7 +42,7 @@ const Members = () => {
       setFilter('닉네임')
       setSearchInput(nickname)
     }
-  }, [params])
+  }, [loginId, username, email, nickname])
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(filter, searchInput)
@@ -66,7 +65,7 @@ const Members = () => {
           redirectUrl="members"
         >
           <AdminInput
-            placeholder="사용자 검색"
+            placeholder="사용자 검색 (2글자 이상)"
             state={searchInput}
             setState={setSearchInput}
           />
@@ -74,6 +73,8 @@ const Members = () => {
       </form>
       {initialLoading ? (
         <AdminListSkeletonLoader />
+      ) : members.length === 0 ? (
+        <NoResult />
       ) : (
         <MemberList
           members={members}

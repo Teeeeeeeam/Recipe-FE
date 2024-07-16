@@ -28,11 +28,12 @@ const usePosts = (params: Params) => {
         postTitle ?? null,
       )
       const newPosts = res.posts
-      const lastId = newPosts[newPosts.length - 1].id
 
-      setPostId(lastId)
-      setPosts((prev) => [...prev, ...newPosts])
-      setHasMore(res.nextPage)
+      if (newPosts.length > 0) {
+        setPostId(newPosts[newPosts.length - 1].id)
+        setPosts((prev) => [...prev, ...newPosts])
+        setHasMore(res.nextPage)
+      }
     } catch (error) {
       console.log(error)
     } finally {

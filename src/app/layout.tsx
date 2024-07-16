@@ -31,7 +31,7 @@ export default function RootLayout({
         <ReduxProvider>
           <Header />
           <div className="flex bg-[#EDF1F5] pt-[72px] min-h-screen">
-            <div className="grow shrink w-full max-w-[1160px] mx-auto my-0">
+            <div className="grow shrink w-full max-w-[1160px] bg-white mx-auto my-0">
               {children}
             </div>
           </div>
