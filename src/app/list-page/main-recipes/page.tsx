@@ -7,12 +7,14 @@ import {
   DISH_TYPES,
 } from '@/app/admin/recipes/(recipe-management)/constants'
 import CategorySelector from '@/app/category-selector'
+import NoResult from '@/components/layout/no-result'
 import { RecipeSkeletonLoader } from '@/components/layout/skeleton/main-skeleton'
 import { RecipeFigure } from '@/components/recipe-and-posting/recipe-figure'
 import RecipeSearchForm from '@/components/recipe/recipe-search-form'
 import useCategorySelection from '@/hooks/use-category-selection'
 import useInfiniteScroll from '@/hooks/use-infinite-scroll'
 import { Recipe } from '@/types/recipe'
+import { debounce } from 'lodash'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -22,6 +24,7 @@ const MainRecipes = () => {
   const [lastId, setLastId] = useState<number | null>(null)
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
+  const [noResults, setNoResults] = useState<boolean>(false)
   const router = useRouter()
 
   const searchParams = useSearchParams()
@@ -35,18 +38,21 @@ const MainRecipes = () => {
     clickCategoryHandler,
   } = useCategorySelection(params)
 
-  const fetchGetCategoryRecipe = async () => {
+  const fetchGetCategoryRecipe = debounce(async () => {
     if (!hasMore || loading) return
     setLoading(true)
+    const newCat1 = !!cat1 ? cat1.split(',') : null
+    const newCat2 = !!cat2 ? cat2.split(',') : null
+    const newCat3 = !!cat3 ? cat3.split(',') : null
     const newIngredients = !!ingredients ? ingredients.split(',') : null
 
     try {
       const res = await getCategoryRecipe(
         title ?? null,
         newIngredients ?? null,
-        selectedIngredient ?? null,
-        selectedMethod ?? null,
-        selectedDishType ?? null,
+        newCat1 ?? null,
+        newCat2 ?? null,
+        newCat3 ?? null,
         order !== 'DATE' ? lastCount ?? null : null,
         lastCount === 0 ? lastId : null,
         !!order ? order : 'LIKE',
@@ -54,18 +60,23 @@ const MainRecipes = () => {
       )
 
       const newRecipes = res.recipes
-      setRecipes((prev) =>
-        lastId === null ? [...newRecipes] : [...prev, ...newRecipes],
-      )
-      setLastCount(newRecipes[newRecipes.length - 1]?.likeCount ?? null)
-      setLastId(newRecipes[newRecipes.length - 1]?.id ?? null)
-      setHasMore(res.nextPage)
+      if (newRecipes.length > 0) {
+        setRecipes((prev) =>
+          lastId === null ? [...newRecipes] : [...prev, ...newRecipes],
+        )
+        setLastCount(newRecipes[newRecipes.length - 1]?.likeCount ?? null)
+        setLastId(newRecipes[newRecipes.length - 1]?.id ?? null)
+        setHasMore(res.nextPage)
+        setNoResults(false)
+      } else {
+        setNoResults(true)
+      }
     } catch (err) {
       console.log(err)
     } finally {
       setLoading(false)
     }
-  }
+  }, 300)
 
   useEffect(() => {
     setRecipes([])
@@ -73,6 +84,7 @@ const MainRecipes = () => {
     setLastId(null)
     setHasMore(true)
     setLoading(false)
+    setNoResults(false)
   }, [cat1, cat2, cat3, title, ingredients, order])
 
   useEffect(() => {
@@ -182,6 +194,8 @@ const MainRecipes = () => {
 
       {loading ? (
         <RecipeSkeletonLoader />
+      ) : noResults ? (
+        <NoResult />
       ) : (
         <div className="md:px-8 grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-5 my-1">
           <RecipeFigure recipes={recipes} />

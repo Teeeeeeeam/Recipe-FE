@@ -18,14 +18,8 @@ const Members = () => {
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
   const { loginId, username, email, nickname } = params
-  const {
-    members,
-    setMembers,
-    fetchMembers,
-    hasMore,
-    loading,
-    initialLoading,
-  } = useMembers(params)
+  const { members, fetchMembers, hasMore, loading, initialLoading } =
+    useMembers(params)
   const lastElementRef = useInfiniteScroll(fetchMembers, hasMore)
 
   useEffect(() => {
@@ -45,8 +39,13 @@ const Members = () => {
   }, [loginId, username, email, nickname])
 
   const handleSearchSubmit = () => {
+    if (searchInput.length === 0) return
+    if (searchInput.length === 1) {
+      alert('검색은 2글자 이상만 가능합니다')
+      return
+    }
     const queryString = buildQueryString(filter, searchInput)
-    updateUrlAndFetchMembers(queryString, setMembers, fetchMembers)
+    updateUrlAndFetchMembers(queryString)
   }
 
   return (

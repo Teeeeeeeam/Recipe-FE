@@ -45,7 +45,7 @@ const PostList = ({
   }
 
   return (
-    <div className="bg-white p-4 rounded shadow text-[12px] md:text-[14px] mt-4">
+    <div className="bg-white md:p-4 rounded shadow text-[12px] md:text-[14px] mt-4">
       <ul className="grid grid-cols-[0.5fr_2fr_2fr_1.5fr] md:grid-cols-[0.5fr_1fr_2fr_2fr_2fr_1.5fr_1.5fr] text-center font-semibold bg-gray-200 p-2 rounded-t">
         <li className="flex justify-center items-center">
           <div className="relative flex">
@@ -89,17 +89,23 @@ const PostList = ({
                 />
               </li>
               <li className="hidden md:block">{post.id}</li>
-              <Link href={`/list-page/user-recipes/${post.id}`}>
-                <li className="cursor-pointer hover:text-blue-100">
+              <Link
+                href={`/list-page/user-recipes/${post.id}`}
+                className="truncate"
+              >
+                <li className="cursor-pointer hover:text-blue-100 truncate">
                   {post.postTitle}
                 </li>
               </Link>
               <li>{post.member.nickname}</li>
-              <li className="hover:text-blue-100 hidden md:block">
-                <Link href={`/list-page/main-recipes/${post.recipe.id}`}>
+              <Link
+                href={`/list-page/main-recipes/${post.recipe.id}`}
+                className="hidden md:block truncate"
+              >
+                <li className="hover:text-blue-100 truncate">
                   {post.recipe.title}
-                </Link>
-              </li>
+                </li>
+              </Link>
               <li className="hidden md:block">{post.createdAt}</li>
               <li className="space-x-1">
                 <button

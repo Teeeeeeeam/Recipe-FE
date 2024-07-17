@@ -1,21 +1,16 @@
 'use client'
 
+import { DebouncedFunc } from 'lodash'
 import { useEffect, useRef } from 'react'
 
 const useInfiniteScroll = (
-  fetchMore: () => Promise<void>,
+  fetchMore: DebouncedFunc<() => Promise<void>> | (() => Promise<void>),
   hasMore: boolean,
   id?: number,
 ) => {
   const lastElementRef = useRef<HTMLDivElement>(null)
-  const isFirstRender = useRef(true)
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-
     if (!hasMore) return
     const options = {
       root: null,

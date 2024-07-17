@@ -48,7 +48,10 @@ const Comments = ({ id }: { id: number }) => {
     if (confirm('해당 댓글을 삭제하시겠습니까?')) {
       await deleteComments(arr)
       alert('댓글이 삭제되었습니다.')
-      location.reload()
+      setComments([])
+      setHasMore(true)
+      setLastId(null)
+      getComment()
     }
   }
 
@@ -56,7 +59,10 @@ const Comments = ({ id }: { id: number }) => {
     if (confirm('해당 댓글들을 삭제하시겠습니까?')) {
       await deleteComments(deleteList)
       alert('댓글이 삭제되었습니다.')
-      location.reload()
+      setComments([])
+      setHasMore(true)
+      setLastId(null)
+      getComment()
     }
   }
 

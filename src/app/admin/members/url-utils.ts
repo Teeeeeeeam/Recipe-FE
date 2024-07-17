@@ -15,13 +15,7 @@ export const buildQueryString = (
   return new URLSearchParams(query).toString()
 }
 
-export const updateUrlAndFetchMembers = (
-  queryString: string,
-  setMembers: React.Dispatch<React.SetStateAction<any[]>>,
-  fetchMembers: () => void,
-): void => {
+export const updateUrlAndFetchMembers = (queryString: string): void => {
   const newUrl = `/admin/members?${queryString}`
-  window.location.href = newUrl
-  setMembers([])
-  fetchMembers()
+  window.history.pushState({}, '', newUrl)
 }

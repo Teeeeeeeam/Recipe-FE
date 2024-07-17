@@ -11,13 +11,7 @@ export const buildQueryString = (
   return new URLSearchParams(query).toString()
 }
 
-export const updateUrlAndFetchMembers = (
-  queryString: string,
-  setRecipes: React.Dispatch<React.SetStateAction<any[]>>,
-  fetchRecipes: () => void,
-): void => {
+export const updateUrlAndFetchMembers = (queryString: string): void => {
   const newUrl = `/admin/recipes?${queryString}`
-  window.location.href = newUrl
-  setRecipes([])
-  fetchRecipes()
+  window.history.pushState({}, '', newUrl)
 }

@@ -21,12 +21,17 @@ const UserPosts = () => {
   const params = Object.fromEntries(searchParams.entries())
   const { id, recipeTitle, postTitle } = params
 
-  const { posts, setPosts, fetchPosts, hasMore, loading, initialLoading } =
+  const { posts, fetchPosts, hasMore, loading, initialLoading } =
     usePosts(params)
 
   const handleSearchSubmit = () => {
+    if (searchInput.length === 0) return
+    if (searchInput.length === 1) {
+      alert('검색은 2글자 이상만 가능합니다')
+      return
+    }
     const queryString = buildQueryString(filter, searchInput)
-    updateUrlAndFetchPosts(queryString, setPosts, fetchPosts)
+    updateUrlAndFetchPosts(queryString)
   }
 
   useEffect(() => {
