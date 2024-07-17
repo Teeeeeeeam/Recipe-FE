@@ -9,6 +9,7 @@ import AdminFilter from '@/components/layout/admin/admin-filter'
 import AdminInput from '@/components/common/admin-input'
 import { useSearchParams } from 'next/navigation'
 import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
+import NoResult from '@/components/layout/no-result'
 
 const AdminRecipe = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -17,29 +18,28 @@ const AdminRecipe = () => {
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
 
-  const {
-    recipes,
-    setRecipes,
-    fetchRecipes,
-    hasMore,
-    loading,
-    initialLoading,
-  } = useRecipes(params)
+  const { recipes, fetchRecipes, hasMore, loading, initialLoading } =
+    useRecipes(params)
   const lastElementRef = useInfiniteScroll(fetchRecipes, hasMore)
   const handleSearchSubmit = () => {
+    if (searchInput.length === 0) return
+    if (searchInput.length === 1) {
+      alert('검색은 2글자 이상만 가능합니다')
+      return
+    }
     const queryString = buildQueryString(filter, searchInput)
-    updateUrlAndFetchMembers(queryString, setRecipes, fetchRecipes)
+    updateUrlAndFetchMembers(queryString)
   }
 
+  const { ingredients, title } = params
   useEffect(() => {
-    const { ingredients, title } = params
     if (!!title) {
       setFilter('요리명')
       setSearchInput(title)
     } else if (!!ingredients) {
       setSearchInput(ingredients)
     }
-  }, [params])
+  }, [ingredients, title])
 
   return (
     <div className="md:p-4 bg-gray-100">
@@ -66,6 +66,8 @@ const AdminRecipe = () => {
       </form>
       {initialLoading ? (
         <AdminListSkeletonLoader />
+      ) : recipes.length === 0 ? (
+        <NoResult />
       ) : (
         <RecipeList
           recipes={recipes}

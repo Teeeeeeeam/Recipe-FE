@@ -18,7 +18,8 @@ const Notice = () => {
   const searchParams = useSearchParams()
   const params = Object.fromEntries(searchParams.entries())
 
-  const { notices, setNotices, fetchNotice, hasMore } = useNotice(params)
+  const { notices, fetchNotice, hasMore, loading, initialLoading } =
+    useNotice(params)
   const lastElementRef = useInfiniteScroll(fetchNotice, hasMore)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const Notice = () => {
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(searchInput)
-    updateUrlAndFetchNotices(queryString, setNotices, fetchNotice, false)
+    updateUrlAndFetchNotices(queryString, false)
   }
 
   return (
@@ -47,7 +48,11 @@ const Notice = () => {
           setSearchInput={setSearchInput}
         />
       </form>
-      <NoticeList notices={notices} lastElementRef={lastElementRef} />
+      <NoticeList
+        notices={notices}
+        lastElementRef={lastElementRef}
+        loading={loading}
+      />
     </div>
   )
 }

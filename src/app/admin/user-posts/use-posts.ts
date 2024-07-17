@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getPosts } from '@/api/admin-apis'
 import { PostInfo } from '@/types/admin'
+import { debounce } from 'lodash'
 
 export interface Params {
   recipeTitle?: string
@@ -16,40 +17,47 @@ const usePosts = (params: Params) => {
   const [initialLoading, setInitialLoading] = useState<boolean>(true)
   const { id, recipeTitle, postTitle } = params
 
-  const fetchPosts = useCallback(async () => {
-    if (!hasMore || loading) return
-    setLoading(true)
+  const fetchPosts = useCallback(
+    debounce(async () => {
+      if (!hasMore || loading) return
+      setLoading(true)
 
-    try {
-      const res = await getPosts(
-        postId,
-        id ?? null,
-        recipeTitle ?? null,
-        postTitle ?? null,
-      )
-      const newPosts = res.posts
+      try {
+        const res = await getPosts(
+          postId,
+          id ?? null,
+          recipeTitle ?? null,
+          postTitle ?? null,
+        )
+        const newPosts = res.posts
 
-      if (newPosts.length > 0) {
-        setPostId(newPosts[newPosts.length - 1].id)
-        setPosts((prev) => [...prev, ...newPosts])
-        setHasMore(res.nextPage)
+        if (newPosts.length > 0) {
+          setPostId(newPosts[newPosts.length - 1].id)
+          setPosts((prev) => [...prev, ...newPosts])
+          setHasMore(res.nextPage)
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
+        setInitialLoading(false)
       }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-      setInitialLoading(false)
-    }
-  }, [postId, hasMore, id, recipeTitle, postTitle])
+    }, 300),
+    [postId, hasMore, id, recipeTitle, postTitle],
+  )
 
   useEffect(() => {
     setPosts([])
     setPostId(null)
     setHasMore(true)
     setInitialLoading(true)
-    fetchPosts()
   }, [id, recipeTitle, postTitle])
 
+  useEffect(() => {
+    if (postId === null && hasMore) {
+      fetchPosts()
+    }
+  }, [postId, hasMore])
   return { posts, setPosts, fetchPosts, hasMore, loading, initialLoading }
 }
 
