@@ -64,6 +64,7 @@ export function Comment({ thisId, userId }: PropsType) {
         }
         await commentWrite(option)
         setContent('')
+        setLastId(null)
         setMount(!mount)
       }
     } catch (error) {
@@ -81,6 +82,7 @@ export function Comment({ thisId, userId }: PropsType) {
         await commentMod(options)
         setIsMod((prev) => ({ ...prev, [itemId]: false }))
         setSaveComment((prev) => ({ ...prev, [itemId]: '' }))
+        setLastId(null)
         setMount(!mount)
       } else {
         alert('댓글은 1자 이상 부탁드려요')
@@ -104,6 +106,7 @@ export function Comment({ thisId, userId }: PropsType) {
         await commentDel(options)
         setIsDel(false)
         setTargetDel(null)
+        setLastId(null)
         setMount(!mount)
       }
     } catch (error) {
@@ -198,7 +201,7 @@ export function Comment({ thisId, userId }: PropsType) {
                           [item.id]: e.target.value,
                         }))
                       }}
-                      className="w-full px-2 rounded-md"
+                      className="w-full px-2 border rounded-md"
                     ></textarea>
                   ) : (
                     <p className="text-sm">{item.commentContent}</p>

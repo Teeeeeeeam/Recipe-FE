@@ -85,7 +85,9 @@ export default function SearchRecipe() {
     <div className="bg-gray-50 min-h-screen p-6 font-sans">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">검색</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            레시피명 검색
+          </h2>
           <form onSubmit={handleSearch} className="mb-6">
             <div className="flex">
               <input
