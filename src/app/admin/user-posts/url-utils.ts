@@ -13,13 +13,7 @@ export const buildQueryString = (
   return new URLSearchParams(query).toString()
 }
 
-export const updateUrlAndFetchPosts = (
-  queryString: string,
-  setPosts: React.Dispatch<React.SetStateAction<any[]>>,
-  fetchPosts: () => void,
-): void => {
+export const updateUrlAndFetchPosts = (queryString: string): void => {
   const newUrl = `/admin/user-posts?${queryString}`
-  window.location.href = newUrl
-  setPosts([])
-  fetchPosts()
+  window.history.pushState({}, '', newUrl)
 }

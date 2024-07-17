@@ -7,14 +7,10 @@ export const buildQueryString = (searchInput: string): string => {
 
 export const updateUrlAndFetchNotices = (
   queryString: string,
-  setNotices: React.Dispatch<React.SetStateAction<any[]>>,
-  fetchPosts: () => void,
   isAdmin: boolean,
 ): void => {
   const newUrl = isAdmin
     ? `/admin/notices?${queryString}`
     : `/notices?${queryString}`
-  window.location.href = newUrl
-  setNotices([])
-  fetchPosts()
+  window.history.pushState({}, '', newUrl)
 }
