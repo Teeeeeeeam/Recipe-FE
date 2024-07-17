@@ -17,7 +17,7 @@ const AuthButton = ({ type, children, onClick, isState }: AuthButtonProps) => {
   return (
     <button
       type={type}
-      className="w-full p-2 rounded-md text-white bg-green-100 hover:bg-green-150 text-[12px]"
+      className="w-full px-1 py-2 rounded-md text-white bg-green-100 hover:bg-green-150 text-[12px]"
       onClick={handleClick}
       disabled={isState}
     >

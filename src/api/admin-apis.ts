@@ -153,7 +153,7 @@ export const getPosts = async (
     ...(recipeTitle && { recipeTitle }),
     ...(postTitle && { postTitle }),
     ...(lastId && { lastId: String(lastId) }),
-    size: '10',
+    size: '20',
   }).toString()
   const { payload } = await requester<{ data: Posts }>({
     method: 'get',
@@ -199,7 +199,7 @@ export const getMembers = async (
     ...(username && { username }),
     ...(email && { email }),
     ...(nickname && { nickname }),
-    size: '10',
+    size: '20',
   }).toString()
 
   const { payload } = await requester<Members>({
@@ -224,7 +224,7 @@ export const getNotices = async (
   const params = new URLSearchParams({
     ...(lastId && { lastId: String(lastId) }),
     ...(title && { title }),
-    size: '10',
+    size: '20',
   }).toString()
 
   const { payload } = await requester<Notices>({

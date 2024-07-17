@@ -32,7 +32,7 @@ const NoticeFilter = ({
           목록
         </button>
         <AdminInput
-          placeholder="공지사항 검색"
+          placeholder="공지사항 검색 (2글자 이상)"
           state={searchInput}
           setState={setSearchInput}
           isBorder

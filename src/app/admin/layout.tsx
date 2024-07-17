@@ -33,7 +33,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <AdminSidebar isOpen={isSidebarOpen} segment={segment} />
       </div>
 
-      <div className="pt-8 pb-6 px-4 md:px-6 h-full w-full z-0">{children}</div>
+      <div className="pt-8 pb-6 px-2 md:px-4 h-full w-full z-0">{children}</div>
     </div>
   )
 }

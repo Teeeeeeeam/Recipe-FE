@@ -7,15 +7,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import NoResult from '../no-result'
+import { AdminListSkeletonLoader } from '../skeleton/admin-skeleton'
 interface NoticeListProps {
   notices: NoticeInfo[]
   lastElementRef: React.RefObject<HTMLDivElement>
+  loading: boolean
   isAdmin?: boolean
 }
 
 const NoticeList = ({
   notices,
   lastElementRef,
+  loading,
   isAdmin = false,
 }: NoticeListProps) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -151,7 +154,7 @@ const NoticeList = ({
         ) : (
           <NoResult />
         )}
-        <div ref={lastElementRef}></div>
+        <div ref={lastElementRef}>{loading && <AdminListSkeletonLoader />}</div>
       </div>
     </div>
   )
