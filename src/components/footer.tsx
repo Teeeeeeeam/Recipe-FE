@@ -7,7 +7,7 @@ export default function Footer() {
         <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
           &copy; 2024{' '}
           <Link
-            href="https://www.notion.so/RecipeRadar-b9702fa8f1cc4b02aa23d14a95dfe071"
+            href="https://indecisive-vertebra-5c0.notion.site/RecipeRadar-a4e3107b5a334bebad464e62b9096af0?pvs=4"
             className="hover:underline"
             target="_blank"
           >
