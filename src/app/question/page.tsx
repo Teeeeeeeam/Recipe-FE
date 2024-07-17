@@ -34,7 +34,7 @@ export default function Question() {
           variety === 'account' ? 'ACCOUNT_INQUIRY' : 'GENERAL_INQUIRY',
         title,
         questionContent: content,
-        answer: variety === 'account' ? 'Email' : agreeEmail ? 'EMAIL' : 'NONE',
+        answer: variety === 'account' ? 'EMAIL' : agreeEmail ? 'EMAIL' : 'NONE',
         answerEmail: email,
       }
       const postFile = file
