@@ -145,6 +145,7 @@ export default function Write() {
             value={state.title || selectedRecipe?.title || ''}
             readOnly
             className="w-[50%] py-2 px-3 rounded-md"
+            placeholder="레시피를 검색해주세요"
           />
           <button
             onClick={() => openRecipePopup()}
