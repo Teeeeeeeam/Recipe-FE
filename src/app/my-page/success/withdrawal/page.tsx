@@ -39,7 +39,7 @@ export default function Withdrawal() {
       } else if (loginType !== 'normal') {
         window.location.href =
           `${process.env.NEXT_PUBLIC_API_URL}/api/oauth2/social/unlink?type=` +
-          `${loginType === 'kakao' ? 'kakao' : loginType === 'naver' ? 'naver' : ''}`
+          `${loginType === 'kakao' ? 'kakao' : loginType === 'naver' ? 'naver' : loginType === 'google' ? 'google' : ''}`
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
