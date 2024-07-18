@@ -6,6 +6,7 @@ import {
   updateEmail,
   updateNickName,
   confirmCode,
+  updatePassword,
 } from '@/api/login-user-apis'
 import { RootState } from '@/store'
 import { UserInfo } from '@/types/user'
@@ -14,6 +15,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FormInput from './form-input-for-update'
 import Image from 'next/image'
+import FormInputChange from './form-input-for-change'
 
 export default function UserInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo>()
@@ -23,6 +25,10 @@ export default function UserInfo() {
   const [modNickName, setModNickName] = useState<string>('')
   const [isModEmail, setIsModEmail] = useState<boolean>(false)
   const [modEmail, setModEmail] = useState<string>('')
+  const [isModPw, setIsModPw] = useState<boolean>(false)
+  const [modPw, setModPw] = useState('')
+  const [modPwVerify, setModPwVerify] = useState('')
+
   // email 검증
   const [code, setCode] = useState<string>('')
   const [isSendEmail, setIsSendEmail] = useState<boolean>(false)
@@ -38,8 +44,11 @@ export default function UserInfo() {
     if (!toggle) {
       setIsModNicName(false)
       setIsModEmail(false)
+      setIsModPw(false)
       setModNickName('')
       setModEmail('')
+      setModPw('')
+      setModPwVerify('')
       setCode('')
       setIsSendEmail(false)
       setIsVerify(false)
@@ -74,6 +83,21 @@ export default function UserInfo() {
           code: Number(code),
         }
         await updateEmail(option)
+      }
+      if (isModPw) {
+        if (modPw === '' || modPwVerify === '') {
+          alert('입력란을 채워주세요')
+        } else if (modPw !== modPwVerify) {
+          alert('비밀번호가 일치하지 않습니다')
+        } else if (state.loginId) {
+          const option = {
+            loginId: state.loginId,
+            password: modPw,
+            passwordRe: modPwVerify,
+          }
+          const result = await updatePassword(option)
+          console.log(result)
+        }
       }
       setToggle(false)
       setMount((prev) => !prev)
@@ -118,7 +142,7 @@ export default function UserInfo() {
       <div>
         <div className="mb-36">
           <h4 className="text-2xl mb-3">기본 정보</h4>
-          <table className="w-full">
+          <table className="w-full text-sm md:text-base">
             <tbody>
               <tr className="border-b-2">
                 <td className="py-2 w-1/5">이름</td>
@@ -132,7 +156,7 @@ export default function UserInfo() {
                     <button
                       type="button"
                       onClick={() => {
-                        setIsModEmail(!isModEmail)
+                        setIsModEmail(true)
                         setToggle(!toggle)
                       }}
                     >
@@ -146,7 +170,7 @@ export default function UserInfo() {
         </div>
         <div>
           <h4 className="text-2xl mb-3">로그인 정보</h4>
-          <table className="w-full">
+          <table className="w-full text-sm md:text-base">
             <tbody>
               <tr className="border-b-2">
                 <td className="py-2 w-1/5">아이디</td>
@@ -156,19 +180,34 @@ export default function UserInfo() {
                 <td className="py-2 w-1/5">닉네임</td>
                 <td className="w-2/3">{userInfo?.nickName}</td>
                 <td className="text-end">
-                  {userInfo?.loginType === 'normal' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModNicName(true)
+                      setToggle(!toggle)
+                    }}
+                  >
+                    수정
+                  </button>
+                </td>
+              </tr>
+              {userInfo?.loginType === 'normal' && (
+                <tr className="border-b-2">
+                  <td className="py-2 w-1/5">비밀번호</td>
+                  <td className="w-2/3">&#42;&#42;&#42;&#42;&#42;</td>
+                  <td className="text-end">
                     <button
                       type="button"
                       onClick={() => {
-                        setIsModNicName(!isModNickName)
-                        setToggle(!toggle)
+                        setIsModPw(true)
+                        setToggle(true)
                       }}
                     >
-                      수정
+                      변경
                     </button>
-                  )}
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -222,6 +261,12 @@ export default function UserInfo() {
                     </>
                   )}
                 </>
+              )}
+              {isModPw && (
+                <FormInputChange
+                  onChangeFirst={setModPw}
+                  onChageSecond={setModPwVerify}
+                />
               )}
             </div>
             <div className="flex justify-center pb-3">

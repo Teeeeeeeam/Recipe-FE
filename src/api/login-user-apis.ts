@@ -20,6 +20,7 @@ import {
   WidthdrawalReq,
   InquiryQuestionDetail,
   InquiryQuestionParams,
+  updatePasswordReq,
 } from '@/types/login-user-apis-type'
 
 // 마이페이지 - 로그인 한 유저 정보 확인
@@ -149,6 +150,16 @@ export async function inquiryBookmark(
     method: 'GET',
     url: `/api/user/info/bookmark${lastId ? `?lastId=${lastId}` : ''}`,
     params,
+  })
+  return payload
+}
+
+// 마이페이지 - 비밀번호 변경
+export async function updatePassword(data: updatePasswordReq) {
+  const { payload } = await requester<Response>({
+    method: 'PUT',
+    url: '/api/password/update',
+    data,
   })
   return payload
 }
