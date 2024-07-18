@@ -1,113 +1,242 @@
-import Image from "next/image";
+'use client'
+import Link from 'next/link'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import {
+  getCategoryRecipe,
+  getHomePosting,
+  getHomeRecipe,
+} from '@/api/recipe-apis'
+import {
+  RecipeFigure,
+  UserPostingFigure,
+} from '@/components/recipe-and-posting/recipe-figure'
+import { PostingFigure, Recipe } from '@/types/recipe'
+import { AppDispatch } from '@/store'
+import { useDispatch } from 'react-redux'
+import { postSearchState } from '@/store/search-recipe-slice'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Announcements from './announcement'
+import {
+  COOK_INGREDIENTS,
+  COOK_METHODS,
+  DISH_TYPES,
+} from './admin/recipes/(recipe-management)/constants'
+import CategorySelector from './category-selector'
+import useCategorySelection from '@/hooks/use-category-selection'
+import RecipeSearchForm from '@/components/recipe/recipe-search-form'
+import {
+  RecipeSkeletonLoader,
+  UserPostingSkeletonLoader,
+} from '@/components/layout/skeleton/main-skeleton'
 
 export default function Home() {
+  //레시피 컨트롤러 GET
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [userPosting, setUserPosting] = useState<PostingFigure[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  // redux
+  const dispatch = useDispatch<AppDispatch>()
+  //
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const params = useMemo(
+    () => Object.fromEntries(searchParams.entries()),
+    [searchParams],
+  )
+  const { cat1, cat2, cat3, ingredients } = params
+
+  const {
+    selectedIngredient,
+    selectedMethod,
+    selectedDishType,
+    clickCategoryHandler,
+  } = useCategorySelection(params)
+  useEffect(() => {
+    getData()
+  }, [cat1, cat2, cat3, ingredients])
+
+  const getData = useCallback(async () => {
+    setLoading(true)
+    const option = {
+      size: 3,
+    }
+    try {
+      if (!!cat1 || !!cat2 || !!cat3 || !!ingredients) {
+        const newCat1 = !!cat1 ? cat1.split(',') : null
+        const newCat2 = !!cat2 ? cat2.split(',') : null
+        const newCat3 = !!cat3 ? cat3.split(',') : null
+        const newIngredients = !!ingredients ? ingredients.split(',') : null
+
+        const result = await getCategoryRecipe(
+          null,
+          newIngredients ?? null,
+          newCat1 ?? null,
+          newCat2 ?? null,
+          newCat3 ?? null,
+          null,
+          null,
+          'LIKE',
+          true,
+        )
+        setRecipes(result.recipes)
+      } else {
+        const result = await getHomeRecipe()
+        setRecipes(result.data.recipes)
+      }
+      const result_posting = await getHomePosting(option)
+      setUserPosting(result_posting.data.post)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }, [cat1, cat2, cat3, ingredients])
+
+  const handleRouting = () => {
+    const query: any = {}
+    if (!!cat1) {
+      query.cat1 = cat1
+    }
+    if (!!cat2) {
+      query.cat2 = cat2
+    }
+    if (!!cat3) {
+      query.cat3 = cat3
+    }
+
+    if (!!ingredients) {
+      query.ingredients = ingredients
+    }
+
+    const queryString = new URLSearchParams(query).toString()
+    router.push(`/list-page/main-recipes?${queryString}`)
+  }
+
+  function getLabelByValue(
+    options: { label: string; value: string }[],
+    value: string,
+  ) {
+    const option = options.find((option) => option.value === value)
+    return option ? option.label : ''
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="home-wrap max-w-[1300px] mx-auto my-0">
+      <div className="mx-auto">
+        <Announcements />
+      </div>
+      <section className="home-recipe-recipe bg-white bg-opacity-80 pt-10">
+        <div className="flex items-center justify-center">
+          <h3
+            onClick={() =>
+              dispatch(
+                postSearchState({
+                  category: null,
+                  value: null,
+                }),
+              )
+            }
+            className="mb-3 lg:text-2xl md:text-2xl text-2xl font-semibold text-black rounded-lg"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            <Link href="/list-page/main-recipes">
+              레시피를 카테고리별, 재료별로 검색해보세요!
+            </Link>
+          </h3>
         </div>
-      </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+        <section className="flex flex-col mt-2">
+          <CategorySelector
+            label="재료별"
+            options={COOK_INGREDIENTS.slice(1)}
+            selectedValue={selectedIngredient}
+            onClick={(value) => clickCategoryHandler('ingredient', value)}
+          />
+          <CategorySelector
+            label="방법별"
+            options={COOK_METHODS.slice(1)}
+            selectedValue={selectedMethod}
+            onClick={(value) => clickCategoryHandler('method', value)}
+          />
+          <CategorySelector
+            label="종류별"
+            options={DISH_TYPES.slice(1)}
+            selectedValue={selectedDishType}
+            onClick={(value) => clickCategoryHandler('dishType', value)}
+          />
+        </section>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        <RecipeSearchForm params={params} />
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        <div className="flex justify-between items-center px-2 md:px-8 mb-2 text-2xl">
+          <div className="flex flex-1 flex-wrap">
+            {selectedIngredient.map((value, idx) => (
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
+                  {getLabelByValue(COOK_INGREDIENTS, value)}
+                </span>
+                <span>{idx < selectedIngredient.length - 1 && '+'}</span>
+              </div>
+            ))}
+            {selectedIngredient.length > 0 && selectedMethod.length > 0 && (
+              <span>{' > '}</span>
+            )}
+            {selectedMethod.map((value, idx) => (
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
+                  {getLabelByValue(COOK_METHODS, value)}
+                </span>
+                <span>{idx < selectedMethod.length - 1 && '+'}</span>
+              </div>
+            ))}
+            {(selectedIngredient.length > 0 || selectedMethod.length > 0) &&
+              selectedDishType.length > 0 && <span>{' > '}</span>}
+            {selectedDishType.map((value, idx) => (
+              <div key={idx} className="font-semibold">
+                <span className="px-1 py-1 mb-2">
+                  {getLabelByValue(DISH_TYPES, value)}
+                </span>
+                <span>{idx < selectedDishType.length - 1 && '+'}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="px-2 py-1 bg-blue-50 hover:bg-blue-150 rounded-md text-[16px] text-white"
+            onClick={handleRouting}
+          >
+            더보기
+          </button>
+        </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+        {loading ? (
+          <RecipeSkeletonLoader />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8  pb-4 md:pb-8">
+            <RecipeFigure recipes={recipes} />
+          </div>
+        )}
+      </section>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+      <section className="home-users-recipe bg-white border-t">
+        <div className="flex justify-between p-2 md:px-8 mt-4">
+          <h3 className="text-3xl">회원 요리 게시글</h3>
+          <button
+            type="button"
+            className="px-2 py-1 bg-blue-50 hover:bg-blue-150 rounded-md text-[16px] text-white"
+          >
+            <Link href="/list-page/user-recipes">더보기</Link>
+          </button>
+        </div>
+        {loading ? (
+          <UserPostingSkeletonLoader />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 md:px-8 md:pb-8">
+            <div className="col-span-5 grid grid-cols-3 gap-5">
+              <UserPostingFigure recipes={userPosting} />
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
+  )
 }

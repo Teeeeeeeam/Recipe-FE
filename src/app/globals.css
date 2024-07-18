@@ -1,29 +1,79 @@
+@import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@font-face {
+  font-family: 'BMJUA';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+    format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+html {
+  overflow-y: scroll;
+}
+@layer base {
+  body {
+    @apply font-sans;
+  }
+}
+input {
+  @apply border-[1.5px] border-gray-50;
+}
+input:focus {
+  @apply outline-none border-[1.5px] border-green-100;
+}
+
+li {
+  list-style: none;
+}
+
+textarea {
+  resize: none;
+}
+textarea:focus {
+  outline: none;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #f0f0f0;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.skeleton {
+  @apply bg-gray-200 rounded animate-pulse;
+}
+
+.label-text {
+  @apply text-[12px];
+}
+
+.dot {
+  @apply rounded-full align-middle w-[3px] h-[3px] mr-[2px] bg-red-50;
 }
 
 @layer utilities {
