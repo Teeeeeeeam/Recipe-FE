@@ -20,6 +20,13 @@ export interface EnterMyPageReq {
   password: string
 }
 
+// 마이페이지 - 비밀번호 변경
+export interface updatePasswordReq {
+  loginId: string
+  password: string
+  passwordRe: string
+}
+
 // 마이페이지 - 닉네임 수정
 export interface UpdateNickNameReq {
   nickName: string | null
