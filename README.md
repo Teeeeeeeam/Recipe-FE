@@ -1,6 +1,7 @@
 # 🍀 요리 공유소
 <img width="1875" alt="스크린샷 2024-07-18 오후 3 03 12" src="https://github.com/user-attachments/assets/e9f510e5-db02-4858-9742-de17f3209728">
-<br>
+<br/>
+
 ## 📝 배포 주소
 
 > 레시피 공유소: [레시피 공유소 바로가기](https://www.recipe.o-r.kr/)<br>
@@ -8,15 +9,16 @@
 > 레시피 공유소 노션 : [노션 바로가기](https://indecisive-vertebra-5c0.notion.site/RecipeRadar-a4e3107b5a334bebad464e62b9096af0?pvs=4)<br>
 > ERD : [ERD 바로가기](https://www.erdcloud.com/d/GFP2dNgLyDHczbpxx)<br>
 
-<br>
+<br/>
+
 ## 🚩 프로젝트 간략소개
 
-### 냉장고 속 재료로 만드는 요리 레시피 공유 서비스
+### 1️⃣ 냉장고 속 재료로 만드는 요리 레시피 공유 서비스
 
 - 요리 공유소는 집 냉장고에 있는 재료를 활용해 만들 수 있는 요리 레시피를 찾아 요리하고, 그 경험을 다른 사용자들과 공유할 수 있는 플랫폼입니다. 사용자는 자신의 냉장고에 있는 재료들을 입력하면, 해당 재료로 만들 수 있는 다양한 요리 레시피를 검색할 수 있습니다. 이를 통해 새로운 요리에 도전하고, 요리의 재미를 느낄 수 있습니다.
 
 
-### 주요기능
+### 2️⃣ 주요기능
 
 - **재료 기반 레시피 검색:** 사용자가 입력한 재료를 바탕으로 적합한 요리 레시피를 제안합니다.
 - **레시피 선택 및 요리:** 사용자는 제안된 레시피 중 하나를 선택하여 요리를 만들 수 있습니다.
@@ -24,12 +26,12 @@
 - **다양한 요리 팁 제공:** 각 레시피에는 요리를 더 맛있게 만들기 위한 팁과 노하우가 포함되어 있어, 요리 초보자도 쉽게 따라할 수 있습니다.
 
 
-### 기대효과
+### 3️⃣ 기대효과
 
 - 이 서비스는 단순한 레시피 제공을 넘어, 사용자 간의 소통과 공유를 통해 요리에 대한 흥미를 지속적으로 유발시키는 것을 목표로 합니다.
 - 다양한 재료와 요리법을 통해 사용자들이 새로운 맛을 발견하고, 요리의 즐거움을 느낄 수 있도록 도와줍니다.
 
-### 프로젝트 기간
+### 4️⃣ 프로젝트 기간
 
 > 2024.05.01 ~ 2024.07.02
 <br>
@@ -46,10 +48,26 @@
 <br>
 
 ## 🔧 기술 스택
+
+<h3 align="center"> 개발</h3>
 <p align="center">
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black">
+  <img src="https://img.shields.io/badge/Next-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
 <img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
 <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=purple">
+</p>
+
+<h3 align="center"> 문서 / 협업 / 툴</h3>
+
+<p align="center">
+<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white"/>
+<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Git-F05032.svg?style=for-the-badge&logo=Git&logoColor=white"/>
+<img src="https://img.shields.io/badge/GitHub-181717.svg?style=for-the-badge&logo=GitHub&logoColor=white"/>
+<img src="https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=Postman&logoColor=white"/>
+<img src="https://img.shields.io/badge/Gather-0043CE.svg?style=for-the-badge&logo=Gather&logoColor=white"/>
+
 </p>
 
 ## 🖥 구현 이미지
@@ -71,7 +89,7 @@
 <details>
   <summary>회원 가입</summary>
     <ul>
-        <img alt="회원가입" height="500" src="https://github.com/user-attachments/assets/59678de3-0460-4a56-b9ac-9455b9434044" width="800"/>
+      <img alt="회원가입" src="https://github.com/user-attachments/assets/16258625-2009-4aa8-8c8f-adf805e7d5d2" width="800" height="500"/>
         <p> 회원가입시 이메일 인증을 통해 회원가입이 가능하며, 중복된 아이디, 이메일, 닉넴임으로는 가입이 불가능합니다. </p><hr>
     </ul>
 </details>
@@ -79,10 +97,9 @@
 [//]: # (로그인 및 로그아웃)
 <details>
   <summary>로그인 및 로그아웃</summary>
-    <div> ○ 로그인시 AccessToken은 로컬 스토리지를 통해서 저장되며 AccessToken은 쿠키의 저장됩니다.</div>
+    <div> ○ 로그인시 AccessToken은 로컬 스토리지를 통해서 저장되며 RefreshToken은 쿠키에 저장됩니다.</div>
   <ul>
-    <h3>일반 로그인</h3>
-    <img alt="일반 로그인" height="500" src="https://github.com/user-attachments/assets/82e31485-e8a3-42d3-bc13-3da1b0c5e445" width="800"/>
+    <img alt="일반 로그인" height="500" src="https://github.com/user-attachments/assets/1707cc1f-502c-4140-8c20-4b201735b4cf" width="800"/>
     <p> - 사이트에 회원가입한 아이디를 통해 로그인 가능합니다.</p>
     <hr>
     <h3>소셜 로그인(구글, 카카오, 네이버)</h3>
