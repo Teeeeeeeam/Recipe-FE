@@ -104,7 +104,7 @@
     <hr>
     <h3>소셜 로그인(구글, 카카오, 네이버)</h3>
     ※ 카카오 로그인 기준 ※<br>
-    <img alt="소셜카카오 로그인" height="500" src="https://github.com/user-attachments/assets/33199657-d6e7-4cf2-b8cb-6cd762fbcb0c" width="800"/>
+    <img alt="소셜카카오 로그인" height="500" src="https://github.com/user-attachments/assets/262f5264-8975-4aa0-bb1d-395feef4efe7" width="800"/>
     <p> - 소셜로그인을 통해 로그인시 최초 1회 자동으로 회원가입후 로그인이 됩니다.</p><hr>
     <h3>로그아웃</h3>
     <img alt="로그아웃" height="500" src="https://github.com/user-attachments/assets/9b7314f4-3f27-4b08-88bb-c10519464cfd" width="800"/>
