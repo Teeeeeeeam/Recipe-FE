@@ -24,7 +24,7 @@ const useRecipes = (params: Params) => {
       try {
         const res = await getRecipes(lastId, ingredients ?? null, title ?? null)
         const newRecipes = res.recipes
-        if (newRecipes) {
+        if (newRecipes.length > 0) {
           setRecipes((prev) => [...prev, ...newRecipes])
           setLastId(newRecipes[newRecipes.length - 1].id)
           setHasMore(res.nextPage)

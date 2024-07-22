@@ -11,6 +11,8 @@ import {
 import { useSearchParams } from 'next/navigation'
 import NoticeList from '@/components/layout/notice/notice-list'
 import NoticeFilter from '@/components/layout/notice/notice-filter'
+import { AdminListSkeletonLoader } from '@/components/layout/skeleton/admin-skeleton'
+import NoResult from '@/components/layout/no-result'
 
 const Notice = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -22,13 +24,12 @@ const Notice = () => {
     useNotice(params)
   const lastElementRef = useInfiniteScroll(fetchNotice, hasMore)
 
+  const { title } = params
   useEffect(() => {
-    const { title } = params
-
     if (title) {
       setSearchInput(title)
     }
-  }, [params])
+  }, [title])
 
   const handleSearchSubmit = () => {
     const queryString = buildQueryString(searchInput)
@@ -48,11 +49,17 @@ const Notice = () => {
           setSearchInput={setSearchInput}
         />
       </form>
-      <NoticeList
-        notices={notices}
-        lastElementRef={lastElementRef}
-        loading={loading}
-      />
+      {initialLoading ? (
+        <AdminListSkeletonLoader />
+      ) : notices.length === 0 ? (
+        <NoResult />
+      ) : (
+        <NoticeList
+          notices={notices}
+          lastElementRef={lastElementRef}
+          loading={loading}
+        />
+      )}
     </div>
   )
 }
