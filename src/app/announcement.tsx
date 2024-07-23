@@ -21,7 +21,7 @@ const initialAnnouncements: Announcement[] = [
       '요리 공유소에 등록된 레시피를 확인하고 나만의 요리 비법을 공유하세요! 😊',
     imgUrl: '/announce1.png',
     style: 'bg-[#E7E0C9]',
-    href: 'https://www.notion.so/RecipeRadar-b9702fa8f1cc4b02aa23d14a95dfe071',
+    href: 'https://www.notion.so/a4e3107b5a334bebad464e62b9096af0',
   },
   {
     id: 1,

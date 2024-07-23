@@ -54,7 +54,7 @@ const MainRecipes = () => {
         newCat2 ?? null,
         newCat3 ?? null,
         order !== 'DATE' ? lastCount ?? null : null,
-        lastCount === 0 ? lastId : null,
+        order === 'DATE' ? lastId : lastCount === 0 ? lastId : null,
         !!order ? order : 'LIKE',
         false,
       )
