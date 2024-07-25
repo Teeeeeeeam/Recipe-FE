@@ -204,7 +204,7 @@ export function Comment({ thisId, userId }: PropsType) {
                       className="w-full px-2 border rounded-md"
                     ></textarea>
                   ) : (
-                    <p className="text-sm">{item.commentContent}</p>
+                    <p className="text-sm break-words">{item.commentContent}</p>
                   )}
 
                   <div className="mt-5 flex items-center justify-end text-gray-600">
