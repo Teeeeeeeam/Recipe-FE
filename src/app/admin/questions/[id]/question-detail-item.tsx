@@ -16,7 +16,9 @@ const QuestionDetailItem = ({
       className={`flex ${isFullWidth ? 'flex-col space-y-2' : 'justify-between items-center'} pb-1 border-b`}
     >
       <span className="font-bold">{label}</span>
-      <span className={`${isCompleted && 'text-blue-100'}`}>{value}</span>
+      <span className={`break-words ${isCompleted && 'text-blue-100'}`}>
+        {value}
+      </span>
     </div>
   )
 }
