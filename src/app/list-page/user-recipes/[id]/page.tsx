@@ -12,6 +12,7 @@ import { recipeId } from '@/store/mod-userRecipe-slice'
 import { PostingDetail, ThreeCookInfo } from '@/types/recipe'
 import axios from 'axios'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -187,7 +188,9 @@ export default function RecipeDetailUser() {
           <section className="mb-5 px-5">
             <div className="p-2 min-h-60">
               <p className="text-2xl mb-3 pb-3 border-b border-gray-400">
-                &#91;{thisInfo.recipe.title}&#93;
+                <Link href={`/list-page/main-recipes/${thisInfo.recipe.id}`}>
+                  &#91;{thisInfo.recipe.title}&#93;
+                </Link>
                 <span className="text-lg"> 후기</span>
               </p>
               <p className="overflow-wrap break-words">
