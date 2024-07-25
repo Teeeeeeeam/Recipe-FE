@@ -81,17 +81,17 @@ export default function MyPage() {
               <div>
                 <button
                   type="button"
-                  onClick={() => (window.location.href = '/')}
-                  className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+                  onClick={() => route.back()}
+                  className="bg-gray-100 px-4 py-2 rounded-md text-md"
                 >
-                  Cancel
+                  돌아가기
                 </button>
                 <button
                   type="submit"
                   onClick={(e) => getAccessRights(e)}
-                  className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+                  className=" px-7 py-2 ml-2 rounded-md bg-blue-50 text-white text-md font-semibold"
                 >
-                  Ok
+                  확인
                 </button>
               </div>
             </form>

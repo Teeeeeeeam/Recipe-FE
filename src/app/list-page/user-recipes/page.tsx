@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { initWriteState } from '@/store/write-userRecipe-slice'
 import { useRouter, useSearchParams } from 'next/navigation'
+import NoResult from '@/components/layout/no-result'
 
 export default function UserRecipes() {
   const [posting, setPosting] = useState<
@@ -175,9 +176,6 @@ export default function UserRecipes() {
     router.push(newUrl)
   }
 
-  if (posting.length < 1) {
-    return <div>loading</div>
-  }
   return (
     <div className="pt-4">
       <form onSubmit={submitHandler}>
@@ -197,10 +195,19 @@ export default function UserRecipes() {
         </div>
       </form>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 p-2 md:px-8 md:pb-8">
-        <UserPostingFigure recipes={posting} />
-        <div ref={loader} />
-      </div>
+      {query === 'title' && (
+        <h2 className="font-semibold text-lg md:text-xl px-2 md:px-8 mb-2">{`"${queryValue}"에 대한 결과`}</h2>
+      )}
+
+      {posting.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 p-2 md:px-8 md:pb-8">
+          <UserPostingFigure recipes={posting} />
+          <div ref={loader} />
+        </div>
+      ) : (
+        <NoResult />
+      )}
+
       <aside className="fixed md:w-14 md:h-14 w-10 h-10 md:right-10 bottom-10 right-5 bg-yellow-500 rounded-full">
         <Link
           href="/list-page/user-recipes/write"

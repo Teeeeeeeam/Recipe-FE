@@ -191,8 +191,8 @@ export default function Header() {
   return (
     <>
       {!isPopup && (
-        <header className="w-full fixed text-gray-600 body-font z-50 bg-white">
-          <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  pl-2 pr-6 py-4 shadow-sm mx-auto">
+        <header className="w-full fixed text-gray-600 body-font z-50 bg-white border-b">
+          <nav className="max-w-[1160px] flex flex-wrap items-center justify-between  pl-2 pr-6 py-4 mx-auto">
             <div className="md:grow-0">
               <h1 className="font-BMJUA text-lg">
                 <Link
