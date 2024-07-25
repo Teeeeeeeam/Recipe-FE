@@ -121,8 +121,10 @@ export default function Answer() {
   }, [handleObserver])
 
   return (
-    <>
-      <h4 className="text-center text-lg mb-3">문의내역</h4>
+    <div className="w-10/12 mx-auto p-4">
+      <div className="flex items-center border-b pb-4 mb-4">
+        <h3 className="text-2xl font-semibold">문의내역</h3>
+      </div>
       <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
         <div className="rounded-lg pb-4">
           <table className="w-full border-gray-200 table-fixed">
@@ -153,6 +155,6 @@ export default function Answer() {
       <div className="text-end">
         <InputDeleteButton onClick={deleteQuestionHandler} />
       </div>
-    </>
+    </div>
   )
 }

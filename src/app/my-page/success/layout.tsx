@@ -8,7 +8,7 @@ export default function MyPageLayout({
   return (
     <div className="relative h-full z-20">
       <MyPageNav />
-      <div className="w-10/12 mx-auto pt-11 h-full">{children}</div>
+      <div className="w-full mx-auto pt-11 h-full">{children}</div>
     </div>
   )
 }

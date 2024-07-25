@@ -139,9 +139,9 @@ export default function UserInfo() {
   }
   return (
     <>
-      <div>
+      <div className="w-10/12 mx-auto p-4">
         <div className="mb-36">
-          <h4 className="text-2xl mb-3">기본 정보</h4>
+          <h3 className="text-2xl mb-3">기본 정보</h3>
           <table className="w-full text-sm md:text-base">
             <tbody>
               <tr className="border-b-2">
@@ -169,7 +169,7 @@ export default function UserInfo() {
           </table>
         </div>
         <div>
-          <h4 className="text-2xl mb-3">로그인 정보</h4>
+          <h3 className="text-2xl mb-3">로그인 정보</h3>
           <table className="w-full text-sm md:text-base">
             <tbody>
               <tr className="border-b-2">
