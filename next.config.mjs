@@ -15,6 +15,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.recipe.n-e.kr',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'www.recipe.o-r.kr',
         pathname: '/**',
       },
@@ -29,14 +34,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path',
-  //       destination: 'https://www.recipe.o-r.kr/:path',
-  //     },
-  //   ]
-  // },
 }
 
 export default nextConfig
