@@ -34,30 +34,34 @@ export default function PostingTop({ id }: PostingTopProps) {
         <h4 className="text-2xl">베스트 후기</h4>
         <Link href={newUrl}>더보기</Link>
       </div>
-      <div className=" grid md:gap-10 md:grid-cols-4 gap-5 grid-cols-2">
-        {topPosting.map((item, index) => {
-          return (
-            <Link key={item.id} href={`/list-page/user-recipes/${item.id}`}>
-              <figure className="flex flex-col overflow-hidden rounded shadow-md">
-                <Image
-                  src={item.postImageUrl}
-                  alt={item.postTitle}
-                  width={500}
-                  height={500}
-                  className="md:h-56 w-full"
-                />
-                <figcaption className="p-4">
-                  <p className="mb-1 flex justify-between text-xs font-medium text-gray-600">
-                    <span>{item.member.nickname}</span>
-                    <span>좋아요: {item.postLikeCount}</span>
-                  </p>
-                  <p className="font-medium">{item.postTitle}</p>
-                </figcaption>
-              </figure>
-            </Link>
-          )
-        })}
-      </div>
+      {topPosting.length > 0 ? (
+        <div className=" grid md:gap-10 md:grid-cols-4 gap-5 grid-cols-2">
+          {topPosting.map((item, index) => {
+            return (
+              <Link key={item.id} href={`/list-page/user-recipes/${item.id}`}>
+                <figure className="flex flex-col overflow-hidden rounded shadow-md">
+                  <Image
+                    src={item.postImageUrl}
+                    alt={item.postTitle}
+                    width={500}
+                    height={500}
+                    className="md:h-56 w-full"
+                  />
+                  <figcaption className="p-4">
+                    <p className="mb-1 flex justify-between text-xs font-medium text-gray-600">
+                      <span>{item.member.nickname}</span>
+                      <span>좋아요: {item.postLikeCount}</span>
+                    </p>
+                    <p className="font-medium">{item.postTitle}</p>
+                  </figcaption>
+                </figure>
+              </Link>
+            )
+          })}
+        </div>
+      ) : (
+        <div>후기가 없습니다</div>
+      )}
     </section>
   )
 }
