@@ -18,7 +18,6 @@ const QuestionsDetail = () => {
 
   const fetchGetQuestionsDetail = async () => {
     const res = await getQuestionsDetail(Number(id))
-    console.log(res)
     setQuestionInfo(res)
   }
   useEffect(() => {

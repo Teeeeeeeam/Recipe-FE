@@ -61,7 +61,7 @@ const ModifyRecipe = () => {
 
     fetchRecipeDetail()
   }, [])
-  console.log(formData)
+
   const handleAddNewCookStepsChange = (idx: number, value: string) => {
     const updatedNewCookSteps = [...newCookSteps]
     updatedNewCookSteps[idx] = value

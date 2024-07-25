@@ -109,7 +109,7 @@ const NoticeList = ({
                 </li>
               )}
               <li className="hidden md:block">{notice.id}</li>
-              <Link href={`/notices/${notice.id}`}>
+              <Link href={`/notices/${notice.id}`} className="truncate">
                 <li className="truncate">{notice.noticeTitle}</li>
               </Link>
               <li className="truncate">{notice.member.nickname}</li>

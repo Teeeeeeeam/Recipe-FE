@@ -70,7 +70,6 @@ const searchIDSlice = createSlice({
         state.loading = false
         state.error = action.payload
         state.data = null
-        // console.log(action.payload)
       })
   },
 })
