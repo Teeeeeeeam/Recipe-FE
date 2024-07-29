@@ -3,7 +3,7 @@
 import { enterMyPage } from '@/api/login-user-apis'
 import { getLocalStorage, setLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -48,9 +48,14 @@ export default function MyPage() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (errorCode === 400) {
-          alert('비밀번호가 일치하지 않습니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as { message: string }
+          if (statusCode === 400) {
+            alert(res.message)
+            setPw('')
+          }
         }
       }
     }
@@ -75,6 +80,7 @@ export default function MyPage() {
             <form className="flex felx-wrap flex-col">
               <input
                 type="password"
+                value={pw}
                 onChange={(e) => setPw(e.target.value)}
                 className="block mb-4"
               />

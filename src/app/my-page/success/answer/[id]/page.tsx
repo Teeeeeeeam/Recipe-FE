@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 
 import AnswerDetailContent from './answer-detail-content'
 import AnswerDetailHeadSubject from './answer-detail-head-subject'
+import axios, { AxiosError } from 'axios'
 
 export default function AnswerDetail() {
   const [answers, setAnswers] = useState<QuestionDetailComplete | null>(null)
@@ -23,7 +24,13 @@ export default function AnswerDetail() {
       setStatus(result.data.status)
       setAnswers(result.data)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
 

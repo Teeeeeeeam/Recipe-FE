@@ -10,7 +10,7 @@ import {
 } from '@/api/login-user-apis'
 import { RootState } from '@/store'
 import { UserInfo } from '@/types/user'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FormInput from './form-input-for-update'
@@ -61,9 +61,10 @@ export default function UserInfo() {
       setUserInfo(result.data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (errorCode === 400) {
-          alert('사용자를 찾을 수 없습니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
         }
       }
     }
@@ -85,30 +86,33 @@ export default function UserInfo() {
         await updateEmail(option)
       }
       if (isModPw) {
-        if (modPw === '' || modPwVerify === '') {
-          alert('입력란을 채워주세요')
-        } else if (modPw !== modPwVerify) {
-          alert('비밀번호가 일치하지 않습니다')
-        } else if (state.loginId) {
+        if (state.loginId) {
           const option = {
             loginId: state.loginId,
             password: modPw,
             passwordRe: modPwVerify,
           }
           const result = await updatePassword(option)
-          console.log(result)
         }
       }
       setToggle(false)
       setMount((prev) => !prev)
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (isModNickName && errorCode === 400) {
-          alert('사용자를 찾을 수 없습니다.')
-        }
-        if (isModEmail && errorCode === 401) {
-          alert('일반 사용자만 가능합니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as {
+            success: boolean
+            message: string
+            data?: any
+          }
+          if (isModEmail || isModNickName) {
+            alert(res.message)
+          } else if (isModPw) {
+            const errorMessages =
+              Object.values(res.data)[0] || '사용할 수 없는 비밀번호 입니다'
+            modPw !== modPwVerify ? alert(res.message) : alert(errorMessages)
+          }
         }
       }
     }
@@ -122,7 +126,13 @@ export default function UserInfo() {
       await sendEmail(option)
       setIsSendEmail(true)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
   async function verifyCode() {
@@ -134,7 +144,21 @@ export default function UserInfo() {
       await confirmCode(option)
       setIsVerify(true)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as {
+            success: boolean
+            message: string
+            data?: any
+          }
+          if (statusCode === 400) {
+            const errorMessages = Object.values(res.data)
+            alert(errorMessages.join(' \n'))
+          }
+        }
+      }
     }
   }
   return (

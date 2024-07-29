@@ -60,17 +60,17 @@ export function UserPostingFigure({ recipes }: PostingFigureProps) {
             key={item.id}
             className="flex flex-col items-center rounded-lg border border-gray-200 shadow-md overflow-hidden"
           >
-            <div className="relative md:w-full pt-[100%]">
+            <div className="relative w-full pt-[100%]">
               <Image
                 src={item.postImageUrl}
                 alt={item.postTitle}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
-                priority
+                loading="lazy"
               />
             </div>
-            <figcaption className="p-4 w-full">
+            <figcaption className="p-2 sm:p-4 w-full">
               <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                 <span className="text-sm text-green-600 font-semibold">
                   {item.member.nickname}

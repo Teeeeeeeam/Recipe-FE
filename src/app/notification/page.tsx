@@ -1,13 +1,22 @@
 'use client'
 import { deleteNotify, inquiryNotify } from '@/api/notify-apis'
+import {
+  InfiniteScrollSkeleton,
+  MypageSkeletonLoader,
+} from '@/components/layout/skeleton/mypage-skeleton'
 import InputDeleteButton from '@/components/user/infinite-paging/input/input-delete-button'
 import InputTableBody from '@/components/user/infinite-paging/input/input-table-body'
 import InputTableBodyNoData from '@/components/user/infinite-paging/input/input-table-body-no-data'
 import InputTableHeader from '@/components/user/infinite-paging/input/input-table-header'
 import { Notification } from '@/types/notify'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios, { AxiosError } from 'axios'
+import useInfiniteScrollVer2 from '@/hooks/use-infinite-scroll-ver2'
 
 export default function Notification() {
+  const [firstRender, setFirstRender] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isMoreLoading, setIsMoreLoading] = useState<boolean>(false)
   const [notify, setNotify] = useState<Notification[] | []>([])
   const [next, setNext] = useState<boolean>(false)
   const [lastId, setLastId] = useState<number | null>(null)
@@ -15,16 +24,25 @@ export default function Notification() {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false)
   const [checkedItems, setCheckedItems] = useState<number[]>([])
 
-  const loader = useRef(null)
+  const loader = useInfiniteScrollVer2(next, setIsMoreLoading, notify)
 
   useEffect(() => {
     getInquiryNotification(true)
+    setFirstRender(true)
+    setIsLoading(false)
   }, [mount])
+
+  useEffect(() => {
+    if (firstRender && isMoreLoading) {
+      getInquiryNotification(false)
+      setIsMoreLoading(false)
+    }
+  }, [isMoreLoading])
 
   async function getInquiryNotification(isInit: boolean) {
     try {
       const option = {
-        size: 10,
+        size: 13,
       }
       const result = await inquiryNotify(option, lastId)
       if (isInit) {
@@ -34,6 +52,7 @@ export default function Notification() {
           const newData = result.data.notification
           return [...prev, ...newData]
         })
+        setIsMoreLoading(false)
       }
       if (result.data.notification.length > 0) {
         const dataLastId =
@@ -42,7 +61,12 @@ export default function Notification() {
       }
       setNext(result.data.hasNext)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -58,7 +82,16 @@ export default function Notification() {
       setCheckedItems(checkedItems.filter((item) => item !== thisIds))
       setMount((prev) => !prev)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as { message: string }
+          if (statusCode === 400) {
+            alert(res.message)
+          }
+        }
+      }
     }
   }
 
@@ -89,64 +122,50 @@ export default function Notification() {
     setIsAllChecked(newData.length === notify.length)
   }
 
-  // Intersection Observer 콜백 함수
-  const handleObserver = useCallback(
-    (entries: any) => {
-      const target = entries[0]
-      if (target.isIntersecting) {
-        if (next) {
-          getInquiryNotification(false)
-        }
-      }
-    },
-    [notify],
-  )
-  // Intersection Observer 설정
-  useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0.1,
-    }
-    const observer = new IntersectionObserver(handleObserver, option)
-    if (loader.current) {
-      observer.observe(loader.current)
-    }
-    return () => observer.disconnect()
-  }, [handleObserver])
-
   return (
-    <>
-      <h4 className="text-center text-lg mb-3">알림</h4>
-      <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
-        <div className="rounded-lg">
-          <table className="w-full border-gray-200 table-fixed">
-            <InputTableHeader
-              theadOptions={[
-                { class: 'p-2', title: '제목' },
-                { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
-              ]}
-              isChecked={isAllChecked}
-              onChange={allCheckHandler}
-            />
-            {notify.length > 0 ? (
-              <InputTableBody
-                data={notify}
-                isStatus={false}
-                onChange={eachCheckHandler}
-                onClick={deleteNotificationHandler}
-              />
-            ) : (
-              <InputTableBodyNoData isStatus={false} />
-            )}
-
-            <tfoot ref={loader}></tfoot>
-          </table>
-        </div>
+    <div className="w-10/12 mx-auto p-4">
+      <div className="flex items-center border-b pb-4 mb-4">
+        <h3 className="text-2xl font-semibold">알림</h3>
       </div>
+      {isLoading ? (
+        <MypageSkeletonLoader rows={13} columns={3} />
+      ) : (
+        <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
+          <div className="rounded-lg">
+            <table className="w-full border-gray-200 table-fixed">
+              <InputTableHeader
+                theadOptions={[
+                  { class: 'p-2', title: '제목' },
+                  { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
+                ]}
+                isChecked={isAllChecked}
+                onChange={allCheckHandler}
+              />
+              {isMoreLoading ? (
+                <InfiniteScrollSkeleton rows={13} columns={3} />
+              ) : (
+                <>
+                  {notify.length > 0 ? (
+                    <InputTableBody
+                      data={notify}
+                      isStatus={false}
+                      onChange={eachCheckHandler}
+                      onClick={deleteNotificationHandler}
+                    />
+                  ) : (
+                    <InputTableBodyNoData isStatus={false} />
+                  )}
+                </>
+              )}
+              <tfoot ref={loader}></tfoot>
+            </table>
+          </div>
+        </div>
+      )}
+
       <div className="text-end">
         <InputDeleteButton onClick={deleteNotificationHandler} />
       </div>
-    </>
+    </div>
   )
 }

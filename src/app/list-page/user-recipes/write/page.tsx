@@ -10,6 +10,7 @@ import PostingSelect from '../posting-select'
 import PostingPassword from '../posting-password'
 import PostingImageUploader from '../posting-image-uploader'
 import { POSTING_LEVEL, POSTING_PEOPLE, POSTING_TIME } from '../constants'
+import axios, { AxiosError } from 'axios'
 
 interface SelectedRecipe {
   id: number
@@ -55,25 +56,28 @@ export default function Write() {
         },
         writeFile: file!,
       }
-      const hasEmptyData = Object.values(option.writeReq).some(
-        (value) => value === '',
-      )
-      const hasRecipeId = option.writeReq.recipeId === 0
-
-      if (hasEmptyData) {
-        alert('양식을 모두 채워주세요')
-      } else if (option.writeFile === null) {
-        alert('이미지를 첨부해주세요')
-      } else if (hasRecipeId) {
-        alert('참조할 레시피가 선택되지 않았습니다')
-      } else {
-        await postingWrite(option)
-        window.location.href = state.direct
-          ? `/list-page/main-recipes/${thisRecipeId}`
-          : '/list-page/user-recipes'
-      }
+      await postingWrite(option)
+      window.location.href = state.direct
+        ? `/list-page/main-recipes/${thisRecipeId}`
+        : '/list-page/user-recipes'
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as {
+            success: boolean
+            message: string
+            data?: any
+          }
+          if (statusCode === 400) {
+            const errorMessages = Object.values(res.data)
+            alert(errorMessages.join(' \n'))
+          } else if (statusCode === 500) {
+            alert(res.message + ' \n다시 시도해주세요')
+          }
+        }
+      }
     }
   }
 

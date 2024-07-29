@@ -3,6 +3,7 @@
 import { sendQuestion } from '@/api/question-apis'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import axios, { AxiosError } from 'axios'
 
 export default function Question() {
   const [variety, setVariety] = useState<string>('')
@@ -38,25 +39,32 @@ export default function Question() {
         answerEmail: email,
       }
       const postFile = file
-      if (
-        req.title === '' ||
-        req.questionContent === '' ||
-        req.answerEmail === ''
-      ) {
-        alert('모두 작성해주세요')
-      } else {
-        if (variety === 'general') {
-          await sendQuestion('/api/user/question', req, postFile)
-        }
-        if (variety === 'account') {
-          await sendQuestion('/api/question', req, postFile)
-        }
-        alert('문의사항 등록 완료!')
-        setIsClick(false)
-        resetForm()
+
+      if (variety === 'general') {
+        await sendQuestion('/api/user/question', req, postFile)
       }
+      if (variety === 'account') {
+        await sendQuestion('/api/question', req, postFile)
+      }
+      alert('문의사항 등록 완료!')
+      setIsClick(false)
+      resetForm()
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as {
+            success: boolean
+            message: string
+            data?: any
+          }
+          if (statusCode === 400) {
+            const errorMessages = Object.values(res.data)
+            alert(errorMessages.join(' \n'))
+          }
+        }
+      }
     }
   }
 
