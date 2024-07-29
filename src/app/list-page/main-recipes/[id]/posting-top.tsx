@@ -2,6 +2,7 @@ import { TopPosting, getTopPosting } from '@/api/recipe-apis'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import axios, { AxiosError } from 'axios'
 
 interface PostingTopProps {
   id: number
@@ -20,7 +21,13 @@ export default function PostingTop({ id }: PostingTopProps) {
       const result = await getTopPosting(option)
       setTopPosting(result.data.post)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
 

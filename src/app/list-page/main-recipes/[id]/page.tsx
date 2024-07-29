@@ -15,6 +15,7 @@ import {
   doLikeForRecipe,
 } from '@/api/login-user-apis'
 import PostingTop from './posting-top'
+import axios, { AxiosError } from 'axios'
 
 export default function RecipeDetailMain() {
   const [thisInfo, setThisInfo] = useState<RecipeDetail>()
@@ -58,7 +59,13 @@ export default function RecipeDetailMain() {
       setThisInfo(resultData.data)
       setThisInfoCook(resultCook)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('다시 시도해주세요')
+          router.back()
+        }
+      }
     }
   }
 
@@ -67,7 +74,12 @@ export default function RecipeDetailMain() {
       const resultLike = await checkLikesForRecipe(thisId)
       setLike(resultLike.success)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -84,10 +96,16 @@ export default function RecipeDetailMain() {
         const isLogin = confirm(
           '로그인이 필요한 서비스 입니다. 로그인을 하시겠습니까?',
         )
-        isLogin ? router.push('/user/login') : null
+        isLogin && router.push('/user/login')
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
 
@@ -96,7 +114,12 @@ export default function RecipeDetailMain() {
       const result = await checkBookmark(thisId)
       setBookmark(result.success)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -115,7 +138,13 @@ export default function RecipeDetailMain() {
         isLogin ? router.push('/user/login') : null
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
 
@@ -123,16 +152,18 @@ export default function RecipeDetailMain() {
     <>
       {thisInfo && (
         <article>
-          <section className="text-gray-600 body-font overflow-hidden">
-            <div className="container px-5 py-24 mx-auto">
-              <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                <Image
-                  alt="ecommerce"
-                  className="lg:w-1/2 w-full lg:h-[350px] lg:mb-0 mb-10 object-fill object-center rounded-xl"
-                  src={thisInfo.recipe.imageUrl || ''}
-                  width={300}
-                  height={300}
-                />
+          <section className="text-gray-600 body-font">
+            <div className="container px-5 lg:py-24 py-10 mx-auto">
+              <div className="lg:w-4/5 mx-auto flex flex-wrap justify-center ">
+                <div className="relative lg:w-1/2 w-full h-0 pb-[56.25%] lg:mb-0 mb-8">
+                  <Image
+                    src={thisInfo.recipe.imageUrl || '대체할 이미지'}
+                    alt={thisInfo.recipe.title || '요리이미지'}
+                    layout="fill"
+                    objectFit="cover"
+                    className="absolute top-0 left-0 w-full h-full rounded-3xl"
+                  />
+                </div>
                 <div className="lg:w-1/2 w-full lg:pl-10 lg:pt-6 mb-6 lg:mb-0">
                   <h4 className="text-gray-900 text-3xl title-font font-medium mb-4">
                     {thisInfo.recipe.title}
@@ -144,7 +175,7 @@ export default function RecipeDetailMain() {
                         return (
                           <dd
                             key={index}
-                            className="mx-1 px-2 mb-1 border border-[#000] box-border rounded-xl"
+                            className="mx-1 px-2 mb-1 border border-[#000] box-border rounded-xl max-w-full break-words"
                           >
                             {ingredient}
                           </dd>
