@@ -10,10 +10,10 @@ import { Comment } from '@/components/recipe-and-posting/comment'
 import { RootState } from '@/store'
 import { recipeId } from '@/store/mod-userRecipe-slice'
 import { PostingDetail, ThreeCookInfo } from '@/types/recipe'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -31,6 +31,7 @@ export default function RecipeDetailUser() {
   const { id } = userInfo
   const thisId = Number(params.id)
   const dispatch = useDispatch()
+  const router = useRouter()
 
   useEffect(() => {
     getDataLike()
@@ -64,7 +65,13 @@ export default function RecipeDetailUser() {
       setThisInfoCook(resultCook)
       setLike(resultLike.success)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('다시 시도해주세요')
+          router.back()
+        }
+      }
     }
   }
 
@@ -77,7 +84,13 @@ export default function RecipeDetailUser() {
       const result = await checkLikesForPosting(thisId)
       setLike(result.success)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
+        }
+      }
     }
   }
 
@@ -100,11 +113,16 @@ export default function RecipeDetailUser() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (errorCode === 401) {
-          alert('비밀번호가 일치하지 않습니다.')
-        } else if (errorCode === 403) {
-          alert('작성자가 아닙니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as { message: string }
+          if (statusCode === 403) {
+            alert('작성자만 가능합니다')
+          }
+          if (statusCode === 400) {
+            alert('비밀번호가 일치하지 않습니다')
+          }
         }
       }
     }
@@ -113,16 +131,18 @@ export default function RecipeDetailUser() {
     <>
       {thisInfo && (
         <article>
-          <section className="text-gray-600 body-font overflow-hidden">
-            <div className="px-5 py-24 mx-auto">
-              <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                <Image
-                  alt="ecommerce"
-                  className="lg:w-1/2 w-full lg:h-[350px] lg:mb-0 mb-10 object-fill object-center rounded-xl"
-                  src={thisInfo.postImageUrl || ''}
-                  width={300}
-                  height={300}
-                />
+          <section className="text-gray-600 body-font">
+            <div className="container px-5 lg:py-24 py-10 mx-auto">
+              <div className="lg:w-4/5 mx-auto flex flex-wrap justify-center ">
+                <div className="relative lg:w-1/2 w-full h-0 pb-[56.25%] lg:mb-0 mb-8">
+                  <Image
+                    src={thisInfo.postImageUrl || '대체할 이미지'}
+                    alt={thisInfo.postTitle || '유저요리이미지'}
+                    layout="fill"
+                    objectFit="cover"
+                    className="absolute top-0 left-0 w-full h-full rounded-3xl"
+                  />
+                </div>
                 <div className="lg:w-1/2 w-full lg:pl-10 lg:pt-6 mb-6 lg:mb-0 flex flex-col justify-between">
                   <h4 className="text-gray-900 text-3xl title-font font-medium mb-4">
                     {thisInfo.postTitle}
@@ -211,19 +231,19 @@ export default function RecipeDetailUser() {
               비밀번호를 입력해주세요.
             </p>
             <input
-              type="text"
+              type="password"
               onChange={(e) => setPostPw(e.target.value)}
-              className="block mb-4"
+              className="block w-full mb-4"
             />
             <button
               onClick={() => setIsModal(!isModal)}
-              className="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+              className="bg-gray-100 px-4 py-2 rounded-md text-md border border-gray-300"
             >
               Cancel
             </button>
             <button
               onClick={() => submitHandler()}
-              className="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+              className="bg-blue-50 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
             >
               Ok
             </button>
