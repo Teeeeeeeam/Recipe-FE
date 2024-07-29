@@ -5,7 +5,7 @@ import {
   getPostingList,
   getPostingSearch,
 } from '@/api/recipe-apis'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UserPostingFigure } from '@/components/recipe-and-posting/recipe-figure'
 import {
   PostingFigure,
@@ -17,8 +17,15 @@ import { useDispatch } from 'react-redux'
 import { initWriteState } from '@/store/write-userRecipe-slice'
 import { useRouter, useSearchParams } from 'next/navigation'
 import NoResult from '@/components/layout/no-result'
+import { getLocalStorage } from '@/lib/local-storage'
+import { RecipeSkeletonLoader } from '@/components/layout/skeleton/main-skeleton'
+import axios, { AxiosError } from 'axios'
+import useInfiniteScrollVer2 from '@/hooks/use-infinite-scroll-ver2'
 
 export default function UserRecipes() {
+  const [firstRender, setFirstRender] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isMoreLoading, setIsMoreLoading] = useState<boolean>(false)
   const [posting, setPosting] = useState<
     PostingFigure[] | PostingFigureAboutRecipe[] | PostingFigureSearch[]
   >([])
@@ -27,7 +34,7 @@ export default function UserRecipes() {
   const [lastLikeCount, setLastLikeCount] = useState<number>(-1)
   const [input, setInput] = useState<string>('')
 
-  const loader = useRef(null)
+  const loader = useInfiniteScrollVer2(next, setIsMoreLoading, posting)
   const router = useRouter()
   const dispatch = useDispatch()
 
@@ -35,6 +42,7 @@ export default function UserRecipes() {
   const params = Object.fromEntries(searchParams.entries())
   const query = Object.keys(params)[0]
   const queryValue = params[query]
+  const accessToken = getLocalStorage('accessToken')
 
   useEffect(() => {
     if (query === 'recipeid') {
@@ -44,7 +52,22 @@ export default function UserRecipes() {
     } else {
       getData(true)
     }
+    setFirstRender(true)
+    setIsLoading(false)
   }, [queryValue])
+
+  useEffect(() => {
+    if (firstRender && isMoreLoading) {
+      if (queryValue === 'recipeid') {
+        getData2(false)
+      } else if (queryValue === 'title') {
+        getData3(false)
+      } else {
+        getData(false)
+      }
+      setIsMoreLoading(false)
+    }
+  }, [isMoreLoading])
 
   async function getData(isInit: boolean) {
     try {
@@ -66,7 +89,12 @@ export default function UserRecipes() {
       }
       setNext(result.data.nextPage)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -106,7 +134,12 @@ export default function UserRecipes() {
         setLastLikeCount(dataLastLikeCount)
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -132,41 +165,14 @@ export default function UserRecipes() {
         setLastId(dataLastId)
       }
     } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // Intersection Observer 콜백 함수
-  const handleObserver = useCallback(
-    (entries: any) => {
-      const target = entries[0]
-      if (target.isIntersecting) {
-        if (next) {
-          if (queryValue === 'recipeid') {
-            getData2(false)
-          } else if (queryValue === 'title') {
-            getData3(false)
-          } else {
-            getData(false)
-          }
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
         }
       }
-    },
-    [posting],
-  )
-  // Intersection Observer 설정
-  useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0.1,
     }
-    const observer = new IntersectionObserver(handleObserver, option)
-    if (loader.current) {
-      observer.observe(loader.current)
-    }
-    return () => observer.disconnect()
-  }, [handleObserver])
+  }
 
   function submitHandler(e: any) {
     e.preventDefault()
@@ -199,18 +205,24 @@ export default function UserRecipes() {
         <h2 className="font-semibold text-lg md:text-xl px-2 md:px-8 mb-2">{`"${queryValue}"에 대한 결과`}</h2>
       )}
 
-      {posting.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 p-2 md:px-8 md:pb-8">
-          <UserPostingFigure recipes={posting} />
-          <div ref={loader} />
-        </div>
+      {isLoading || isMoreLoading ? (
+        <RecipeSkeletonLoader />
       ) : (
-        <NoResult />
+        <>
+          {posting.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 p-2 md:px-8 md:pb-8">
+              <UserPostingFigure recipes={posting} />
+              <div ref={loader} />
+            </div>
+          ) : (
+            <NoResult />
+          )}
+        </>
       )}
 
       <aside className="fixed md:w-14 md:h-14 w-10 h-10 md:right-10 bottom-10 right-5 bg-yellow-500 rounded-full">
         <Link
-          href="/list-page/user-recipes/write"
+          href={accessToken ? '/list-page/user-recipes/write' : '/user/login'}
           onClick={() => dispatch(initWriteState())}
           className="w-full h-full flex justify-center items-center text-2xl text-white"
         >
