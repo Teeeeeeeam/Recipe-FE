@@ -1,15 +1,23 @@
 'use client'
 
 import { deleteQuestion, inquiryQuestion } from '@/api/login-user-apis'
+import {
+  InfiniteScrollSkeleton,
+  MypageSkeletonLoader,
+} from '@/components/layout/skeleton/mypage-skeleton'
 import InputDeleteButton from '@/components/user/infinite-paging/input/input-delete-button'
 import InputTableBody from '@/components/user/infinite-paging/input/input-table-body'
 import InputTableBodyNoData from '@/components/user/infinite-paging/input/input-table-body-no-data'
 import InputTableHeader from '@/components/user/infinite-paging/input/input-table-header'
+import useInfiniteScrollVer2 from '@/hooks/use-infinite-scroll-ver2'
 import { MyQuestion } from '@/types/user'
-import axios from 'axios'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import axios, { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
 
 export default function Answer() {
+  const [firstRender, setFirstRender] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isMoreLoading, setIsMoreLoading] = useState<boolean>(false)
   const [question, setQuestion] = useState<MyQuestion[]>([])
   const [next, setNext] = useState<boolean>(false)
   const [lastId, setLastId] = useState<number | null>(null)
@@ -17,17 +25,27 @@ export default function Answer() {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false)
   const [checkedItems, setCheckedItems] = useState<number[]>([])
 
-  const loader = useRef(null)
+  const loader = useInfiniteScrollVer2(next, setIsMoreLoading, question)
 
   useEffect(() => {
     getQuestion(true)
+    setFirstRender(true)
+    setIsLoading(false)
   }, [mount])
 
+  useEffect(() => {
+    if (firstRender && isMoreLoading) {
+      getQuestion(false)
+      setIsMoreLoading(false)
+    }
+  }, [isMoreLoading])
+
   async function getQuestion(isInit: boolean) {
+    setIsLoading(true)
     try {
       const questionType = 'GENERAL_INQUIRY'
       const option = {
-        size: 10,
+        size: 13,
       }
       const result = await inquiryQuestion(option, lastId, questionType)
       if (isInit) {
@@ -44,8 +62,14 @@ export default function Answer() {
         setLastId(dataLastId)
       }
       setNext(result.data.nextPage)
+      setIsLoading(false)
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          alert('데이터를 불러올 수 없습니다')
+        }
+      }
     }
   }
 
@@ -59,9 +83,13 @@ export default function Answer() {
       setMount((prev) => !prev)
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (errorCode === 403) {
-          alert('권한이 없습니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as { message: string }
+          if (statusCode === 403) {
+            alert(res.message)
+          }
         }
       }
     }
@@ -94,64 +122,49 @@ export default function Answer() {
     setIsAllChecked(newData.length === question.length)
   }
 
-  // Intersection Observer 콜백 함수
-  const handleObserver = useCallback(
-    (entries: any) => {
-      const target = entries[0]
-      if (target.isIntersecting) {
-        if (next) {
-          getQuestion(false)
-        }
-      }
-    },
-    [question],
-  )
-  // Intersection Observer 설정
-  useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0.1,
-    }
-    const observer = new IntersectionObserver(handleObserver, option)
-    if (loader.current) {
-      observer.observe(loader.current)
-    }
-    return () => observer.disconnect()
-  }, [handleObserver])
-
   return (
     <div className="w-10/12 mx-auto p-4">
       <div className="flex items-center border-b pb-4 mb-4">
         <h3 className="text-2xl font-semibold">문의내역</h3>
       </div>
-      <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
-        <div className="rounded-lg pb-4">
-          <table className="w-full border-gray-200 table-fixed">
-            <InputTableHeader
-              theadOptions={[
-                { class: 'p-2', title: '제목' },
-                { class: 'p-2 sm:w-[10%] w-[20%]', title: '상태' },
-                { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
-              ]}
-              isChecked={isAllChecked}
-              onChange={allCheckHandler}
-            />
-            {question.length > 0 ? (
-              <InputTableBody
-                data={question}
-                isStatus={true}
-                onChange={eachCheckHandler}
-                onClick={deleteQuestionHandler}
+      {isLoading ? (
+        <MypageSkeletonLoader rows={13} columns={3} />
+      ) : (
+        <div className="h-[60vh] sm:h-[70vh] bg-white overflow-y-scroll mb-3">
+          <div className="rounded-lg pb-4">
+            <table className="w-full border-gray-200 table-fixed">
+              <InputTableHeader
+                theadOptions={[
+                  { class: 'p-2', title: '제목' },
+                  { class: 'p-2 sm:w-[10%] w-[20%]', title: '상태' },
+                  { class: 'p-2 sm:w-[10%] w-[20%]', title: '삭제' },
+                ]}
+                isChecked={isAllChecked}
+                onChange={allCheckHandler}
               />
-            ) : (
-              <InputTableBodyNoData isStatus={true} />
-            )}
+              {isMoreLoading ? (
+                <InfiniteScrollSkeleton rows={13} columns={3} />
+              ) : (
+                <>
+                  {question.length > 0 ? (
+                    <InputTableBody
+                      data={question}
+                      isStatus={true}
+                      onChange={eachCheckHandler}
+                      onClick={deleteQuestionHandler}
+                    />
+                  ) : (
+                    <InputTableBodyNoData isStatus={true} />
+                  )}
+                </>
+              )}
 
-            <tfoot ref={loader}></tfoot>
-          </table>
+              <tfoot ref={loader}></tfoot>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="text-end">
         <InputDeleteButton onClick={deleteQuestionHandler} />
       </div>
