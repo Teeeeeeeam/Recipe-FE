@@ -4,7 +4,7 @@ import { doWidthdrawalUser } from '@/api/login-user-apis'
 import { removeLocalStorage } from '@/lib/local-storage'
 import { RootState } from '@/store'
 import { getLoginInfo } from '@/store/user-info-slice'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -43,9 +43,10 @@ export default function Withdrawal() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.status
-        if (errorCode === 401) {
-          alert('일반 사용자만 가능합니다.')
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const res = axiosError.response.data as { message: string }
+          alert(res.message)
         }
       }
     }
@@ -131,9 +132,7 @@ export default function Withdrawal() {
       <div className="w-11/12 mx-auto text-end">
         <button
           type="button"
-          onClick={() =>
-            agree ? setIsClick(true) : alert('약관에 동의해주세요')
-          }
+          onClick={() => setIsClick(true)}
           className=" px-3 py-2 border rounded-md"
         >
           탈퇴하기

@@ -10,6 +10,7 @@ import PostingSelect from '../posting-select'
 import PostingContent from '../posting-content'
 import PostingPassword from '../posting-password'
 import { POSTING_LEVEL, POSTING_PEOPLE, POSTING_TIME } from '../constants'
+import axios, { AxiosError } from 'axios'
 
 export default function Mod() {
   const [modData, setModData] = useState<ModData | null>(null)
@@ -28,7 +29,7 @@ export default function Mod() {
   useEffect(() => {
     getData()
   }, [])
-  console.log(postIdForMod)
+
   useEffect(() => {
     if (modData) {
       setThisTitle(modData.postTitle)
@@ -66,18 +67,26 @@ export default function Mod() {
           },
           modFile: file,
         }
-        const hasEmptyData = Object.values(option.modReq).some(
-          (value) => value === '',
-        )
-        if (hasEmptyData) {
-          alert('양식을 모두 채워주세요')
-        } else {
-          await postingMod(postIdForMod, option)
-          window.location.href = `/list-page/user-recipes/${postIdForMod}`
-        }
+        await postingMod(postIdForMod, option)
+        alert('수정 완료')
+        window.location.href = `/list-page/user-recipes/${postIdForMod}`
       }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const statusCode = axiosError.response.status
+          const res = axiosError.response.data as {
+            success: boolean
+            message: string
+            data?: any
+          }
+          if (statusCode === 400) {
+            const errorMessages = Object.values(res.data)
+            alert(errorMessages.join(' \n'))
+          }
+        }
+      }
     }
   }
 
