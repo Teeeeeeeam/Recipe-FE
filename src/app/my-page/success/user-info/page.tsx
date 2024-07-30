@@ -73,17 +73,27 @@ export default function UserInfo() {
   async function submitUpdate() {
     try {
       if (isModNickName) {
-        const option = {
-          nickName: modNickName,
+        if (!!modNickName) {
+          const option = {
+            nickName: modNickName,
+          }
+          await updateNickName(option)
+        } else {
+          alert('변경할 닉네임을 입력해주세요')
+          return
         }
-        await updateNickName(option)
       }
-      if (isModEmail && isVerify) {
-        const option = {
-          email: modEmail,
-          code: Number(code),
+      if (isModEmail) {
+        if (isSendEmail && isVerify) {
+          const option = {
+            email: modEmail,
+            code: Number(code),
+          }
+          await updateEmail(option)
+        } else {
+          alert('이메일 인증을 먼저 완료해주세요')
+          return
         }
-        await updateEmail(option)
       }
       if (isModPw) {
         if (state.loginId) {
@@ -92,7 +102,7 @@ export default function UserInfo() {
             password: modPw,
             passwordRe: modPwVerify,
           }
-          const result = await updatePassword(option)
+          await updatePassword(option)
         }
       }
       setToggle(false)
@@ -141,8 +151,16 @@ export default function UserInfo() {
         email: modEmail,
         code: Number(code),
       }
-      await confirmCode(option)
-      setIsVerify(true)
+      const result = await confirmCode(option)
+      if (result.data.isVerified) {
+        if (!result.data.isExpired) {
+          alert('시간이 만료되었습니다')
+        } else {
+          setIsVerify(true)
+        }
+      } else {
+        alert('인증번호가 일치하지 않습니다')
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError

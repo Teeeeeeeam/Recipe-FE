@@ -142,3 +142,11 @@ export interface InquiryQuestion extends Response {
 export interface InquiryQuestionDetail extends Response {
   data: QuestionDetailComplete
 }
+
+// 마이페이지 - 이메일 변경 코드 검증
+export interface ConfirmCode extends Response {
+  data: {
+    isVerified: boolean
+    isExpired: boolean
+  }
+}
