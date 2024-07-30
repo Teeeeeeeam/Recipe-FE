@@ -20,6 +20,7 @@ export default function Footer() {
             <Link
               href="https://github.com/CHISANW"
               className="mr-4 text-sm text-gray-500 hover:text-black md:mr-6 dark:text-gray-400"
+              target="_blank"
             >
               김민우
             </Link>
@@ -28,6 +29,7 @@ export default function Footer() {
             <Link
               href="https://github.com/hopak-e"
               className="mr-4 text-sm text-gray-500 hover:text-black md:mr-6 dark:text-gray-400"
+              target="_blank"
             >
               박상호
             </Link>
@@ -36,6 +38,7 @@ export default function Footer() {
             <Link
               href="https://github.com/roel127"
               className="mr-4 text-sm text-gray-500 hover:text-black md:mr-6 dark:text-gray-400"
+              target="_blank"
             >
               양승헌
             </Link>

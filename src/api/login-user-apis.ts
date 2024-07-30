@@ -21,6 +21,7 @@ import {
   InquiryQuestionDetail,
   InquiryQuestionParams,
   updatePasswordReq,
+  ConfirmCode,
 } from '@/types/login-user-apis-type'
 
 // 마이페이지 - 로그인 한 유저 정보 확인
@@ -194,7 +195,7 @@ export async function sendEmail(params: SendEmailParams) {
 }
 // 마이페이지 - 이메일 코드 검증
 export async function confirmCode(req: ConfirmCodeReq) {
-  const { payload } = await requester<Response>({
+  const { payload } = await requester<ConfirmCode>({
     method: 'POST',
     url: '/api/code/email-confirmation/verify',
     data: req,
