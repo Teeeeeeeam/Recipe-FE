@@ -10,7 +10,7 @@ export default function TableBodyCommon({
 }) {
   return (
     <>
-      <td className="px-2 py-3 text-center ">{index + 1}</td>
+      <td className="px-2 py-4 text-center ">{index + 1}</td>
       <td className="px-2 text-center whitespace-nowrap text-ellipsis overflow-hidden">
         <Link href={convertData.url}>{convertData.title}</Link>
       </td>
