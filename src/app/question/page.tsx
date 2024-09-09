@@ -96,7 +96,7 @@ export default function Question() {
   }, [file])
 
   return (
-    <div className="relative">
+    <div className="relative pt-11">
       <div className="w-1/3 mx-auto">
         <h3 className="text-3xl text-center mb-3">문의사항</h3>
         <div className="flex flex-col justify-center sm:flex-row gap-4">
@@ -104,7 +104,7 @@ export default function Question() {
             onClick={() => {
               setVariety('general')
               setAgreeEmail(false)
-              setIsClick((prev) => !prev)
+              setIsClick((prev) => true)
             }}
             className={`px-4 py-2 border border-black text-black rounded ${variety === 'general' && 'bg-green-500 text-white'}`}
           >
@@ -113,7 +113,7 @@ export default function Question() {
           <button
             onClick={() => {
               setVariety('account')
-              setIsClick((prev) => !prev)
+              setIsClick((prev) => true)
             }}
             className={`px-4 py-2 border border-black text-black rounded ${variety === 'account' && 'bg-green-500 text-white'}`}
           >

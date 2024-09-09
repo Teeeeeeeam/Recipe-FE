@@ -18,7 +18,7 @@ export default function InputTableBodyCommon({
 }: InputTableBodyCommonProps) {
   return (
     <>
-      <td className="px-2 py-3 text-center ">
+      <td className="px-2 py-4 text-center ">
         <input
           type="checkbox"
           onChange={() => onChange(convertData.id)}

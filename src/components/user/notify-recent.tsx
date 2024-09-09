@@ -64,15 +64,17 @@ export default function NotifyRecent({
       {toggleNotify && (
         <div className="md:absolute md:w-[300px] md:top-[46px] md:left-auto md:right-0 w-full fixed top-[71px] left-0 py-3 px-4 shadow-md bg-white">
           <h5 className="border-b- pb-2">알림</h5>
-          {notify.map((item) => {
-            return (
-              <p key={item.id} className="py-2 mb-1 border-b">
-                <Link href={item.url} onClick={() => setToggleNotify(false)}>
-                  {item.content}
-                </Link>
-              </p>
-            )
-          })}
+          {notify.length < 1 && <p>알림이 없습니다</p>}
+          {notify.length >= 1 &&
+            notify.map((item) => {
+              return (
+                <p key={item.id} className="py-2 mb-1 border-b">
+                  <Link href={item.url} onClick={() => setToggleNotify(false)}>
+                    {item.content}
+                  </Link>
+                </p>
+              )
+            })}
           <div>
             <Link
               href="/notification"

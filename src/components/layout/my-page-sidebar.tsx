@@ -36,16 +36,16 @@ export default function MypageNav() {
               className="cursor-pointer"
             />
           </p>
-          <div className="absolute h-full flex bg-gray-200 z-20">
+          <div className="h-full bg-gray-200 z-20">
             <nav className="flex flex-col items-center bg-white text-gray-700 shadow h-full">
-              <div className="h-16 mt-6 flex items-center justify-center w-full text-xl">
+              {/* <div className="h-16 mt-6 flex items-center justify-center w-full sm:text-xl text-md">
                 마이페이지
-              </div>
-              <ul>
+              </div> */}
+              <ul className="whitespace-nowrap text-sm mt-10">
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/user-info"
-                    className="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex justify-center items-center w-full focus:text-orange-500"
                   >
                     회원정보
                   </Link>
@@ -53,7 +53,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/view-my-posting"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     작성한 글
                   </Link>
@@ -61,7 +61,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/view-recipe-likes"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     레시피 좋아요
                   </Link>
@@ -69,7 +69,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/view-posting-likes"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     게시글 좋아요
                   </Link>
@@ -77,7 +77,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/view-my-bookmark"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     즐겨찾기
                   </Link>
@@ -85,7 +85,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/answer"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-1 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     문의사항
                   </Link>
@@ -93,7 +93,7 @@ export default function MypageNav() {
                 <li className="hover:bg-gray-100">
                   <Link
                     href="/my-page/success/withdrawal"
-                    className="h-16 px-6 flex  justify-center items-center w-full focus:text-orange-500"
+                    className="h-16 sm:px-6 px-2 flex  justify-center items-center w-full focus:text-orange-500"
                   >
                     회원탈퇴
                   </Link>

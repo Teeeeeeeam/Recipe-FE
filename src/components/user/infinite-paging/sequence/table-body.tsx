@@ -99,9 +99,9 @@ export default function TableBody({
               const convertData = convertHandler(item)
               return (
                 convertData && (
-                  <tr key={convertData.id}>
+                  <tr key={convertData.id} className="border-b">
                     <TableBodyCommon index={index} convertData={convertData} />
-                    <td className="px-2 py-5 text-center">
+                    <td className="px-2 py-4 text-center">
                       <TableButton
                         label="수정"
                         onClick={onClick}
